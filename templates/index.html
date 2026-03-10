@@ -8,52 +8,95 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 
-<body class="tienda">
-  {# ✅ IMPORTANTE: con contexto para que _header.html reciba show_search, q, page_size, selected_familias, whatsapp_phone #}
+<body class="tienda" data-page-size="{{ page_size|default(25) }}">
   {% include "_header.html" with context %}
-
+  const PAGE_SIZE = Number(document.body.dataset.pageSize || 25);
+  
   <main class="container">
     <div class="meta-row">
-  <div class="meta-left">
-    <span id="resultsCount">
-      Página {{ page }} / {{ total_pages }} — Total: {{ total }}
-    </span>
-    <span class="meta-sep">·</span>
-    <span class="meta-right">Mostrando {{ productos|length }} en esta página</span>
-  </div>
+      <div class="meta-left">
+        <span id="resultsCount">
+          Página {{ page }} / {{ total_pages }} — Total: {{ total }}
+        </span>
+        <span class="meta-sep">·</span>
+        <span class="meta-right">Mostrando {{ productos|length }} en esta página</span>
+      </div>
 
-  <!-- 🔎 BUSCADOR GLOBAL -->
-  <form class="meta-search" method="get" action="/tienda">
-    <!-- Conserva filtros actuales -->
-    <input type="hidden" name="page" value="1">
-    <input type="hidden" name="page_size" value="{{ page_size }}">
+      <form class="meta-search" method="get" action="/tienda">
+        <input type="hidden" name="page" value="1">
+        <input type="hidden" name="page_size" value="{{ page_size }}">
 
-    {% for f in selected_familias %}
-  <input type="hidden" name="fam" value="{{ f }}">
-{% endfor %}
+        {% for f in selected_familias %}
+          <input type="hidden" name="fam" value="{{ f }}">
+        {% endfor %}
 
+        <input
+          type="search"
+          name="q"
+          id="productSearchBar"
+          placeholder="Buscar producto (nombre o SKU)..."
+          value="{{ q or '' }}"
+          autocomplete="off"
+        >
 
-    <input
-  type="search"
-  name="q"
-  id="productSearchBar"
-  placeholder="Buscar producto (nombre o SKU)..."
-  value="{{ q or '' }}"
-  autocomplete="off"
-/>
+        <button type="submit">Buscar</button>
 
-    <button type="submit">Buscar</button>
+        {% if q %}
+          <a class="btn-clear" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Limpiar</a>
+        {% endif %}
+      </form>
 
-    {% if q %}
-      <a class="btn-clear" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Limpiar</a>
-    {% endif %}
-  </form>
+      <div class="meta-actions">
+        <button type="button" id="filtersOpenBtn" class="meta-chip filters-open-btn">Filtrar</button>
+        <a class="meta-chip" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Inicio</a>
+      </div>
+    </div>
 
-  <div class="meta-actions">
-    <a class="meta-chip" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Inicio</a>
-  </div>
-</div>
+    <div class="filters-backdrop" id="filtersBackdrop"></div>
 
+    <aside class="filters-drawer" id="filtersDrawer">
+      <div class="filters-drawer__header">
+        <h3 class="filters-drawer__title">Filtros</h3>
+        <button
+          type="button"
+          id="filtersCloseBtn"
+          class="filters-drawer__close"
+          aria-label="Cerrar filtros"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title">Categorías</h3>
+          <button type="button" id="clearFamiliesMobile" class="btn-small">Limpiar</button>
+        </div>
+
+        <div class="panel-body">
+          <input
+            id="catSearchMobile"
+            class="cat-search"
+            type="text"
+            placeholder="Buscar categoría..."
+          >
+
+          <div id="catsListMobile" class="cats-list">
+            {% for f in familias %}
+              <label class="cat-item">
+                <input
+                  type="checkbox"
+                  class="fam-check-mobile"
+                  value="{{ f }}"
+                  {% if f in selected_familias %}checked{% endif %}
+                >
+                <span>{{ f }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </aside>
 
     <div class="shop-layout">
       <aside class="filters-section">
@@ -106,25 +149,20 @@
               <div class="card-body">
                 <div class="product-title">{{ p.nombre }}</div>
                 <div class="product-family">{{ p.familia }}</div>
-               
 
-{% set stock = (p.cantidad|default(0)|int) %}
+                {% set stock = (p.cantidad|default(0)|int) %}
 
-{% if stock == 1 %}
-  <div class="stock-warning stock-danger">
-    🔴 ¡Última unidad disponible!
-  </div>
-{% elif stock < 5 %}
-  <div class="stock-warning">
-    ⚠️ Solo quedan {{ stock }} unidades
-  </div>
-{% endif %}
-
-
+                {% if stock == 1 %}
+                  <div class="stock-warning stock-danger">
+                    🔴 ¡Última unidad disponible!
+                  </div>
+                {% elif stock < 5 %}
+                  <div class="stock-warning">
+                    ⚠️ Solo quedan {{ stock }} unidades
+                  </div>
+                {% endif %}
 
                 <div class="price-row">
-                  {# ✅ Formato simple con separador de miles (Jinja no tiene locale por defecto).
-                     Si querés, luego lo formateamos en JS. #}
                   <div class="product-price">₡{{ "{:,}".format(p.precio).replace(",", ".") }}</div>
                 </div>
 
@@ -134,9 +172,13 @@
           {% endfor %}
         </div>
 
-        <div id="noResults" class="no-results" style="{% if productos|length == 0 %}display:block{% endif %}">
-          No se encontraron productos con esos filtros/búsqueda.
-        </div>
+        <div
+  id="noResults"
+  class="no-results"
+  {% if productos|length == 0 %}style="display:block"{% endif %}
+>
+  No se encontraron productos con esos filtros/búsqueda.
+</div>
 
         <div class="pagination">
           <div class="pagination-info">
@@ -145,15 +187,19 @@
 
           <div class="pagination-actions">
             {% if page > 1 %}
-              <a class="page-btn"
-                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page-1 }}">
+              <a
+                class="page-btn"
+                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page-1 }}"
+              >
                 « Anterior
               </a>
             {% endif %}
 
             {% if page < total_pages %}
-              <a class="page-btn"
-                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page+1 }}">
+              <a
+                class="page-btn"
+                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page+1 }}"
+              >
                 Siguiente »
               </a>
             {% endif %}
@@ -171,203 +217,305 @@
 
   <script>
     // ============================
-    // FILTROS (familias + búsqueda + cat search)
-    // Compatible con header form nuevo
+    // FILTROS + BÚSQUEDA + DRAWER MÓVIL
     // ============================
-    const famChecks = Array.from(document.querySelectorAll(".fam-check"));
-    const clearFamiliesBtn = document.getElementById("clearFamilies");
+    (function(){
+      const famChecks = Array.from(document.querySelectorAll(".fam-check"));
+      const clearFamiliesBtn = document.getElementById("clearFamilies");
 
-    const catSearch = document.getElementById("catSearch");
-    const catLabels = Array.from(document.querySelectorAll(".cat-item"));
+      const catSearch = document.getElementById("catSearch");
+      const catLabels = Array.from(document.querySelectorAll("#catsList .cat-item"));
 
-    // input de búsqueda (barra roja)
-const qInput = document.getElementById("productSearchBar");
+      const filtersDrawer = document.getElementById("filtersDrawer");
+      const filtersBackdrop = document.getElementById("filtersBackdrop");
+      const filtersOpenBtn = document.getElementById("filtersOpenBtn");
+      const filtersCloseBtn = document.getElementById("filtersCloseBtn");
 
+      const famChecksMobile = Array.from(document.querySelectorAll(".fam-check-mobile"));
+      const clearFamiliesMobileBtn = document.getElementById("clearFamiliesMobile");
 
+      const catSearchMobile = document.getElementById("catSearchMobile");
+      const catLabelsMobile = Array.from(document.querySelectorAll("#catsListMobile .cat-item"));
 
-    function norm(s){
-      return (s || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim();
-    }
+      const qInput = document.getElementById("productSearchBar");
+      const productList = document.getElementById("productList");
+      const noResultsEl = document.getElementById("noResults");
+      const resultsCountEl = document.getElementById("resultsCount");
 
-    if (catSearch) {
-      catSearch.addEventListener("input", () => {
-        const q = norm(catSearch.value);
-        catLabels.forEach(lbl => {
-          const txt = norm(lbl.innerText);
-          lbl.style.display = txt.includes(q) ? "" : "none";
+      function norm(s){
+        return String(s || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim();
+      }
+
+      // ============================
+      // Buscar categorías PC
+      // ============================
+      if (catSearch) {
+        catSearch.addEventListener("input", function(){
+          const q = norm(catSearch.value);
+          catLabels.forEach(function(lbl){
+            const txt = norm(lbl.innerText);
+            lbl.style.display = txt.includes(q) ? "" : "none";
+          });
         });
-      });
-    }
-    // ============================
-// BÚSQUEDA EN VIVO (sin recargar)
-// Filtra SOLO la página actual
-// ============================
-const productList = document.getElementById("productList");
-const noResultsEl = document.getElementById("noResults");
-const resultsCountEl = document.getElementById("resultsCount");
+      }
 
-function liveFilter(){
-  if (!productList) return;
+      // ============================
+      // Buscar categorías móvil
+      // ============================
+      if (catSearchMobile) {
+        catSearchMobile.addEventListener("input", function(){
+          const q = norm(catSearchMobile.value);
+          catLabelsMobile.forEach(function(lbl){
+            const txt = norm(lbl.innerText);
+            lbl.style.display = txt.includes(q) ? "" : "none";
+          });
+        });
+      }
 
-  const q = norm(qInput?.value || "");
-  const cards = Array.from(productList.querySelectorAll(".product-item"));
+      // ============================
+      // Drawer filtros móvil
+      // ============================
+      function openFiltersDrawer(){
+        if (filtersDrawer) filtersDrawer.classList.add("is-open");
+        if (filtersBackdrop) filtersBackdrop.classList.add("is-open");
+        document.body.classList.add("filters-open");
+      }
 
-  let shown = 0;
+      function closeFiltersDrawer(){
+        if (filtersDrawer) filtersDrawer.classList.remove("is-open");
+        if (filtersBackdrop) filtersBackdrop.classList.remove("is-open");
+        document.body.classList.remove("filters-open");
+      }
 
-  for (const card of cards){
-    const name = norm(card.dataset.name || "");
-    const sku  = norm(card.dataset.sku || "");
-    const fam  = norm(card.dataset.familia || "");
+      if (filtersOpenBtn) filtersOpenBtn.addEventListener("click", openFiltersDrawer);
+      if (filtersCloseBtn) filtersCloseBtn.addEventListener("click", closeFiltersDrawer);
+      if (filtersBackdrop) filtersBackdrop.addEventListener("click", closeFiltersDrawer);
 
-    const match = !q || name.includes(q) || sku.includes(q) || fam.includes(q);
+      // ============================
+      // Búsqueda en vivo
+      // ============================
+      function liveFilter(){
+        if (!productList) return;
 
-    card.style.display = match ? "" : "none";
-    if (match) shown++;
-  }
+        const q = norm(qInput ? qInput.value : "");
+        const cards = Array.from(productList.querySelectorAll(".product-item"));
 
-  if (noResultsEl){
-    noResultsEl.style.display = (shown === 0) ? "block" : "none";
-  }
+        let shown = 0;
 
-  // Actualiza el “Mostrando X…” visualmente
-  if (resultsCountEl){
-    resultsCountEl.innerHTML =
-      `Página {{ page }} / {{ total_pages }} — Total: {{ total }} · Mostrando ${shown} en esta página`;
-  }
+        cards.forEach(function(card){
+          const name = norm(card.dataset.name || "");
+          const sku  = norm(card.dataset.sku || "");
+          const fam  = norm(card.dataset.familia || "");
+
+          const match = !q || name.includes(q) || sku.includes(q) || fam.includes(q);
+
+          card.style.display = match ? "" : "none";
+          if (match) shown++;
+        });
+
+        if (noResultsEl){
+          noResultsEl.style.display = shown === 0 ? "block" : "none";
+        }
+
+        if (resultsCountEl){
+          resultsCountEl.innerHTML =
+            'Página {{ page }} / {{ total_pages }} — Total: {{ total }} · Mostrando ' + shown + ' en esta página';
+        }
+      }
+
+      let t = null;
+      if (qInput){
+        qInput.addEventListener("input", function(){
+          clearTimeout(t);
+          t = setTimeout(liveFilter, 120);
+        });
+
+        qInput.addEventListener("keydown", function(e){
+          if (e.key === "Enter"){
+            e.preventDefault();
+            goFilters();
+          }
+        });
+      }
+
+      window.addEventListener("load", liveFilter);
+
+      // ============================
+      // Construir URL filtros PC
+      // ============================
+      function buildUrl(page){
+  const params = new URLSearchParams();
+  const q = qInput ? qInput.value.trim() : "";
+
+  if (q) params.set("q", q);
+  params.set("page_size", String(PAGE_SIZE));
+  params.set("page", String(page || 1));
+
+  famChecks
+    .filter(function(c){ return c.checked; })
+    .forEach(function(c){
+      params.append("fam", c.value);
+    });
+
+  return "/tienda?" + params.toString();
 }
 
-// debounce
-let t = null;
-qInput?.addEventListener("input", () => {
-  clearTimeout(t);
-  t = setTimeout(liveFilter, 120);
-});
+      function goFilters(){
+        window.location.href = buildUrl(1);
+      }
 
-// aplica al cargar si ya hay texto
-window.addEventListener("load", liveFilter);
+      famChecks.forEach(function(c){
+        c.addEventListener("change", goFilters);
+      });
 
-    function buildUrl(page=1){
-      const params = new URLSearchParams();
+      if (clearFamiliesBtn){
+        clearFamiliesBtn.addEventListener("click", function(){
+          famChecks.forEach(function(c){ c.checked = false; });
+          goFilters();
+        });
+      }
 
-      const q = (qInput?.value || "").trim();
-      if (q) params.set("q", q);
+      // ============================
+      // Filtros móvil
+      // ============================
+      function goFiltersFromMobile(){
+  const params = new URLSearchParams();
+  const q = qInput ? qInput.value.trim() : "";
 
-      params.set("page_size", String({{ page_size|default(25) }}));
-      params.set("page", String(page));
+  if (q) params.set("q", q);
+  params.set("page_size", String(PAGE_SIZE));
+  params.set("page", "1");
 
-      famChecks.filter(c => c.checked).forEach(c => params.append("fam", c.value));
-      return "/tienda?" + params.toString();
-    }
-
-    function goFilters(){
-      window.location.href = buildUrl(1);
-    }
-
-    famChecks.forEach(c => c.addEventListener("change", goFilters));
-
-    clearFamiliesBtn?.addEventListener("click", () => {
-      famChecks.forEach(c => c.checked = false);
-      goFilters();
+  famChecksMobile
+    .filter(function(c){ return c.checked; })
+    .forEach(function(c){
+      params.append("fam", c.value);
     });
 
-    // Enter en búsqueda (por si el form no existe o está oculto)
-    qInput?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") { e.preventDefault(); goFilters(); }
-    });
+  window.location.href = "/tienda?" + params.toString();
+}
+
+      famChecksMobile.forEach(function(c){
+        c.addEventListener("change", goFiltersFromMobile);
+      });
+
+      if (clearFamiliesMobileBtn){
+        clearFamiliesMobileBtn.addEventListener("click", function(){
+          famChecksMobile.forEach(function(c){ c.checked = false; });
+          goFiltersFromMobile();
+        });
+      }
+    })();
   </script>
 
   <script>
     // ============================
-    // CARRITO (localStorage) — badge + toast + ocultar FAB
+    // CARRITO (localStorage)
     // ============================
-    const CART_KEY = "superweb_cart_v2";
+    (function(){
+      const CART_KEY = "superweb_cart_v2";
 
-    function loadCart(){
-      try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-      catch(e){ return []; }
-    }
-    function saveCart(cart){
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    }
+      function loadCart(){
+        try {
+          return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        } catch (e){
+          return [];
+        }
+      }
 
-    function updateBadge(){
-      const fab = document.getElementById("cartFab");
-      const badge = document.getElementById("cartBadge");
-      const badgeTop = document.getElementById("cartBadgeTop"); // existe en _header.html
+      function saveCart(cart){
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      }
 
-      const cart = loadCart();
-      const qty = cart.reduce((acc, x) => acc + (Number(x.qty) || 0), 0);
+      function updateBadge(){
+        const fab = document.getElementById("cartFab");
+        const badge = document.getElementById("cartBadge");
+        const badgeTop = document.getElementById("cartBadgeTop");
 
-      if (badge) badge.textContent = String(qty);
-      if (badgeTop) badgeTop.textContent = String(qty);
+        const cart = loadCart();
+        const qty = cart.reduce(function(acc, x){
+          return acc + (Number(x.qty) || 0);
+        }, 0);
 
-      if (fab) fab.style.display = qty > 0 ? "inline-flex" : "none";
-    }
+        if (badge) badge.textContent = String(qty);
+        if (badgeTop) badgeTop.textContent = String(qty);
 
-    let toastTimer = null;
-    function showToast(msg="Agregado ✅"){
-      const el = document.getElementById("toast");
-      if (!el) return;
-      el.textContent = msg;
-      el.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => el.classList.remove("show"), 900);
-    }
+        if (fab) fab.style.display = qty > 0 ? "inline-flex" : "none";
+      }
 
-    function addToCart(sku, nombre, price, stock){
-  stock = Number(stock ?? 0);
+      let toastTimer = null;
+      function showToast(msg){
+        const el = document.getElementById("toast");
+        if (!el) return;
 
-  const cart = loadCart();
-  const found = cart.find(x => x.sku === sku);
-  const currentQty = found ? (Number(found.qty) || 0) : 0;
+        el.textContent = msg || "Agregado ✅";
+        el.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){
+          el.classList.remove("show");
+        }, 900);
+      }
 
-  if (stock <= 0){
-    showToast("Sin stock ❌");
-    return;
-  }
+      function addToCart(sku, nombre, price, stock){
+        stock = Number(stock || 0);
 
-  if (currentQty + 1 > stock){
-    showToast(`Solo hay ${stock} unidades disponibles ⚠️`);
-    return;
-  }
+        const cart = loadCart();
+        const found = cart.find(function(x){ return x.sku === sku; });
+        const currentQty = found ? (Number(found.qty) || 0) : 0;
 
-  if (found){
-    found.qty = currentQty + 1;
-    found.stock = stock;
-  } else {
-    cart.push({ sku, nombre, qty: 1, price: Number(price)||0, stock });
-  }
+        if (stock <= 0){
+          showToast("Sin stock ❌");
+          return;
+        }
 
-  saveCart(cart);
-  updateBadge();
-  showToast("Agregado ✅");
-}
+        if (currentQty + 1 > stock){
+          showToast("Solo hay " + stock + " unidades disponibles ⚠️");
+          return;
+        }
 
+        if (found){
+          found.qty = currentQty + 1;
+          found.stock = stock;
+        } else {
+          cart.push({
+            sku: sku,
+            nombre: nombre,
+            qty: 1,
+            price: Number(price) || 0,
+            stock: stock
+          });
+        }
 
-    document.querySelectorAll(".product-item").forEach(card => {
-  const sku = card.dataset.sku;
-  const name = card.dataset.name;
-  const price = card.dataset.price;
-  const stock = card.dataset.stock;  // 👈 NUEVO
+        saveCart(cart);
+        updateBadge();
+        showToast("Agregado ✅");
+      }
 
-  card.addEventListener("click", (e) => {
-    const btn = e.target.closest(".btn-add");
-    if (btn) {
-      e.preventDefault();
-      e.stopPropagation();
-      addToCart(sku, name, price, stock);
-      return;
-    }
-    addToCart(sku, name, price, stock);
-  });
-});
+      document.querySelectorAll(".product-item").forEach(function(card){
+        const sku = card.dataset.sku;
+        const name = card.dataset.name;
+        const price = card.dataset.price;
+        const stock = card.dataset.stock;
 
+        card.addEventListener("click", function(e){
+          const btn = e.target.closest(".btn-add");
+          if (btn){
+            e.preventDefault();
+            e.stopPropagation();
+            addToCart(sku, name, price, stock);
+            return;
+          }
 
-    updateBadge();
+          addToCart(sku, name, price, stock);
+        });
+      });
+
+      updateBadge();
+    })();
   </script>
 </body>
 </html>
