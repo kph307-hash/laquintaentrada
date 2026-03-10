@@ -118,6 +118,7 @@
   const openBtn = document.getElementById("menuToggle");
   const closeBtn = document.getElementById("menuClose");
   const badge = document.getElementById("cartBadgeTop");
+  const header = document.querySelector(".main-header");
 
   function openDrawer(){
     drawer?.classList.add("is-open");
@@ -143,67 +144,95 @@
     link.addEventListener("click", closeDrawer);
   });
 
-  if (!badge) return;
+  if (badge){
+    const KEYS = ["superweb_cart_v2", "superweb_cart", "cart", "CART"];
 
-  const KEYS = ["superweb_cart_v2", "superweb_cart", "cart", "CART"];
-
-  function safeParse(raw){
-    try { return JSON.parse(raw); } catch { return null; }
-  }
-
-  function extractArray(data){
-    if (Array.isArray(data)) return data;
-    if (data && typeof data === "object"){
-      const maybe = data.items || data.cart || data.products || data.data;
-      if (Array.isArray(maybe)) return maybe;
+    function safeParse(raw){
+      try { return JSON.parse(raw); } catch { return null; }
     }
-    return [];
-  }
 
-  function loadCart(){
-    for (const k of KEYS){
-      const raw = localStorage.getItem(k);
-      if (!raw) continue;
-      const parsed = safeParse(raw);
-      const arr = extractArray(parsed);
-      if (arr.length) return arr;
+    function extractArray(data){
+      if (Array.isArray(data)) return data;
+      if (data && typeof data === "object"){
+        const maybe = data.items || data.cart || data.products || data.data;
+        if (Array.isArray(maybe)) return maybe;
+      }
+      return [];
     }
-    return [];
-  }
 
-  function getQty(item){
-    let qty = Number(item.qty ?? item.cantidad ?? item.quantity ?? 1);
-    if (!Number.isFinite(qty) || qty <= 0) qty = 1;
-    return qty;
-  }
-
-  function paint(){
-    const cart = loadCart();
-    const totalItems = cart.reduce((acc, x) => acc + getQty(x), 0);
-
-    badge.textContent = String(totalItems);
-    badge.style.display = totalItems > 0 ? "inline-flex" : "none";
-  }
-
-  paint();
-
-  window.addEventListener("storage", (e) => {
-    if (KEYS.includes(e.key)) paint();
-  });
-
-  window.addEventListener("cart:changed", paint);
-
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) paint();
-  });
-
-  let last = "";
-  setInterval(() => {
-    const raw = localStorage.getItem("superweb_cart_v2") || localStorage.getItem("superweb_cart") || "";
-    if (raw !== last){
-      last = raw;
-      paint();
+    function loadCart(){
+      for (const k of KEYS){
+        const raw = localStorage.getItem(k);
+        if (!raw) continue;
+        const parsed = safeParse(raw);
+        const arr = extractArray(parsed);
+        if (arr.length) return arr;
+      }
+      return [];
     }
-  }, 1000);
+
+    function getQty(item){
+      let qty = Number(item.qty ?? item.cantidad ?? item.quantity ?? 1);
+      if (!Number.isFinite(qty) || qty <= 0) qty = 1;
+      return qty;
+    }
+
+    function paint(){
+      const cart = loadCart();
+      const totalItems = cart.reduce((acc, x) => acc + getQty(x), 0);
+
+      badge.textContent = String(totalItems);
+      badge.style.display = totalItems > 0 ? "inline-flex" : "none";
+    }
+
+    paint();
+
+    window.addEventListener("storage", (e) => {
+      if (KEYS.includes(e.key)) paint();
+    });
+
+    window.addEventListener("cart:changed", paint);
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) paint();
+    });
+
+    let last = "";
+    setInterval(() => {
+      const raw = localStorage.getItem("superweb_cart_v2") || localStorage.getItem("superweb_cart") || "";
+      if (raw !== last){
+        last = raw;
+        paint();
+      }
+    }, 1000);
+  }
+
+  /* header inteligente: se oculta al bajar y aparece al subir */
+  if (header){
+    let lastScroll = window.scrollY;
+    let ticking = false;
+
+    function updateHeader(){
+      const currentScroll = window.scrollY;
+
+      if (currentScroll <= 10 || document.body.classList.contains("drawer-open")){
+        header.classList.remove("is-hidden");
+      } else if (currentScroll > lastScroll){
+        header.classList.add("is-hidden");
+      } else {
+        header.classList.remove("is-hidden");
+      }
+
+      lastScroll = currentScroll;
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", () => {
+      if (!ticking){
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
 })();
 </script>
