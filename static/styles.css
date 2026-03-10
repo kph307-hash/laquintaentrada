@@ -2,6 +2,8 @@
    Super Web — Retail Light UI (LIMPIO)
    Header UNICO: main-header
    ========================= */
+/* ===== ESTILO PC / BASE ===== */
+/* todo tu CSS actual */
 
 :root{
   --bg: #ffffff;
@@ -1344,4 +1346,445 @@ body.drawer-open{
 
 body.drawer-open{
   overflow: hidden;
+}
+
+
+
+/* =========================================
+   MOBILE ONLY — estilo aparte para celular
+   Pegarlo al FINAL del archivo
+========================================= */
+@media (max-width: 768px){
+
+  .container{
+    margin: 14px auto;
+    padding: 0 12px;
+  }
+
+  body::before{
+    filter: blur(14px) saturate(1.03);
+    transform: scale(1.03);
+  }
+
+  /* =========================
+     HEADER MOBILE
+  ========================= */
+  .main-header{
+    position: sticky;
+    top: 0;
+  }
+
+  .main-header__inner{
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .main-header__inner--drawer{
+    grid-template-columns: 44px 1fr 44px;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .main-brand{
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .main-nav{
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .main-nav--left,
+  .main-nav--right{
+    justify-content: center;
+  }
+
+  .main-link{
+    font-size: 14px;
+    padding: 9px 10px;
+  }
+
+  .main-link--cart{
+    padding: 9px 12px;
+    gap: 8px;
+  }
+
+  .main-badge{
+    min-width: 20px;
+    height: 20px;
+    font-size: 11px;
+    padding: 0 6px;
+  }
+
+  .menu-toggle{
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 22px;
+  }
+
+  /* =========================
+     LAYOUT MOBILE
+  ========================= */
+  .shop-layout{
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .panel{
+    border-radius: 12px;
+  }
+
+  .panel-header{
+    padding: 12px;
+  }
+
+  .panel-body{
+    padding: 12px;
+  }
+
+  .panel-title{
+    font-size: 14px;
+  }
+
+  .cats-list{
+    max-height: 220px;
+  }
+
+  /* =========================
+     META / BUSQUEDA MOBILE
+  ========================= */
+  .meta-row{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .meta-left{
+    text-align: center;
+    font-size: 13px;
+  }
+
+  .meta-actions{
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .meta-search{
+    min-width: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .meta-search input[type="search"]{
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .meta-search button,
+  .meta-search .btn-clear{
+    width: 100%;
+    text-align: center;
+  }
+
+  /* =========================
+     PRODUCTOS MOBILE
+  ========================= */
+  #productList{
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .product-card{
+    border-radius: 14px;
+  }
+
+  .img-box{
+    height: 170px;
+    flex: 0 0 170px;
+  }
+
+  .card-body{
+    padding: 14px;
+    gap: 6px;
+  }
+
+  .product-title{
+    font-size: 14px;
+    min-height: auto;
+  }
+
+  .product-family{
+    font-size: 12px;
+  }
+
+  .product-price{
+    font-size: 17px;
+  }
+
+  .btn-add{
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+
+  /* =========================
+     PROMOS MOBILE
+  ========================= */
+  .promo-card{
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .promo-media{
+    padding: 0;
+  }
+
+  .promo-media img{
+    width: 100%;
+    max-width: 100%;
+    max-height: 240px;
+    border-radius: 12px;
+  }
+
+  .btn-add-promo{
+    width: 100%;
+  }
+
+  /* =========================
+     PAGINACION MOBILE
+  ========================= */
+  .pagination{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .pagination-info{
+    text-align: center;
+  }
+
+  .pagination-actions{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .page-btn{
+    text-align: center;
+  }
+
+  /* =========================
+     CART FAB / TOAST MOBILE
+  ========================= */
+  .cart-fab{
+    right: 14px;
+    bottom: 14px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .toast{
+    width: calc(100% - 24px);
+    max-width: 420px;
+    bottom: 76px;
+    text-align: center;
+    border-radius: 16px;
+  }
+
+  /* =========================
+     AUTH MOBILE
+  ========================= */
+  .page-wrap{
+    min-height: calc(100vh - 70px);
+    padding: 20px 12px;
+  }
+
+  .auth-card{
+    max-width: 100%;
+    border-radius: 16px;
+    padding: 20px 16px;
+  }
+
+  .auth-card h1{
+    font-size: 24px;
+  }
+
+  .auth-subtitle{
+    font-size: 14px;
+  }
+
+  .auth-form input{
+    font-size: 16px;
+  }
+
+  .btn-primary{
+    width: 100%;
+  }
+
+  /* =========================
+     PERFIL / ORDENES MOBILE
+  ========================= */
+  .profile-shell{
+    gap: 14px;
+  }
+
+  .profile-card,
+  .orders-card{
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .profile-grid{
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .order-item{
+    padding: 14px;
+  }
+
+  .order-item__top{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .order-title{
+    font-size: 16px;
+  }
+
+  .order-status{
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  /* =========================
+     CHECKOUT / CARRITO MOBILE
+  ========================= */
+  .cart-page{
+    padding: 12px 12px 40px;
+  }
+
+  .cart-head{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .cart-title-page{
+    font-size: 24px;
+  }
+
+  .cart-layout{
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cart-card{
+    border-radius: 16px;
+    padding: 12px;
+  }
+
+  .cart-item{
+    grid-template-columns: 52px 1fr;
+    grid-template-areas:
+      "img info"
+      "qty qty"
+      "sub sub";
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .cart-item-media{ grid-area: img; }
+  .cart-item-info{ grid-area: info; }
+  .cart-item-qty{
+    grid-area: qty;
+    justify-self: start;
+    margin-top: 2px;
+  }
+  .cart-item-sub{
+    grid-area: sub;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  .cart-thumb{
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+  }
+
+  .cart-item-name{
+    font-size: 14px;
+  }
+
+  .cart-item-meta{
+    font-size: 12px;
+  }
+
+  .cart-summary-total{
+    font-size: 17px;
+  }
+
+  .mode-row{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .radio-pill{
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .loc-row{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-send,
+  .btn-ghost,
+  .btn-secondary{
+    width: 100%;
+  }
+
+  .checkout-access__actions{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* =========================
+     DRAWER MOBILE
+  ========================= */
+  .side-drawer{
+    width: 86vw;
+    max-width: 86vw;
+    padding: 16px 14px;
+  }
+
+  .side-drawer__title{
+    font-size: 22px;
+  }
+
+  .side-drawer__user{
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .side-drawer__avatar{
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
+  .side-drawer__link{
+    padding: 12px 13px;
+    border-radius: 12px;
+    font-size: 14px;
+  }
 }
