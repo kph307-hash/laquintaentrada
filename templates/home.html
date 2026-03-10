@@ -8,22 +8,12 @@
   <link rel="stylesheet" href="/static/styles.css">
 
   <style>
-    /* ===== Scroll Snap (hojas) ===== */
-    .snap-container{
-  overflow-y: visible;
-}
-
-.snap-page{
-  min-height: auto;
-  padding: 22px 0;
-  display: block;
-}
 
     /* más coherente con fondo claro */
-    .snap-page.alt{ background: rgba(0,0,0,.03); }
+    .promo-section.alt{ background: rgba(0,0,0,.03); }
 
     /* que la primera hoja no se sienta “pegada” al header */
-    .snap-page:first-child{ padding-top: 16px; }
+    .promo-section:first-child{ padding-top: 16px; }
 
     .page-title h1{ margin: 8px 0 6px; }
     .muted{ opacity: .75; }
@@ -140,12 +130,12 @@
     .pad{ padding:14px; }
 
     @media (max-width: 900px){
-      .grid-3{ grid-template-columns: 1fr; }
-      .grid-2{ grid-template-columns: 1fr; }
-      .promo-nav.prev{ left: 8px; }
-      .promo-nav.next{ right: 8px; }
-      .snap-page{ align-items: flex-start; }
-    }
+  .grid-3{ grid-template-columns: 1fr; }
+  .grid-2{ grid-template-columns: 1fr; }
+  .promo-nav.prev{ left: 8px; }
+  .promo-nav.next{ right: 8px; }
+  .promo-section{ display: block; }
+}
 
     body{
   margin: 0;
@@ -169,7 +159,7 @@
   <main class="promo-scroll">
 
     <!-- HOJA 1: HERO + Carrusel -->
-    <section class="snap-page">
+    <section class="promo-section">
       <div class="container">
         <div class="page-title">
           <h1>Promos y Rifas</h1>
@@ -179,7 +169,7 @@
         {% if not promos %}
           <div class="card pad">No hay promociones activas todavía.</div>
         {% else %}
-          <section class="promo-carousel" data-autoplay="true" data-interval="4500">
+          <section class="promo-carousel" data-autoplay="false" data-interval="4500">
             <div class="promo-track" id="promoTrack">
            {% for p in promos %}
   <article class="promo-slide">
@@ -415,90 +405,16 @@
       saveCart(cart);
 
       // actualizar badge del header si existe
-      const badgeTop = document.getElementById("cartBadgeTop");
-      if (badgeTop){
-        const qty = cart.reduce((acc, x) => acc + (x.qty || 0), 0);
-        badgeTop.textContent = qty;
-      }
+      const bottomBadge = document.getElementById("bottomCartBadge");
+if (bottomBadge){
+  const qty = cart.reduce((acc, x) => acc + (x.qty || 0), 0);
+  bottomBadge.textContent = qty;
+  bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
+}
 
       alert("Agregado ✅");
     });
   </script>
-
-<script>
-(function () {
-  function forceMobileProductGrid() {
-    if (window.innerWidth > 768) return;
-
-    const list = document.getElementById("productList");
-    if (!list) return;
-
-    list.style.display = "grid";
-    list.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
-    list.style.gap = "8px";
-    list.style.alignItems = "start";
-    list.style.width = "100%";
-
-    Array.from(list.children).forEach((card) => {
-      card.style.width = "auto";
-      card.style.maxWidth = "100%";
-      card.style.minWidth = "0";
-      card.style.margin = "0";
-      card.style.display = "flex";
-      card.style.flexDirection = "column";
-
-      const imgBox = card.querySelector(".img-box");
-      if (imgBox) {
-        imgBox.style.height = "92px";
-        imgBox.style.flex = "0 0 92px";
-      }
-
-      const body = card.querySelector(".card-body");
-      if (body) {
-        body.style.padding = "8px";
-        body.style.gap = "4px";
-      }
-
-      const title = card.querySelector(".product-title");
-      if (title) {
-        title.style.fontSize = "10px";
-        title.style.lineHeight = "1.15";
-        title.style.minHeight = "24px";
-        title.style.wordBreak = "break-word";
-        title.style.overflowWrap = "anywhere";
-      }
-
-      const family = card.querySelector(".product-family");
-      if (family) {
-        family.style.fontSize = "9px";
-      }
-
-      const price = card.querySelector(".product-price");
-      if (price) {
-        price.style.fontSize = "13px";
-      }
-
-      const btn = card.querySelector(".btn-add");
-      if (btn) {
-        btn.style.width = "100%";
-        btn.style.padding = "7px 6px";
-        btn.style.fontSize = "10px";
-        btn.style.whiteSpace = "nowrap";
-      }
-
-      const warning = card.querySelector(".stock-warning");
-      if (warning) {
-        warning.style.fontSize = "9px";
-        warning.style.padding = "3px 6px";
-        warning.style.lineHeight = "1.15";
-      }
-    });
-  }
-
-  window.addEventListener("load", forceMobileProductGrid);
-  window.addEventListener("resize", forceMobileProductGrid);
-})();
-</script>
 
 </body>
 </html>

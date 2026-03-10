@@ -198,7 +198,6 @@
       const qInput = document.getElementById("productSearchBar");
       const productList = document.getElementById("productList");
       const noResultsEl = document.getElementById("noResults");
-      const resultsCountEl = document.getElementById("resultsCount");
 
       function norm(s){
         return String(s || "")
@@ -278,10 +277,6 @@
         if (noResultsEl){
           noResultsEl.style.display = shown === 0 ? "block" : "none";
         }
-
-        if (resultsCountEl){
-  resultsCountEl.textContent = shown;
-}
       }
 
       let t = null;
