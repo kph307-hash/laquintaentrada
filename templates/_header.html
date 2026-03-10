@@ -106,38 +106,40 @@
   </a>
 
   <a class="bottom-nav__item" href="/tienda">
-    <span class="bottom-nav__icon">🛒</span>
+    <span class="bottom-nav__icon">🧺</span>
     <span class="bottom-nav__label">Productos</span>
   </a>
 
-  <a class="bottom-nav__item bottom-nav__item--cart" href="/carrito">
-    <span class="bottom-nav__icon">🧺</span>
+  <a class="bottom-nav__item" href="/carrito">
+    <span class="bottom-nav__icon">🛒</span>
     <span class="bottom-nav__label">Carrito</span>
     <span id="bottomCartBadge" class="bottom-nav__badge">0</span>
   </a>
 </nav>
 
 <script>
-(function(){
+(function () {
   const drawer = document.getElementById("sideDrawer");
   const backdrop = document.getElementById("drawerBackdrop");
   const openBtn = document.getElementById("menuToggle");
   const closeBtn = document.getElementById("menuClose");
   const badge = document.getElementById("cartBadgeTop");
-const bottomCartBadge = document.getElementById("bottomCartBadge");
-const header = document.querySelector(".main-header");
-const bottomNav = document.getElementById("bottomNav");
+  const bottomCartBadge = document.getElementById("bottomCartBadge");
+  const header = document.querySelector(".main-header");
+  const bottomNav = document.getElementById("bottomNav");
 
-  function openDrawer(){
+  function openDrawer() {
     drawer?.classList.add("is-open");
     backdrop?.classList.add("is-open");
     document.body.classList.add("drawer-open");
+    showBars();
   }
 
-  function closeDrawer(){
+  function closeDrawer() {
     drawer?.classList.remove("is-open");
     backdrop?.classList.remove("is-open");
     document.body.classList.remove("drawer-open");
+    showBars();
   }
 
   openBtn?.addEventListener("click", openDrawer);
@@ -148,101 +150,119 @@ const bottomNav = document.getElementById("bottomNav");
     if (e.key === "Escape") closeDrawer();
   });
 
-  document.querySelectorAll(".side-drawer__link").forEach(link => {
+  document.querySelectorAll(".side-drawer__link").forEach((link) => {
     link.addEventListener("click", closeDrawer);
   });
 
-  if (badge){
-    const KEYS = ["superweb_cart_v2", "superweb_cart", "cart", "CART"];
-
-    function safeParse(raw){
-      try { return JSON.parse(raw); } catch { return null; }
-    }
-
-    function extractArray(data){
-      if (Array.isArray(data)) return data;
-      if (data && typeof data === "object"){
-        const maybe = data.items || data.cart || data.products || data.data;
-        if (Array.isArray(maybe)) return maybe;
-      }
-      return [];
-    }
-
-    function loadCart(){
-      for (const k of KEYS){
-        const raw = localStorage.getItem(k);
-        if (!raw) continue;
-        const parsed = safeParse(raw);
-        const arr = extractArray(parsed);
-        if (arr.length) return arr;
-      }
-      return [];
-    }
-
-    function getQty(item){
-      let qty = Number(item.qty ?? item.cantidad ?? item.quantity ?? 1);
-      if (!Number.isFinite(qty) || qty <= 0) qty = 1;
-      return qty;
-    }
-
-    if (badge){
-  badge.textContent = String(totalItems);
-  badge.style.display = totalItems > 0 ? "inline-flex" : "none";
-}
-
-if (bottomCartBadge){
-  bottomCartBadge.textContent = String(totalItems);
-  bottomCartBadge.style.display = totalItems > 0 ? "inline-flex" : "none";
-}
-
-    paint();
-
-    window.addEventListener("storage", (e) => {
-      if (KEYS.includes(e.key)) paint();
-    });
-
-    window.addEventListener("cart:changed", paint);
-
-    document.addEventListener("visibilitychange", () => {
-      if (!document.hidden) paint();
-    });
-
-    let last = "";
-    setInterval(() => {
-      const raw = localStorage.getItem("superweb_cart_v2") || localStorage.getItem("superweb_cart") || "";
-      if (raw !== last){
-        last = raw;
-        paint();
-      }
-    }, 1000);
+  function showBars() {
+    header?.classList.remove("is-hidden");
+    bottomNav?.classList.remove("is-hidden");
   }
 
-  /* header inteligente: se oculta al bajar y aparece al subir */
-  (function(){
-  if (!header && !bottomNav) return;
+  function hideBars() {
+    header?.classList.add("is-hidden");
+    bottomNav?.classList.add("is-hidden");
+  }
 
+  /* =========================
+     BADGES DEL CARRITO
+     ========================= */
+  const KEYS = ["superweb_cart_v2", "superweb_cart", "cart", "CART"];
+
+  function safeParse(raw) {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  function extractArray(data) {
+    if (Array.isArray(data)) return data;
+    if (data && typeof data === "object") {
+      const maybe = data.items || data.cart || data.products || data.data;
+      if (Array.isArray(maybe)) return maybe;
+    }
+    return [];
+  }
+
+  function loadCart() {
+    for (const k of KEYS) {
+      const raw = localStorage.getItem(k);
+      if (!raw) continue;
+      const parsed = safeParse(raw);
+      const arr = extractArray(parsed);
+      if (arr.length || Array.isArray(parsed)) return arr;
+    }
+    return [];
+  }
+
+  function getQty(item) {
+    let qty = Number(item?.qty ?? item?.cantidad ?? item?.quantity ?? 1);
+    if (!Number.isFinite(qty) || qty <= 0) qty = 1;
+    return qty;
+  }
+
+  function paintCartBadges() {
+    const items = loadCart();
+    const totalItems = items.reduce((acc, item) => acc + getQty(item), 0);
+
+    if (badge) {
+      badge.textContent = String(totalItems);
+      badge.style.display = totalItems > 0 ? "inline-flex" : "none";
+    }
+
+    if (bottomCartBadge) {
+      bottomCartBadge.textContent = String(totalItems);
+      bottomCartBadge.style.display = totalItems > 0 ? "inline-flex" : "none";
+    }
+  }
+
+  paintCartBadges();
+
+  window.addEventListener("storage", (e) => {
+    if (KEYS.includes(e.key)) paintCartBadges();
+  });
+
+  window.addEventListener("cart:changed", paintCartBadges);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      paintCartBadges();
+      showBars();
+    }
+  });
+
+  let lastCartRaw = "";
+  setInterval(() => {
+    const raw =
+      localStorage.getItem("superweb_cart_v2") ||
+      localStorage.getItem("superweb_cart") ||
+      localStorage.getItem("cart") ||
+      localStorage.getItem("CART") ||
+      "";
+
+    if (raw !== lastCartRaw) {
+      lastCartRaw = raw;
+      paintCartBadges();
+    }
+  }, 1000);
+
+  /* =========================
+     HEADER / BOTTOM NAV INTELIGENTE
+     ========================= */
   const scrollContainer = document.querySelector(".snap-container") || window;
   let lastScroll = 0;
   let ticking = false;
 
-  function getScrollTop(){
+  function getScrollTop() {
     if (scrollContainer === window) {
       return window.pageYOffset || document.documentElement.scrollTop || 0;
     }
     return scrollContainer.scrollTop || 0;
   }
 
-  function showBars(){
-    if (header) header.classList.remove("is-hidden");
-    if (bottomNav) bottomNav.classList.remove("is-hidden");
-  }
-
-  function hideBars(){
-    if (header) header.classList.add("is-hidden");
-    if (bottomNav) bottomNav.classList.add("is-hidden");
-  }
-
-  function updateBars(){
+  function updateBars() {
     const currentScroll = getScrollTop();
 
     const keepVisible =
@@ -250,11 +270,11 @@ if (bottomCartBadge){
       document.body.classList.contains("drawer-open") ||
       document.body.classList.contains("filters-open");
 
-    if (keepVisible){
+    if (keepVisible) {
       showBars();
-    } else if (currentScroll > lastScroll + 6){
+    } else if (currentScroll > lastScroll + 6) {
       hideBars();
-    } else if (currentScroll < lastScroll - 6){
+    } else if (currentScroll < lastScroll - 6) {
       showBars();
     }
 
@@ -262,19 +282,19 @@ if (bottomCartBadge){
     ticking = false;
   }
 
-  scrollContainer.addEventListener("scroll", function(){
-    if (!ticking){
-      window.requestAnimationFrame(updateBars);
-      ticking = true;
-    }
-  }, { passive: true });
+  scrollContainer.addEventListener(
+    "scroll",
+    function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateBars);
+        ticking = true;
+      }
+    },
+    { passive: true }
+  );
 
   window.addEventListener("resize", showBars);
-  document.addEventListener("visibilitychange", function(){
-    if (!document.hidden) showBars();
-  });
 
   showBars();
-})();
 })();
 </script>
