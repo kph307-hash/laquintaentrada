@@ -39,51 +39,76 @@
   {% endif %}
 
   <nav class="side-drawer__nav">
-    <a class="side-drawer__link" href="/">
-      <span class="side-drawer__icon">🏷️</span>
-      <span>Promos</span>
+    <a class="side-drawer__link side-drawer__link--highlight" href="/">
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">🏷️</span>
+        <span class="side-drawer__text">Promos</span>
+      </span>
+      <span class="side-drawer__arrow">›</span>
     </a>
 
     <a class="side-drawer__link" href="/tienda">
-      <span class="side-drawer__icon">🛒</span>
-      <span>Productos</span>
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">🛒</span>
+        <span class="side-drawer__text">Productos</span>
+      </span>
+      <span class="side-drawer__arrow">›</span>
     </a>
 
     <a class="side-drawer__link" href="/#nosotros">
-      <span class="side-drawer__icon">ℹ️</span>
-      <span>Nosotros</span>
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">ℹ️</span>
+        <span class="side-drawer__text">Nosotros</span>
+      </span>
+      <span class="side-drawer__arrow">›</span>
     </a>
 
     <a class="side-drawer__link" href="/carrito">
       <span class="side-drawer__link-main">
         <span class="side-drawer__icon">🧺</span>
-        <span>Carrito</span>
+        <span class="side-drawer__text">Carrito</span>
       </span>
       <span id="cartBadgeTop" class="main-badge">0</span>
     </a>
 
     {% if cliente %}
       <a class="side-drawer__link" href="/perfil">
-        <span class="side-drawer__icon">👤</span>
-        <span>Mi perfil</span>
+        <span class="side-drawer__link-main">
+          <span class="side-drawer__icon">👤</span>
+          <span class="side-drawer__text">Mi perfil</span>
+        </span>
+        <span class="side-drawer__arrow">›</span>
       </a>
 
       <a class="side-drawer__link side-drawer__link--danger" href="/logout">
-        <span class="side-drawer__icon">↩️</span>
-        <span>Salir</span>
+        <span class="side-drawer__link-main">
+          <span class="side-drawer__icon">↩️</span>
+          <span class="side-drawer__text">Salir</span>
+        </span>
+        <span class="side-drawer__arrow">›</span>
       </a>
     {% else %}
       <a class="side-drawer__link" href="/login">
-        <span class="side-drawer__icon">🔐</span>
-        <span>Iniciar sesión</span>
+        <span class="side-drawer__link-main">
+          <span class="side-drawer__icon">🔐</span>
+          <span class="side-drawer__text">Iniciar sesión</span>
+        </span>
+        <span class="side-drawer__arrow">›</span>
       </a>
 
       <a class="side-drawer__link" href="/registro">
-        <span class="side-drawer__icon">✍️</span>
-        <span>Crear cuenta</span>
+        <span class="side-drawer__link-main">
+          <span class="side-drawer__icon">✍️</span>
+          <span class="side-drawer__text">Crear cuenta</span>
+        </span>
+        <span class="side-drawer__arrow">›</span>
       </a>
     {% endif %}
   </nav>
+
+  <div class="side-drawer__footer">
+    La quinta entrada
+  </div>
 </aside>
 
 <script>
