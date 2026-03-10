@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Super Web</title>
 
   <link rel="stylesheet" href="/static/styles.css">
@@ -13,13 +13,6 @@
   
   <main class="container">
     <div class="meta-row">
-      <div class="meta-left">
-        <span id="resultsCount">
-          Página {{ page }} / {{ total_pages }} — Total: {{ total }}
-        </span>
-        <span class="meta-sep">·</span>
-        <span class="meta-right">Mostrando {{ productos|length }} en esta página</span>
-      </div>
 
       <form class="meta-search" method="get" action="/tienda">
         <input type="hidden" name="page" value="1">
@@ -173,39 +166,9 @@
 >
   No se encontraron productos con esos filtros/búsqueda.
 </div>
-
-        <div class="pagination">
-          <div class="pagination-info">
-            Mostrando página {{ page }} de {{ total_pages }} — Total: {{ total }}
-          </div>
-
-          <div class="pagination-actions">
-            {% if page > 1 %}
-              <a
-                class="page-btn"
-                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page-1 }}"
-              >
-                « Anterior
-              </a>
-            {% endif %}
-
-            {% if page < total_pages %}
-              <a
-                class="page-btn"
-                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page+1 }}"
-              >
-                Siguiente »
-              </a>
-            {% endif %}
-          </div>
-        </div>
       </section>
     </div>
   </main>
-
-  <a href="/carrito" id="cartFab" class="cart-fab" aria-label="Ir al carrito">
-    🛒 Carrito <span id="cartBadge" class="cart-badge">0</span>
-  </a>
 
   <div id="toast" class="toast" role="status" aria-live="polite">Agregado ✅</div>
 
@@ -317,9 +280,8 @@
         }
 
         if (resultsCountEl){
-          resultsCountEl.innerHTML =
-            'Página {{ page }} / {{ total_pages }} — Total: {{ total }} · Mostrando ' + shown + ' en esta página';
-        }
+  resultsCountEl.textContent = shown;
+}
       }
 
       let t = null;
@@ -411,106 +373,104 @@
     // ============================
     // CARRITO (localStorage)
     // ============================
-    (function(){
-      const CART_KEY = "superweb_cart_v2";
+  (function(){
+    const CART_KEY = "superweb_cart_v2";
 
-      function loadCart(){
-        try {
-          return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-        } catch (e){
-          return [];
-        }
+    function loadCart(){
+      try {
+        return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+      } catch (e){
+        return [];
+      }
+    }
+
+    function saveCart(cart){
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function updateBadge(){
+      const bottomBadge = document.getElementById("bottomCartBadge");
+
+      const cart = loadCart();
+      const qty = cart.reduce(function(acc, x){
+        return acc + (Number(x.qty) || 0);
+      }, 0);
+
+      if (bottomBadge){
+        bottomBadge.textContent = String(qty);
+        bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(msg){
+      const el = document.getElementById("toast");
+      if (!el) return;
+
+      el.textContent = msg || "Agregado ✅";
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){
+        el.classList.remove("show");
+      }, 900);
+    }
+
+    function addToCart(sku, nombre, price, stock){
+      stock = Number(stock || 0);
+
+      const cart = loadCart();
+      const found = cart.find(function(x){ return x.sku === sku; });
+      const currentQty = found ? (Number(found.qty) || 0) : 0;
+
+      if (stock <= 0){
+        showToast("Sin stock ❌");
+        return;
       }
 
-      function saveCart(cart){
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      if (currentQty + 1 > stock){
+        showToast("Solo hay " + stock + " unidades disponibles ⚠️");
+        return;
       }
 
-      function updateBadge(){
-        const fab = document.getElementById("cartFab");
-        const badge = document.getElementById("cartBadge");
-        const badgeTop = document.getElementById("cartBadgeTop");
-
-        const cart = loadCart();
-        const qty = cart.reduce(function(acc, x){
-          return acc + (Number(x.qty) || 0);
-        }, 0);
-
-        if (badge) badge.textContent = String(qty);
-        if (badgeTop) badgeTop.textContent = String(qty);
-
-        if (fab) fab.style.display = qty > 0 ? "inline-flex" : "none";
-      }
-
-      let toastTimer = null;
-      function showToast(msg){
-        const el = document.getElementById("toast");
-        if (!el) return;
-
-        el.textContent = msg || "Agregado ✅";
-        el.classList.add("show");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function(){
-          el.classList.remove("show");
-        }, 900);
-      }
-
-      function addToCart(sku, nombre, price, stock){
-        stock = Number(stock || 0);
-
-        const cart = loadCart();
-        const found = cart.find(function(x){ return x.sku === sku; });
-        const currentQty = found ? (Number(found.qty) || 0) : 0;
-
-        if (stock <= 0){
-          showToast("Sin stock ❌");
-          return;
-        }
-
-        if (currentQty + 1 > stock){
-          showToast("Solo hay " + stock + " unidades disponibles ⚠️");
-          return;
-        }
-
-        if (found){
-          found.qty = currentQty + 1;
-          found.stock = stock;
-        } else {
-          cart.push({
-            sku: sku,
-            nombre: nombre,
-            qty: 1,
-            price: Number(price) || 0,
-            stock: stock
-          });
-        }
-
-        saveCart(cart);
-        updateBadge();
-        showToast("Agregado ✅");
-      }
-
-      document.querySelectorAll(".product-item").forEach(function(card){
-        const sku = card.dataset.sku;
-        const name = card.dataset.name;
-        const price = card.dataset.price;
-        const stock = card.dataset.stock;
-
-        card.addEventListener("click", function(e){
-          const btn = e.target.closest(".btn-add");
-          if (btn){
-            e.preventDefault();
-            e.stopPropagation();
-            addToCart(sku, name, price, stock);
-            return;
-          }
-
-          addToCart(sku, name, price, stock);
+      if (found){
+        found.qty = currentQty + 1;
+        found.stock = stock;
+      } else {
+        cart.push({
+          sku: sku,
+          nombre: nombre,
+          qty: 1,
+          price: Number(price) || 0,
+          stock: stock
         });
-      });
+      }
 
+      saveCart(cart);
       updateBadge();
-    })();
-  </script>
+      showToast("Agregado ✅");
+    }
+
+    document.querySelectorAll(".product-item").forEach(function(card){
+      const sku = card.dataset.sku;
+      const name = card.dataset.name;
+      const price = card.dataset.price;
+      const stock = card.dataset.stock;
+
+      card.addEventListener("click", function(e){
+        const btn = e.target.closest(".btn-add");
+        if (btn){
+          e.preventDefault();
+          e.stopPropagation();
+          addToCart(sku, name, price, stock);
+          return;
+        }
+
+        addToCart(sku, name, price, stock);
+      });
+    });
+
+    updateBadge();
+  })();
+</script>
 </body>
 </html>

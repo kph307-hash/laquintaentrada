@@ -50,15 +50,6 @@
 
   <nav class="side-drawer__nav">
 
-
-    <a class="side-drawer__link" href="/carrito">
-      <span class="side-drawer__link-main">
-        <span class="side-drawer__icon">🧺</span>
-        <span class="side-drawer__text">Carrito</span>
-      </span>
-      <span id="cartBadgeTop" class="main-badge">0</span>
-    </a>
-
     {% if cliente %}
       <a class="side-drawer__link" href="/perfil">
         <span class="side-drawer__link-main">
@@ -123,7 +114,6 @@
   const backdrop = document.getElementById("drawerBackdrop");
   const openBtn = document.getElementById("menuToggle");
   const closeBtn = document.getElementById("menuClose");
-  const badge = document.getElementById("cartBadgeTop");
   const bottomCartBadge = document.getElementById("bottomCartBadge");
   const header = document.querySelector(".main-header");
   const bottomNav = document.getElementById("bottomNav");
@@ -206,11 +196,6 @@
   function paintCartBadges() {
     const items = loadCart();
     const totalItems = items.reduce((acc, item) => acc + getQty(item), 0);
-
-    if (badge) {
-      badge.textContent = String(totalItems);
-      badge.style.display = totalItems > 0 ? "inline-flex" : "none";
-    }
 
     if (bottomCartBadge) {
       bottomCartBadge.textContent = String(totalItems);
