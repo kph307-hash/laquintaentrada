@@ -425,6 +425,80 @@
     });
   </script>
 
+<script>
+(function () {
+  function forceMobileProductGrid() {
+    if (window.innerWidth > 768) return;
+
+    const list = document.getElementById("productList");
+    if (!list) return;
+
+    list.style.display = "grid";
+    list.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
+    list.style.gap = "8px";
+    list.style.alignItems = "start";
+    list.style.width = "100%";
+
+    Array.from(list.children).forEach((card) => {
+      card.style.width = "auto";
+      card.style.maxWidth = "100%";
+      card.style.minWidth = "0";
+      card.style.margin = "0";
+      card.style.display = "flex";
+      card.style.flexDirection = "column";
+
+      const imgBox = card.querySelector(".img-box");
+      if (imgBox) {
+        imgBox.style.height = "92px";
+        imgBox.style.flex = "0 0 92px";
+      }
+
+      const body = card.querySelector(".card-body");
+      if (body) {
+        body.style.padding = "8px";
+        body.style.gap = "4px";
+      }
+
+      const title = card.querySelector(".product-title");
+      if (title) {
+        title.style.fontSize = "10px";
+        title.style.lineHeight = "1.15";
+        title.style.minHeight = "24px";
+        title.style.wordBreak = "break-word";
+        title.style.overflowWrap = "anywhere";
+      }
+
+      const family = card.querySelector(".product-family");
+      if (family) {
+        family.style.fontSize = "9px";
+      }
+
+      const price = card.querySelector(".product-price");
+      if (price) {
+        price.style.fontSize = "13px";
+      }
+
+      const btn = card.querySelector(".btn-add");
+      if (btn) {
+        btn.style.width = "100%";
+        btn.style.padding = "7px 6px";
+        btn.style.fontSize = "10px";
+        btn.style.whiteSpace = "nowrap";
+      }
+
+      const warning = card.querySelector(".stock-warning");
+      if (warning) {
+        warning.style.fontSize = "9px";
+        warning.style.padding = "3px 6px";
+        warning.style.lineHeight = "1.15";
+      }
+    });
+  }
+
+  window.addEventListener("load", forceMobileProductGrid);
+  window.addEventListener("resize", forceMobileProductGrid);
+})();
+</script>
 
 </body>
 </html>
