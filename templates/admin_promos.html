@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin — Promos</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="/admin">Volver</a>
+      <a href="/">Ver home</a>
+    </div>
+
+    <h1>Promociones / Publicidades / Rifas</h1>
+
+    <div class="card" style="padding:14px; margin:14px 0;">
+      <h3 style="margin:0 0 10px;">Crear nueva</h3>
+
+      <form action="/admin/promos/create" method="post" enctype="multipart/form-data"
+            style="display:grid; gap:10px; grid-template-columns: 1fr 1fr;">
+        <input name="titulo" placeholder="Título" required>
+        <input name="precio" placeholder="Precio / premio / texto corto (opcional)">
+
+        <select name="tipo">
+          <option value="publicidad">publicidad</option>
+          <option value="promo">promo</option>
+          <option value="rifa">rifa</option>
+        </select>
+
+        <input name="orden" type="number" value="0" placeholder="Orden (0 = primero)">
+
+        <textarea name="descripcion" placeholder="Descripción" style="grid-column:1/-1;"></textarea>
+
+        <div style="grid-column:1/-1; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <label style="display:flex; gap:8px; align-items:center;">
+            <input type="hidden" name="activo" value="">
+            <input type="checkbox" name="activo" value="1" checked>
+            Activo
+          </label>
+          <input type="file" name="imagen" accept="image/*">
+        </div>
+
+        <button style="grid-column:1/-1;" type="submit">Guardar</button>
+      </form>
+    </div>
+
+    <h2 style="margin-top:18px;">Existentes</h2>
+
+    {% if not promos %}
+      <div class="card">Aún no hay promos.</div>
+    {% else %}
+      <div style="display:grid; gap:12px;">
+        {% for p in promos %}
+          <div class="card" style="padding:14px;">
+            <form action="/admin/promos/{{p['id']}}/update" method="post" enctype="multipart/form-data"
+                  style="display:grid; gap:10px; grid-template-columns: 1fr 1fr;">
+              <input name="titulo" value="{{p['titulo']}}" required>
+              <input name="precio" value="{{p['precio']}}" placeholder="Precio / premio (opcional)">
+
+              <select name="tipo">
+                <option value="publicidad" {% if p['tipo']=='publicidad' %}selected{% endif %}>publicidad</option>
+                <option value="promo" {% if p['tipo']=='promo' %}selected{% endif %}>promo</option>
+                <option value="rifa" {% if p['tipo']=='rifa' %}selected{% endif %}>rifa</option>
+              </select>
+
+              <input name="orden" type="number" value="{{p['orden']}}">
+
+              <textarea name="descripcion" style="grid-column:1/-1;">{{p['descripcion']}}</textarea>
+
+              <div style="grid-column:1/-1; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <label style="display:flex; gap:8px; align-items:center;">
+                  <input type="hidden" name="activo" value="">
+                  <input type="checkbox" name="activo" value="1" {% if p['activo']==1 %}checked{% endif %}>
+                  Activo
+                </label>
+
+                <input type="file" name="imagen" accept="image/*">
+
+                {% if p['imagen_url'] %}
+                  <a href="{{p['imagen_url']}}" target="_blank" rel="noopener">Ver imagen</a>
+                {% endif %}
+              </div>
+
+              <button type="submit">Actualizar</button>
+            </form>
+
+            <form action="/admin/promos/{{p['id']}}/delete" method="post" style="margin-top:10px;">
+              <button type="submit" class="danger">Eliminar</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

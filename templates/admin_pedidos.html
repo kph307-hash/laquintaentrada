@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin — Pedidos</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <h2 style="margin:0;">Pedidos pendientes</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <a class="btn" href="/admin/pedidos/archivados">Archivados</a>
+        <a class="btn" href="/admin">Volver</a>
+      </div>
+    </div>
+
+    {% if not pedidos %}
+      <div class="card" style="padding:14px;margin-top:12px;">
+        No hay pedidos pendientes.
+      </div>
+    {% else %}
+      <div style="display:grid;gap:12px;margin-top:12px;">
+        {% for p in pedidos %}
+          <div class="card" style="padding:14px;">
+            <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+              <div>
+                <div style="font-weight:900;">
+                  Pedido #{{ p["id"] }} — ₡{{ p["total"] }}
+                </div>
+                <div style="opacity:.75;margin-top:4px;">
+                  {{ p["creado_en"] }} · {{ p["delivery_mode"] }} · {{ p["nombre"] }}
+                </div>
+
+                {% if p["direccion"] %}
+                  <div style="margin-top:6px;opacity:.85;">📍 {{ p["direccion"] }}</div>
+                {% endif %}
+
+                {% if p["maps_url"] %}
+                  <div style="margin-top:6px;">
+                    <a href="{{ p['maps_url'] }}" target="_blank" rel="noopener">Abrir ubicación</a>
+                  </div>
+                {% endif %}
+              </div>
+
+              <div style="display:flex;gap:10px;align-items:center;">
+                <a class="btn" href="/admin/pedidos/{{ p['id'] }}">Ver</a>
+
+                <form method="post" action="/admin/pedidos/{{ p['id'] }}/entregado" style="margin:0;">
+                  <button class="btn" type="submit">Entregado</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

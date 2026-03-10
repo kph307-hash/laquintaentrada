@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Inicio — Super Web</title>
+
+  <link rel="stylesheet" href="/static/styles.css">
+
+  <style>
+    /* ===== Scroll Snap (hojas) ===== */
+    body.snap{
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* El scroll vive SOLO aquí */
+    .snap-container{
+      flex: 1;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+    }
+
+    .snap-page{
+      scroll-snap-align: start;
+      min-height: 100vh;
+      padding: 22px 0;
+      display: flex;
+      align-items: center;
+    }
+
+    /* más coherente con fondo claro */
+    .snap-page.alt{ background: rgba(0,0,0,.03); }
+
+    /* que la primera hoja no se sienta “pegada” al header */
+    .snap-page:first-child{ padding-top: 16px; }
+
+    .page-title h1{ margin: 8px 0 6px; }
+    .muted{ opacity: .75; }
+
+    /* CTA propio para HOME (no usar .chip porque es del header oscuro) */
+    .home-cta{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #16a34a;
+      color: #fff;
+      font-weight: 900;
+      text-decoration: none;
+    }
+    .home-cta:hover{ background:#15803d; }
+
+    /* ===== Carrusel promos ===== */
+    .promo-carousel{ position:relative; }
+
+    .promo-track{
+      display:flex;
+      overflow-x:auto;
+      scroll-snap-type: x mandatory;
+      gap:14px;
+      padding: 10px 6px 14px;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+    .promo-track::-webkit-scrollbar{ display:none; }
+
+    .promo-slide{
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+    }
+
+    .promo-card{
+      border:1px solid rgba(0,0,0,.12);
+      border-radius: 16px;
+      background:#fff;
+      overflow:hidden;
+      box-shadow: 0 18px 40px rgba(0,0,0,.12);
+    }
+
+    .promo-media{
+      width: 100%;
+      display:block;
+      background:#f3f3f3;
+    }
+    .promo-media img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+    .promo-body{
+      padding: 14px;
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+    }
+
+    .promo-title{ font-weight:900; }
+
+    .pill{
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.06);
+      font-weight:800;
+      text-transform: lowercase;
+      white-space: nowrap;
+    }
+
+    .promo-desc{ margin-top:6px; opacity:.8; }
+    .promo-price{ margin-top:10px; font-weight:900; }
+
+    .promo-nav{
+      position:absolute;
+      top: 42%;
+      transform: translateY(-50%);
+      width:42px; height:42px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px;
+      cursor:pointer;
+      box-shadow: 0 10px 24px rgba(0,0,0,.12);
+    }
+    .promo-nav.prev{ left: -10px; }
+    .promo-nav.next{ right: -10px; }
+
+    .promo-dots{
+      display:flex;
+      justify-content:center;
+      gap:8px;
+      margin-top:10px;
+    }
+    .promo-dot{
+      width:10px; height:10px;
+      border-radius:999px;
+      border:none;
+      background: rgba(0,0,0,.25);
+      cursor:pointer;
+    }
+    .promo-dot[aria-current="true"]{ background: rgba(0,0,0,.75); }
+
+    .grid-3{ display:grid; gap:12px; grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid-2{ display:grid; gap:12px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .card{ border:1px solid rgba(0,0,0,.12); border-radius:16px; background:#fff; }
+    .pad{ padding:14px; }
+
+    @media (max-width: 900px){
+      .grid-3{ grid-template-columns: 1fr; }
+      .grid-2{ grid-template-columns: 1fr; }
+      .promo-nav.prev{ left: 8px; }
+      .promo-nav.next{ right: 8px; }
+      .snap-page{ align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body class="snap">
+  {% include "_header.html" %}
+
+  <main class="snap-container">
+
+    <!-- HOJA 1: HERO + Carrusel -->
+    <section class="snap-page">
+      <div class="container">
+        <div class="page-title">
+          <h1>Promos y Rifas</h1>
+          <p class="muted">Aprovechá promociones, rifas y anuncios del súper.</p>
+        </div>
+
+        {% if not promos %}
+          <div class="card pad">No hay promociones activas todavía.</div>
+        {% else %}
+          <section class="promo-carousel" data-autoplay="true" data-interval="4500">
+            <div class="promo-track" id="promoTrack">
+           {% for p in promos %}
+  <article class="promo-slide">
+    <div class="promo-card">
+
+      {% if p.imagen_url %}
+        <div class="promo-media">
+          <img src="{{ p.imagen_url }}" alt="{{ p.titulo }}">
+        </div>
+      {% endif %}
+
+      <div class="promo-body">
+        <div>
+          <div class="promo-title">{{ p.titulo }}</div>
+
+          {% if p.descripcion %}
+            <div class="promo-desc">{{ p.descripcion }}</div>
+          {% endif %}
+
+          {% if p.precio %}
+  <button
+    type="button"
+    class="btn-add-promo"
+    data-sku="PROMO:{{ p.id }}"
+    data-name="{{ p.titulo }}"
+    data-price="{{ p.precio }}"
+  >
+    + Agregar al carrito
+  </button>
+{% endif %}
+
+        </div>
+      </div>
+
+    </div>
+  </article>
+{% endfor %}
+
+
+            </div>
+
+            <button class="promo-nav prev" type="button" aria-label="Anterior" id="promoPrev">‹</button>
+            <button class="promo-nav next" type="button" aria-label="Siguiente" id="promoNext">›</button>
+            <div class="promo-dots" id="promoDots" aria-label="Indicadores del carrusel"></div>
+          </section>
+
+          <div class="card pad" style="margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div>
+              <div style="font-weight:900;">¿Listo para comprar?</div>
+              <div class="muted">Entrá a la tienda y armá tu pedido.</div>
+            </div>
+            <a class="home-cta" href="/tienda">Ver productos</a>
+          </div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- HOJA 2 -->
+    <section class="snap-page alt">
+      <div class="container">
+        <h2 style="margin:0 0 10px;">Comprar es más fácil</h2>
+
+        <div class="grid-3">
+          <div class="card pad">
+            <h3 style="margin:0 0 6px;">🚚 Envíos rápidos</h3>
+            <p class="muted" style="margin:0;">Pedidos por WhatsApp y entrega en minutos.</p>
+          </div>
+
+          <div class="card pad">
+            <h3 style="margin:0 0 6px;">💳 Pago sencillo</h3>
+            <p class="muted" style="margin:0;">Pagás al recibir (o como decidan después).</p>
+          </div>
+
+          <div class="card pad">
+            <h3 style="margin:0 0 6px;">🛒 Catálogo completo</h3>
+            <p class="muted" style="margin:0;">Buscá productos y agregá al carrito.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;">
+          <a class="home-cta" href="/tienda">Ver productos</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOJA 3 -->
+    <section class="snap-page">
+      <div class="container">
+        <h2 style="margin:0 0 10px;">Horario y contacto</h2>
+
+        <div class="grid-2">
+          <div class="card pad">
+            <h3 style="margin:0 0 6px;">⏰ Horarios</h3>
+            <p class="muted" style="margin:0;">Lun–Vie 7:00am – 9:30pm<br>Sab–Dom 7:00am – 8:30pm</p>
+          </div>
+
+          <div class="card pad">
+            <h3 style="margin:0 0 6px;">📱 WhatsApp</h3>
+            <p class="muted" style="margin:0;">Pedidos y consultas al {{ whatsapp_phone }}.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+    <script>
+    (function(){
+      const track = document.getElementById("promoTrack");
+      if (!track) return;
+
+      const slides = Array.from(track.querySelectorAll(".promo-slide"));
+      const prevBtn = document.getElementById("promoPrev");
+      const nextBtn = document.getElementById("promoNext");
+      const dotsEl  = document.getElementById("promoDots");
+      if (!slides.length) return;
+
+      let index = 0;
+      let timer = null;
+
+      function clamp(i){
+        const n = slides.length;
+        return (i % n + n) % n;
+      }
+
+      function goTo(i, opts={scroll:true}){
+        index = clamp(i);
+        if (opts.scroll){
+          slides[index].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+        }
+        const dots = Array.from(dotsEl.querySelectorAll("button"));
+        dots.forEach((d, k) => d.setAttribute("aria-current", k === index ? "true" : "false"));
+      }
+
+      function buildDots(){
+        dotsEl.innerHTML = "";
+        slides.forEach((_, i) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "promo-dot";
+          b.addEventListener("click", () => { stop(); goTo(i); start(); });
+          dotsEl.appendChild(b);
+        });
+      }
+
+      function next(){ goTo(index + 1); }
+      function prev(){ goTo(index - 1); }
+
+      function start(){
+        const section = document.querySelector(".promo-carousel");
+        const autoplay = section?.dataset.autoplay === "true";
+        const interval = Number(section?.dataset.interval || "4500");
+        if (!autoplay) return;
+        stop();
+        timer = setInterval(next, Math.max(2000, interval));
+      }
+
+      function stop(){
+        if (timer) clearInterval(timer);
+        timer = null;
+      }
+
+      prevBtn?.addEventListener("click", () => { stop(); prev(); start(); });
+      nextBtn?.addEventListener("click", () => { stop(); next(); start(); });
+
+      const section = document.querySelector(".promo-carousel");
+      section?.addEventListener("mouseenter", stop);
+      section?.addEventListener("mouseleave", start);
+
+      track.addEventListener("scroll", () => {
+        const trackRect = track.getBoundingClientRect();
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        slides.forEach((s, i) => {
+          const r = s.getBoundingClientRect();
+          const dist = Math.abs(r.left - trackRect.left);
+          if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+        });
+        if (bestIdx !== index) goTo(bestIdx, {scroll:false});
+      }, { passive:true });
+
+      buildDots();
+      goTo(0, {scroll:false});
+      start();
+    })();
+  </script>
+
+  <script>
+    // ===== Carrito desde promos =====
+    document.addEventListener("click", function(e){
+      const btn = e.target.closest(".btn-add-promo");
+      if (!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const nombre = btn.dataset.name;
+      const priceRaw = btn.dataset.price;
+
+      const CART_KEY = "superweb_cart_v2";
+
+      function loadCart(){
+        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+        catch(e){ return []; }
+      }
+
+      function saveCart(cart){
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      }
+
+      function parsePriceToNumber(v){
+        const s = String(v || "")
+          .replace(/\s/g,"")
+          .replace("₡","")
+          .replace(/\./g,"")
+          .replace(/,/g,".");
+        const n = Number(s);
+        return Number.isFinite(n) ? Math.round(n) : 0;
+      }
+
+      const price = parsePriceToNumber(priceRaw);
+      if (!nombre || price <= 0) return;
+
+      const sku = btn.dataset.sku || ("PROMO:" + nombre.trim().slice(0,60));
+
+
+      const cart = loadCart();
+      const found = cart.find(x => x.sku === sku);
+      if (found) found.qty += 1;
+      else cart.push({ sku, nombre, qty: 1, price });
+
+
+      saveCart(cart);
+
+      // actualizar badge del header si existe
+      const badgeTop = document.getElementById("cartBadgeTop");
+      if (badgeTop){
+        const qty = cart.reduce((acc, x) => acc + (x.qty || 0), 0);
+        badgeTop.textContent = qty;
+      }
+
+      alert("Agregado ✅");
+    });
+  </script>
+
+
+</body>
+</html>

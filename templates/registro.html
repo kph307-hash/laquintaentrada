@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crear cuenta</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+
+  {% include "_header.html" %}
+
+  <main class="page-wrap">
+    <section class="auth-card">
+      <h1>Crear cuenta</h1>
+      <p class="auth-subtitle">Cree su perfil para guardar sus pedidos y comprar más rápido.</p>
+
+      {% if error %}
+        <div class="auth-error">{{ error }}</div>
+      {% endif %}
+
+      <form method="post" action="/registro" class="auth-form">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" name="nombre" required />
+
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" name="correo" required />
+
+        <label for="telefono">Teléfono</label>
+        <input type="text" id="telefono" name="telefono" />
+
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit" class="btn-primary">Crear cuenta</button>
+      </form>
+
+      <div class="auth-links">
+        <span>¿Ya tiene cuenta?</span>
+        <a href="/login">Iniciar sesión</a>
+      </div>
+
+      <div class="auth-guest-note">
+        Tener cuenta es opcional. También puede comprar como invitado.
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

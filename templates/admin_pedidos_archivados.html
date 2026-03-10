@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin — Pedidos archivados</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+  <div class="container">
+    <div class="topbar" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <h2 style="margin:0;">Pedidos archivados (entregados)</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <a class="btn" href="/admin/pedidos">Pendientes</a>
+        <a class="btn" href="/admin">Volver</a>
+      </div>
+    </div>
+
+    {% if not pedidos %}
+      <div class="card" style="padding:14px;margin-top:12px;">
+        No hay pedidos archivados.
+      </div>
+    {% else %}
+      <div style="display:grid;gap:12px;margin-top:12px;">
+        {% for p in pedidos %}
+          <div class="card" style="padding:14px;">
+            <div style="font-weight:900;">Pedido #{{ p["id"] }} — ₡{{ p["total"] }}</div>
+            <div style="opacity:.75;margin-top:4px;">
+              Creado: {{ p["creado_en"] }} · Entregado: {{ p["entregado_en"] or "-" }}
+            </div>
+            <div style="opacity:.85;margin-top:6px;">
+              {{ p["delivery_mode"] }} · {{ p["nombre"] }}
+            </div>
+            <div style="margin-top:10px;">
+              <a class="btn" href="/admin/pedidos/{{ p['id'] }}">Ver</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

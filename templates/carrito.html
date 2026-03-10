@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carrito — La Quinta Entrada</title>
+
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body class="carrito">
+  {% include "_header.html" %}
+
+  <main class="container cart-page">
+    <header class="cart-head">
+      <div>
+        <h1 class="cart-title-page">🛒 Carrito</h1>
+        <p class="cart-subtitle">Revisá tus productos y enviá el pedido por WhatsApp.</p>
+      </div>
+
+      <div class="cart-actions">
+        <button type="button" class="btn-ghost" id="btnVaciar">Vaciar carrito</button>
+      </div>
+    </header>
+
+    <div class="cart-layout">
+      <!-- LISTA -->
+      <section class="cart-card" id="cartBox">
+        <div id="cartEmpty" class="cart-empty" style="display:none;">
+          <div class="cart-empty-title">Tu carrito está vacío</div>
+          <div class="cart-empty-sub">Agregá productos en la tienda y volvé acá.</div>
+        </div>
+
+        <div id="cartItems" class="cart-items"></div>
+      </section>
+
+      <!-- RESUMEN + FORM -->
+      <aside class="cart-side">
+        <section class="cart-card cart-summary">
+          <div class="cart-summary-row">
+            <span>Subtotal</span>
+            <strong id="sumSubtotal">₡0</strong>
+          </div>
+          <div class="cart-summary-row">
+            <span>Artículos</span>
+            <strong id="sumItems">0</strong>
+          </div>
+
+          <div class="cart-summary-total">
+            <span>Total</span>
+            <strong id="cartTotal">₡0</strong>
+          </div>
+
+          <div class="cart-summary-hint muted">
+            * El envío se coordina por WhatsApp. GPS es opcional.
+          </div>
+        </section>
+
+        <section class="checkout-access">
+          {% if cliente %}
+            <div class="checkout-access__box checkout-access__box--ok">
+              <h3>Está comprando con su perfil</h3>
+              <p>
+                Sesión iniciada como <strong>{{ cliente.nombre }}</strong>
+                {% if cliente.correo %} ({{ cliente.correo }}){% endif %}.
+              </p>
+              <div class="checkout-access__actions">
+                <a class="btn-secondary" href="/perfil">Ver mi perfil</a>
+                <a class="btn-link" href="/logout">Cerrar sesión</a>
+              </div>
+            </div>
+          {% else %}
+            <div class="checkout-access__box">
+              <h3>Puede comprar sin cuenta</h3>
+              <p>
+                Puede finalizar su pedido como invitado o iniciar sesión para ver su historial
+                y comprar más rápido en el futuro.
+              </p>
+              <div class="checkout-access__actions">
+                <a class="btn-primary" href="/login">Iniciar sesión</a>
+                <a class="btn-secondary" href="/registro">Crear cuenta</a>
+              </div>
+              <p class="checkout-access__note">
+                Si prefiere, siga llenando este formulario y compre como invitado.
+              </p>
+            </div>
+          {% endif %}
+        </section>
+
+        <section class="cart-card cart-card--form">
+          <h2>Enviar pedido</h2>
+
+          <form id="pedidoForm" action="/pedido" method="post">
+            <!-- Modo entrega -->
+            <div class="mode-row">
+              <label class="radio-pill">
+                <input type="radio" name="delivery_mode" value="delivery" checked>
+                <span>Envío a domicilio</span>
+              </label>
+
+              <label class="radio-pill">
+                <input type="radio" name="delivery_mode" value="pickup">
+                <span>Pasar a recoger</span>
+              </label>
+            </div>
+
+            <div class="form-grid">
+              <div>
+                <label for="name">Nombre</label>
+                <input
+                  id="name"
+                  name="nombre"
+                  type="text"
+                  placeholder="Tu nombre"
+                  autocomplete="name"
+                  value="{% if cliente %}{{ cliente.nombre }}{% endif %}"
+                >
+              </div>
+
+              <div>
+                <label for="correo">Correo</label>
+                <input
+                  id="correo"
+                  name="correo"
+                  type="email"
+                  placeholder="tucorreo@ejemplo.com"
+                  autocomplete="email"
+                  value="{% if cliente and cliente.correo %}{{ cliente.correo }}{% endif %}"
+                >
+              </div>
+
+              <div>
+                <label for="telefono">Teléfono</label>
+                <input
+  id="telefono"
+  name="telefono"
+  type="text"
+  placeholder="Tu teléfono"
+  autocomplete="tel"
+  value="{% if cliente and cliente.telefono %}{{ cliente.telefono }}{% endif %}"
+>
+              </div>
+
+              <div id="deliveryFields">
+                <div>
+                  <label for="address">Dirección</label>
+                  <textarea id="address" name="direccion" rows="2" placeholder="Ej: 200m norte del parque..."></textarea>
+                </div>
+
+                <div class="loc-row">
+                  <button id="btnUbicacion" type="button" class="btn-small">📍 Usar mi ubicación actual</button>
+                  <span id="locMsg" class="muted"></span>
+                </div>
+
+                <!-- GPS opcional -->
+                <input type="hidden" id="lat" name="lat" value="">
+                <input type="hidden" id="lng" name="lng" value="">
+                <input type="hidden" id="mapsUrl" name="maps_url" value="">
+              </div>
+
+              <!-- cart_json -->
+              <input type="hidden" id="cartJson" name="cart_json" value="[]">
+
+              <button id="btnEnviar" type="submit" class="btn-add btn-send">
+                Enviar pedido por WhatsApp
+              </button>
+            </div>
+          </form>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    /* =========================
+       ELEMENTS
+    ========================= */
+    const btnUbicacion = document.getElementById("btnUbicacion");
+    const btnEnviar = document.getElementById("btnEnviar");
+    const btnVaciar = document.getElementById("btnVaciar");
+    const locMsg = document.getElementById("locMsg");
+    const latEl = document.getElementById("lat");
+    const lngEl = document.getElementById("lng");
+    const mapsUrlEl = document.getElementById("mapsUrl");
+
+    const nameEl = document.getElementById("name");
+    const correoEl = document.getElementById("correo");
+    const telefonoEl = document.getElementById("telefono");
+    const addressEl = document.getElementById("address");
+    const deliveryFields = document.getElementById("deliveryFields");
+    const modeRadios = document.querySelectorAll('input[name="delivery_mode"]');
+
+    const cartItemsEl = document.getElementById("cartItems");
+    const cartEmptyEl = document.getElementById("cartEmpty");
+    const cartTotalEl = document.getElementById("cartTotal");
+    const cartJsonEl  = document.getElementById("cartJson");
+    const pedidoForm  = document.getElementById("pedidoForm");
+
+    const sumSubtotalEl = document.getElementById("sumSubtotal");
+    const sumItemsEl = document.getElementById("sumItems");
+
+    /* =========================
+       HELPERS
+    ========================= */
+    const CART_KEY = "superweb_cart_v2";
+
+    function money(n){
+      return "₡" + Number(n || 0).toLocaleString("es-CR");
+    }
+
+    function parsePriceToNumber(v){
+      const s = String(v || "")
+        .replace(/\s/g,"")
+        .replace("₡","")
+        .replace(/\./g,"")
+        .replace(/,/g,".");
+      const n = Number(s);
+      return Number.isFinite(n) ? Math.round(n) : 0;
+    }
+
+    function getSku(item){
+      const rawName = item.nombre || item.name || "";
+      return item.sku ?? item.id ?? item.codigo ?? rawName.toLowerCase().replace(/\s+/g, "_");
+    }
+
+    function getQty(item){
+      let qty = Number(item.qty ?? item.cantidad ?? item.quantity ?? 1);
+      if (!Number.isFinite(qty) || qty <= 0) qty = 1;
+      return qty;
+    }
+
+    function getPrice(item){
+      let price = Number(item.price ?? item.precio ?? item.unit_price ?? 0);
+      if (!Number.isFinite(price) || price <= 0){
+        price = parsePriceToNumber(item.price ?? item.precio ?? item.unit_price ?? "0");
+      }
+      if (!Number.isFinite(price)) price = 0;
+      return price;
+    }
+
+    function getImage(item){
+      return item.img || item.image || item.imagen || item.foto || "";
+    }
+
+    function setEnviarEnabled(enabled, msg=""){
+      btnEnviar.disabled = !enabled;
+      btnEnviar.style.opacity = enabled ? "1" : ".6";
+      if (locMsg) locMsg.textContent = msg;
+    }
+
+    function getMode(){
+      return document.querySelector('input[name="delivery_mode"]:checked')?.value || "delivery";
+    }
+
+    function toMapsLink(lat, lng){
+      return `https://www.google.com/maps?q=${lat},${lng}`;
+    }
+
+    /* =========================
+       FORM VALIDATION
+    ========================= */
+    function validateForm(){
+      const nombre = (nameEl?.value || "").trim();
+      const direccion = (addressEl?.value || "").trim();
+      const mode = getMode();
+
+      if (!nombre){
+        setEnviarEnabled(false, "✍️ Escribí tu nombre para continuar.");
+        return;
+      }
+      if (mode === "pickup"){
+        setEnviarEnabled(true, "🏪 Listo. Podés enviar para recoger.");
+        return;
+      }
+      if (!direccion){
+        setEnviarEnabled(false, "📍 Escribí la dirección (GPS es opcional).");
+        return;
+      }
+      setEnviarEnabled(true, "✅ Dirección lista. GPS es opcional.");
+    }
+
+    function applyModeUI(){
+      const isPickup = getMode() === "pickup";
+      if (deliveryFields) deliveryFields.style.display = isPickup ? "none" : "block";
+      if (addressEl) addressEl.required = !isPickup;
+      validateForm();
+    }
+
+    /* =========================
+       GPS (OPCIONAL)
+    ========================= */
+    if (btnUbicacion){
+      btnUbicacion.addEventListener("click", () => {
+        if (!navigator.geolocation) {
+          alert("Tu navegador no soporta ubicación.");
+          return;
+        }
+        btnUbicacion.textContent = "Obteniendo ubicación...";
+
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            latEl.value = latitude;
+            lngEl.value = longitude;
+            mapsUrlEl.value = toMapsLink(latitude, longitude);
+
+            btnUbicacion.textContent = "✅ Ubicación agregada";
+            if (locMsg) locMsg.textContent = "✅ Ubicación GPS agregada (opcional).";
+            validateForm();
+          },
+          () => {
+            alert("No se pudo obtener la ubicación. Permití acceso en el navegador.");
+            btnUbicacion.textContent = "📍 Usar mi ubicación actual";
+            if (locMsg) locMsg.textContent = "⚠️ No se pudo obtener GPS. Igual podés seguir con la dirección.";
+            validateForm();
+          },
+          { enableHighAccuracy: true, timeout: 10000 }
+        );
+      });
+    }
+
+    /* =========================
+       CART STORAGE
+    ========================= */
+    function loadCart(){
+      try {
+        const raw = localStorage.getItem(CART_KEY) || localStorage.getItem("superweb_cart") || "[]";
+        const data = JSON.parse(raw);
+
+        if (Array.isArray(data)) return data;
+
+        if (data && typeof data === "object"){
+          const maybe = data.items || data.cart || data.products || data.data;
+          if (Array.isArray(maybe)) return maybe;
+        }
+        return [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveCart(cart){
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      localStorage.setItem("superweb_cart", JSON.stringify(cart));
+      window.dispatchEvent(new Event("cart:changed"));
+    }
+
+    function updateQty(sku, qty){
+      const cart = loadCart();
+      const found = cart.find(x => getSku(x) === sku);
+      if (!found) return;
+
+      found.qty = Number(qty || 0);
+
+      if (found.qty <= 0){
+        saveCart(cart.filter(x => getSku(x) !== sku));
+      } else {
+        saveCart(cart);
+      }
+      renderCart();
+    }
+
+    function removeItem(sku){
+      saveCart(loadCart().filter(x => getSku(x) !== sku));
+      renderCart();
+    }
+
+    function clearCart(){
+      saveCart([]);
+      renderCart();
+    }
+
+    /* =========================
+       HEADER BADGE
+    ========================= */
+    function updateHeaderCartBadge(totalItems){
+      const el = document.getElementById("cartBadgeTop");
+      if (!el) return;
+      el.textContent = String(totalItems || 0);
+      el.style.display = totalItems > 0 ? "inline-flex" : "none";
+    }
+
+    /* =========================
+       RENDER
+    ========================= */
+    function renderCart(){
+      const cart = loadCart();
+      cartItemsEl.innerHTML = "";
+
+      if (!cart.length){
+        cartEmptyEl.style.display = "block";
+
+        if (sumSubtotalEl) sumSubtotalEl.textContent = money(0);
+        if (sumItemsEl) sumItemsEl.textContent = "0";
+        if (cartTotalEl) cartTotalEl.textContent = money(0);
+
+        cartJsonEl.value = "[]";
+        updateHeaderCartBadge(0);
+        return;
+      }
+
+      cartEmptyEl.style.display = "none";
+
+      let total = 0;
+      let totalItems = 0;
+
+      for (const item of cart){
+        const sku = getSku(item);
+        if (!sku) continue;
+
+        const qty = getQty(item);
+        const price = getPrice(item);
+        const sub = price * qty;
+
+        total += sub;
+        totalItems += qty;
+
+        const name = (item.nombre || item.name || "(Producto)");
+        const img = getImage(item);
+
+        const row = document.createElement("div");
+        row.className = "cart-item";
+
+        row.innerHTML = `
+          <div class="cart-item-media">
+            ${img ? `<img class="cart-thumb" src="${img}" alt="">`
+                  : `<div class="cart-thumb cart-thumb--ph">🧺</div>`}
+          </div>
+
+          <div class="cart-item-info">
+            <div class="cart-item-name">${name}</div>
+            <div class="cart-item-meta">
+              <span class="muted">${money(price)} c/u</span>
+              <span class="dot">•</span>
+              <span class="muted">SKU: ${sku}</span>
+            </div>
+          </div>
+
+          <div class="cart-item-qty">
+            <button type="button" class="qty-btn" data-act="dec">−</button>
+            <div class="qty-num">${qty}</div>
+            <button type="button" class="qty-btn" data-act="inc">+</button>
+          </div>
+
+          <div class="cart-item-sub">
+            <div class="cart-item-subval">${money(sub)}</div>
+            <button type="button" class="btn-trash" title="Eliminar">🗑️</button>
+          </div>
+        `;
+
+        row.querySelector('[data-act="dec"]').onclick = () => updateQty(sku, qty - 1);
+        row.querySelector('[data-act="inc"]').onclick = () => updateQty(sku, qty + 1);
+        row.querySelector('.btn-trash').onclick = () => removeItem(sku);
+
+        cartItemsEl.appendChild(row);
+      }
+
+      if (sumSubtotalEl) sumSubtotalEl.textContent = money(total);
+      if (sumItemsEl) sumItemsEl.textContent = String(totalItems);
+      if (cartTotalEl) cartTotalEl.textContent = money(total);
+
+      const payload = cart.map(x => ({
+        sku: getSku(x),
+        qty: getQty(x),
+        nombre: x.nombre ?? x.name ?? "",
+        price: x.price ?? x.precio ?? x.unit_price ?? 0,
+        img: getImage(x)
+      }));
+      cartJsonEl.value = JSON.stringify(payload);
+
+      updateHeaderCartBadge(totalItems);
+    }
+
+    /* =========================
+       EVENTS
+    ========================= */
+    if (nameEl) nameEl.addEventListener("input", validateForm);
+    if (correoEl) correoEl.addEventListener("input", validateForm);
+    if (telefonoEl) telefonoEl.addEventListener("input", validateForm);
+    if (addressEl) addressEl.addEventListener("input", validateForm);
+    modeRadios.forEach(r => r.addEventListener("change", applyModeUI));
+
+    pedidoForm.addEventListener("submit", (e) => {
+      const cart = loadCart();
+      if (!cart.length){
+        e.preventDefault();
+        alert("Tu carrito está vacío.");
+        return;
+      }
+      renderCart();
+    });
+
+    if (btnVaciar){
+      btnVaciar.addEventListener("click", () => {
+        if (confirm("¿Vaciar el carrito?")) clearCart();
+      });
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === CART_KEY || e.key === "superweb_cart") renderCart();
+    });
+
+    window.addEventListener("cart:changed", renderCart);
+
+    setEnviarEnabled(false, "✍️ Escribí tu nombre para continuar.");
+    applyModeUI();
+    renderCart();
+  </script>
+</body>
+</html>

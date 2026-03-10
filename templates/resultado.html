@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pedido Recibido</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <style>
+    .wa-btn{
+      display:block;
+      margin-top:14px;
+      padding:14px 16px;
+      border-radius:14px;
+      background:#25D366;
+      color:white;
+      text-decoration:none;
+      font-weight:900;
+      text-align:center;
+    }
+    .ghost-btn{
+      display:block;
+      width:100%;
+      margin-top:10px;
+      padding:12px 16px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
+      color: inherit;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .ghost-btn:hover{ opacity:.95; }
+
+    .muted{
+      font-size: 13px;
+      opacity:.75;
+      margin-top: 6px;
+      line-height: 1.25;
+    }
+  </style>
+</head>
+
+<body class="tienda">
+  <div class="container">
+    <h1 style="margin-bottom:6px;">Pedido de {{ nombre }}</h1>
+
+    {% if direccion %}
+      <div class="muted"><strong>📍 Dirección:</strong> {{ direccion }}</div>
+    {% endif %}
+
+    {% if maps_url %}
+<p><b>Ubicación GPS:</b>
+  <a href="{{ maps_url }}" target="_blank">Ver en Google Maps</a>
+</p>
+{% endif %}
+
+
+    <div style="height:12px;"></div>
+
+    {% for item in detalle %}
+      <div class="product-card">
+        <div>
+          <strong>{{ item.producto }}</strong>
+          <div style="font-size:12px; opacity:.75;">
+            x{{ item.qty }} — ₡{{ item.precio_unit }} c/u
+          </div>
+        </div>
+        <div style="font-weight:900;">₡{{ item.subtotal }}</div>
+      </div>
+    {% endfor %}
+
+    <div class="total-box" style="margin-top:10px;font-weight:900;">
+      Total: ₡{{ total }}
+    </div>
+
+    <a href="{{ whatsapp_url }}" target="_blank" class="wa-btn">
+      📲 Enviar pedido por WhatsApp
+    </a>
+
+    <!-- ✅ Botón opcional para vaciar carrito manualmente -->
+    <button id="clearCartBtn" type="button" class="ghost-btn">
+      Vaciar carrito
+    </button>
+
+    <a href="/tienda" style="display:block; text-align:center; margin-top:12px; font-weight:900;">
+      Volver a la tienda
+    </a>
+  </div>
+
+  <script>
+    // ✅ limpiar carrito al llegar al resultado
+    const CART_KEY = "superweb_cart_v2";
+
+    function clearCart(){
+      try { localStorage.removeItem(CART_KEY); } catch(e) {}
+    }
+
+    // Limpieza automática
+    clearCart();
+
+    // Botón manual
+    document.getElementById("clearCartBtn").addEventListener("click", () => {
+      clearCart();
+      alert("Carrito vaciado ✅");
+    });
+  </script>
+</body>
+</html>

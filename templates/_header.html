@@ -1,0 +1,184 @@
+<header class="main-header">
+  <div class="main-header__inner main-header__inner--drawer">
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">
+      ☰
+    </button>
+
+    <div class="main-center">
+      <a class="main-brand" href="/">La quinta entrada</a>
+    </div>
+
+    <div></div>
+  </div>
+</header>
+
+<div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+<aside class="side-drawer" id="sideDrawer">
+  <div class="side-drawer__header">
+    <div>
+      <div class="side-drawer__eyebrow">Menú</div>
+      <div class="side-drawer__title">La quinta entrada</div>
+    </div>
+
+    <button class="side-drawer__close" id="menuClose" type="button" aria-label="Cerrar menú">
+      ✕
+    </button>
+  </div>
+
+  {% if cliente %}
+    <div class="side-drawer__user">
+      <div class="side-drawer__avatar">👤</div>
+      <div>
+        <div class="side-drawer__user-name">{{ cliente.nombre }}</div>
+        {% if cliente.correo %}
+          <div class="side-drawer__user-mail">{{ cliente.correo }}</div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  <nav class="side-drawer__nav">
+    <a class="side-drawer__link" href="/">
+      <span class="side-drawer__icon">🏷️</span>
+      <span>Promos</span>
+    </a>
+
+    <a class="side-drawer__link" href="/tienda">
+      <span class="side-drawer__icon">🛒</span>
+      <span>Productos</span>
+    </a>
+
+    <a class="side-drawer__link" href="/#nosotros">
+      <span class="side-drawer__icon">ℹ️</span>
+      <span>Nosotros</span>
+    </a>
+
+    <a class="side-drawer__link" href="/carrito">
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">🧺</span>
+        <span>Carrito</span>
+      </span>
+      <span id="cartBadgeTop" class="main-badge">0</span>
+    </a>
+
+    {% if cliente %}
+      <a class="side-drawer__link" href="/perfil">
+        <span class="side-drawer__icon">👤</span>
+        <span>Mi perfil</span>
+      </a>
+
+      <a class="side-drawer__link side-drawer__link--danger" href="/logout">
+        <span class="side-drawer__icon">↩️</span>
+        <span>Salir</span>
+      </a>
+    {% else %}
+      <a class="side-drawer__link" href="/login">
+        <span class="side-drawer__icon">🔐</span>
+        <span>Iniciar sesión</span>
+      </a>
+
+      <a class="side-drawer__link" href="/registro">
+        <span class="side-drawer__icon">✍️</span>
+        <span>Crear cuenta</span>
+      </a>
+    {% endif %}
+  </nav>
+</aside>
+
+<script>
+(function(){
+  const drawer = document.getElementById("sideDrawer");
+  const backdrop = document.getElementById("drawerBackdrop");
+  const openBtn = document.getElementById("menuToggle");
+  const closeBtn = document.getElementById("menuClose");
+  const badge = document.getElementById("cartBadgeTop");
+
+  function openDrawer(){
+    drawer?.classList.add("is-open");
+    backdrop?.classList.add("is-open");
+    document.body.classList.add("drawer-open");
+  }
+
+  function closeDrawer(){
+    drawer?.classList.remove("is-open");
+    backdrop?.classList.remove("is-open");
+    document.body.classList.remove("drawer-open");
+  }
+
+  openBtn?.addEventListener("click", openDrawer);
+  closeBtn?.addEventListener("click", closeDrawer);
+  backdrop?.addEventListener("click", closeDrawer);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeDrawer();
+  });
+
+  document.querySelectorAll(".side-drawer__link").forEach(link => {
+    link.addEventListener("click", closeDrawer);
+  });
+
+  if (!badge) return;
+
+  const KEYS = ["superweb_cart_v2", "superweb_cart", "cart", "CART"];
+
+  function safeParse(raw){
+    try { return JSON.parse(raw); } catch { return null; }
+  }
+
+  function extractArray(data){
+    if (Array.isArray(data)) return data;
+    if (data && typeof data === "object"){
+      const maybe = data.items || data.cart || data.products || data.data;
+      if (Array.isArray(maybe)) return maybe;
+    }
+    return [];
+  }
+
+  function loadCart(){
+    for (const k of KEYS){
+      const raw = localStorage.getItem(k);
+      if (!raw) continue;
+      const parsed = safeParse(raw);
+      const arr = extractArray(parsed);
+      if (arr.length) return arr;
+    }
+    return [];
+  }
+
+  function getQty(item){
+    let qty = Number(item.qty ?? item.cantidad ?? item.quantity ?? 1);
+    if (!Number.isFinite(qty) || qty <= 0) qty = 1;
+    return qty;
+  }
+
+  function paint(){
+    const cart = loadCart();
+    const totalItems = cart.reduce((acc, x) => acc + getQty(x), 0);
+
+    badge.textContent = String(totalItems);
+    badge.style.display = totalItems > 0 ? "inline-flex" : "none";
+  }
+
+  paint();
+
+  window.addEventListener("storage", (e) => {
+    if (KEYS.includes(e.key)) paint();
+  });
+
+  window.addEventListener("cart:changed", paint);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) paint();
+  });
+
+  let last = "";
+  setInterval(() => {
+    const raw = localStorage.getItem("superweb_cart_v2") || localStorage.getItem("superweb_cart") || "";
+    if (raw !== last){
+      last = raw;
+      paint();
+    }
+  }, 1000);
+})();
+</script>

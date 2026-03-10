@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="topbar">
+  <h2>Panel Admin</h2>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <a class="btn" href="/admin/pedidos">Pedidos</a>
+    <a class="btn" href="/admin/promos">Promos / Rifas</a>
+    <a class="btn" href="/admin/logout">Salir</a>
+  </div>
+</div>
+
+
+    <div class="card">
+      <h3>Sync XLSX por SKU</h3>
+      <form method="post" action="/admin/sync-xlsx" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx" required />
+        <button type="submit">Subir y sincronizar</button>
+      </form>
+    </div>
+
+    <hr />
+
+    <h3>Productos ({{ productos|length }})</h3>
+    <ul>
+      {% for p in productos %}
+        <li>
+          <b>{{ p.sku }}</b> —
+          {{ p.nombre }} —
+          ₡{{ p.precio }} —
+          Stock: {{ p.cantidad }}
+        </li>
+      {% endfor %}
+    </ul>
+
+  </div>
+
+</body>
+</html>

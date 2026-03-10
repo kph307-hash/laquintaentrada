@@ -1,0 +1,373 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Super Web</title>
+
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body class="tienda">
+  {# ✅ IMPORTANTE: con contexto para que _header.html reciba show_search, q, page_size, selected_familias, whatsapp_phone #}
+  {% include "_header.html" with context %}
+
+  <main class="container">
+    <div class="meta-row">
+  <div class="meta-left">
+    <span id="resultsCount">
+      Página {{ page }} / {{ total_pages }} — Total: {{ total }}
+    </span>
+    <span class="meta-sep">·</span>
+    <span class="meta-right">Mostrando {{ productos|length }} en esta página</span>
+  </div>
+
+  <!-- 🔎 BUSCADOR GLOBAL -->
+  <form class="meta-search" method="get" action="/tienda">
+    <!-- Conserva filtros actuales -->
+    <input type="hidden" name="page" value="1">
+    <input type="hidden" name="page_size" value="{{ page_size }}">
+
+    {% for f in selected_familias %}
+  <input type="hidden" name="fam" value="{{ f }}">
+{% endfor %}
+
+
+    <input
+  type="search"
+  name="q"
+  id="productSearchBar"
+  placeholder="Buscar producto (nombre o SKU)..."
+  value="{{ q or '' }}"
+  autocomplete="off"
+/>
+
+    <button type="submit">Buscar</button>
+
+    {% if q %}
+      <a class="btn-clear" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Limpiar</a>
+    {% endif %}
+  </form>
+
+  <div class="meta-actions">
+    <a class="meta-chip" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Inicio</a>
+  </div>
+</div>
+
+
+    <div class="shop-layout">
+      <aside class="filters-section">
+        <div class="panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Categorías</h3>
+            <button type="button" id="clearFamilies" class="btn-small">Limpiar</button>
+          </div>
+
+          <div class="panel-body">
+            <input id="catSearch" class="cat-search" type="text" placeholder="Buscar categoría...">
+
+            <div id="catsList" class="cats-list">
+              {% for f in familias %}
+                <label class="cat-item">
+                  <input
+                    type="checkbox"
+                    class="fam-check"
+                    value="{{ f }}"
+                    {% if f in selected_familias %}checked{% endif %}
+                  >
+                  <span>{{ f }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="products-section">
+        <div id="productList" class="product-grid">
+          {% for p in productos %}
+            <article
+              class="product-card product-item product-click"
+              data-sku="{{ p.sku }}"
+              data-name="{{ p.nombre }}"
+              data-price="{{ p.precio }}"
+              data-familia="{{ p.familia }}"
+              data-stock="{{ p.cantidad }}"
+            >
+              <div class="img-box">
+                <img
+                  src="/static/products/{{ p.sku }}.jpg"
+                  alt="{{ p.nombre }}"
+                  loading="lazy"
+                  onerror="this.outerHTML='<div class=&quot;img-ph&quot;>Sin imagen</div>';"
+                >
+              </div>
+
+              <div class="card-body">
+                <div class="product-title">{{ p.nombre }}</div>
+                <div class="product-family">{{ p.familia }}</div>
+               
+
+{% set stock = (p.cantidad|default(0)|int) %}
+
+{% if stock == 1 %}
+  <div class="stock-warning stock-danger">
+    🔴 ¡Última unidad disponible!
+  </div>
+{% elif stock < 5 %}
+  <div class="stock-warning">
+    ⚠️ Solo quedan {{ stock }} unidades
+  </div>
+{% endif %}
+
+
+
+                <div class="price-row">
+                  {# ✅ Formato simple con separador de miles (Jinja no tiene locale por defecto).
+                     Si querés, luego lo formateamos en JS. #}
+                  <div class="product-price">₡{{ "{:,}".format(p.precio).replace(",", ".") }}</div>
+                </div>
+
+                <button type="button" class="btn-add">+ Agregar</button>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+
+        <div id="noResults" class="no-results" style="{% if productos|length == 0 %}display:block{% endif %}">
+          No se encontraron productos con esos filtros/búsqueda.
+        </div>
+
+        <div class="pagination">
+          <div class="pagination-info">
+            Mostrando página {{ page }} de {{ total_pages }} — Total: {{ total }}
+          </div>
+
+          <div class="pagination-actions">
+            {% if page > 1 %}
+              <a class="page-btn"
+                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page-1 }}">
+                « Anterior
+              </a>
+            {% endif %}
+
+            {% if page < total_pages %}
+              <a class="page-btn"
+                href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page={{ page+1 }}">
+                Siguiente »
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <a href="/carrito" id="cartFab" class="cart-fab" aria-label="Ir al carrito">
+    🛒 Carrito <span id="cartBadge" class="cart-badge">0</span>
+  </a>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">Agregado ✅</div>
+
+  <script>
+    // ============================
+    // FILTROS (familias + búsqueda + cat search)
+    // Compatible con header form nuevo
+    // ============================
+    const famChecks = Array.from(document.querySelectorAll(".fam-check"));
+    const clearFamiliesBtn = document.getElementById("clearFamilies");
+
+    const catSearch = document.getElementById("catSearch");
+    const catLabels = Array.from(document.querySelectorAll(".cat-item"));
+
+    // input de búsqueda (barra roja)
+const qInput = document.getElementById("productSearchBar");
+
+
+
+    function norm(s){
+      return (s || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    if (catSearch) {
+      catSearch.addEventListener("input", () => {
+        const q = norm(catSearch.value);
+        catLabels.forEach(lbl => {
+          const txt = norm(lbl.innerText);
+          lbl.style.display = txt.includes(q) ? "" : "none";
+        });
+      });
+    }
+    // ============================
+// BÚSQUEDA EN VIVO (sin recargar)
+// Filtra SOLO la página actual
+// ============================
+const productList = document.getElementById("productList");
+const noResultsEl = document.getElementById("noResults");
+const resultsCountEl = document.getElementById("resultsCount");
+
+function liveFilter(){
+  if (!productList) return;
+
+  const q = norm(qInput?.value || "");
+  const cards = Array.from(productList.querySelectorAll(".product-item"));
+
+  let shown = 0;
+
+  for (const card of cards){
+    const name = norm(card.dataset.name || "");
+    const sku  = norm(card.dataset.sku || "");
+    const fam  = norm(card.dataset.familia || "");
+
+    const match = !q || name.includes(q) || sku.includes(q) || fam.includes(q);
+
+    card.style.display = match ? "" : "none";
+    if (match) shown++;
+  }
+
+  if (noResultsEl){
+    noResultsEl.style.display = (shown === 0) ? "block" : "none";
+  }
+
+  // Actualiza el “Mostrando X…” visualmente
+  if (resultsCountEl){
+    resultsCountEl.innerHTML =
+      `Página {{ page }} / {{ total_pages }} — Total: {{ total }} · Mostrando ${shown} en esta página`;
+  }
+}
+
+// debounce
+let t = null;
+qInput?.addEventListener("input", () => {
+  clearTimeout(t);
+  t = setTimeout(liveFilter, 120);
+});
+
+// aplica al cargar si ya hay texto
+window.addEventListener("load", liveFilter);
+
+    function buildUrl(page=1){
+      const params = new URLSearchParams();
+
+      const q = (qInput?.value || "").trim();
+      if (q) params.set("q", q);
+
+      params.set("page_size", String({{ page_size|default(25) }}));
+      params.set("page", String(page));
+
+      famChecks.filter(c => c.checked).forEach(c => params.append("fam", c.value));
+      return "/tienda?" + params.toString();
+    }
+
+    function goFilters(){
+      window.location.href = buildUrl(1);
+    }
+
+    famChecks.forEach(c => c.addEventListener("change", goFilters));
+
+    clearFamiliesBtn?.addEventListener("click", () => {
+      famChecks.forEach(c => c.checked = false);
+      goFilters();
+    });
+
+    // Enter en búsqueda (por si el form no existe o está oculto)
+    qInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { e.preventDefault(); goFilters(); }
+    });
+  </script>
+
+  <script>
+    // ============================
+    // CARRITO (localStorage) — badge + toast + ocultar FAB
+    // ============================
+    const CART_KEY = "superweb_cart_v2";
+
+    function loadCart(){
+      try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
+      catch(e){ return []; }
+    }
+    function saveCart(cart){
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    }
+
+    function updateBadge(){
+      const fab = document.getElementById("cartFab");
+      const badge = document.getElementById("cartBadge");
+      const badgeTop = document.getElementById("cartBadgeTop"); // existe en _header.html
+
+      const cart = loadCart();
+      const qty = cart.reduce((acc, x) => acc + (Number(x.qty) || 0), 0);
+
+      if (badge) badge.textContent = String(qty);
+      if (badgeTop) badgeTop.textContent = String(qty);
+
+      if (fab) fab.style.display = qty > 0 ? "inline-flex" : "none";
+    }
+
+    let toastTimer = null;
+    function showToast(msg="Agregado ✅"){
+      const el = document.getElementById("toast");
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => el.classList.remove("show"), 900);
+    }
+
+    function addToCart(sku, nombre, price, stock){
+  stock = Number(stock ?? 0);
+
+  const cart = loadCart();
+  const found = cart.find(x => x.sku === sku);
+  const currentQty = found ? (Number(found.qty) || 0) : 0;
+
+  if (stock <= 0){
+    showToast("Sin stock ❌");
+    return;
+  }
+
+  if (currentQty + 1 > stock){
+    showToast(`Solo hay ${stock} unidades disponibles ⚠️`);
+    return;
+  }
+
+  if (found){
+    found.qty = currentQty + 1;
+    found.stock = stock;
+  } else {
+    cart.push({ sku, nombre, qty: 1, price: Number(price)||0, stock });
+  }
+
+  saveCart(cart);
+  updateBadge();
+  showToast("Agregado ✅");
+}
+
+
+    document.querySelectorAll(".product-item").forEach(card => {
+  const sku = card.dataset.sku;
+  const name = card.dataset.name;
+  const price = card.dataset.price;
+  const stock = card.dataset.stock;  // 👈 NUEVO
+
+  card.addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-add");
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      addToCart(sku, name, price, stock);
+      return;
+    }
+    addToCart(sku, name, price, stock);
+  });
+});
+
+
+    updateBadge();
+  </script>
+</body>
+</html>
