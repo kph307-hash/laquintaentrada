@@ -39,29 +39,7 @@
   {% endif %}
 
   <nav class="side-drawer__nav">
-    <a class="side-drawer__link side-drawer__link--highlight" href="/">
-      <span class="side-drawer__link-main">
-        <span class="side-drawer__icon">🏷️</span>
-        <span class="side-drawer__text">Promos</span>
-      </span>
-      <span class="side-drawer__arrow">›</span>
-    </a>
 
-    <a class="side-drawer__link" href="/tienda">
-      <span class="side-drawer__link-main">
-        <span class="side-drawer__icon">🛒</span>
-        <span class="side-drawer__text">Productos</span>
-      </span>
-      <span class="side-drawer__arrow">›</span>
-    </a>
-
-    <a class="side-drawer__link" href="/#nosotros">
-      <span class="side-drawer__link-main">
-        <span class="side-drawer__icon">ℹ️</span>
-        <span class="side-drawer__text">Nosotros</span>
-      </span>
-      <span class="side-drawer__arrow">›</span>
-    </a>
 
     <a class="side-drawer__link" href="/carrito">
       <span class="side-drawer__link-main">
@@ -111,6 +89,24 @@
   </div>
 </aside>
 
+<nav class="bottom-nav" id="bottomNav" aria-label="Navegación inferior">
+  <a class="bottom-nav__item" href="/">
+    <span class="bottom-nav__icon">🏷️</span>
+    <span class="bottom-nav__label">Promos</span>
+  </a>
+
+  <a class="bottom-nav__item" href="/tienda">
+    <span class="bottom-nav__icon">🛒</span>
+    <span class="bottom-nav__label">Productos</span>
+  </a>
+
+  <a class="bottom-nav__item bottom-nav__item--cart" href="/carrito">
+    <span class="bottom-nav__icon">🧺</span>
+    <span class="bottom-nav__label">Carrito</span>
+    <span id="bottomCartBadge" class="bottom-nav__badge">0</span>
+  </a>
+</nav>
+
 <script>
 (function(){
   const drawer = document.getElementById("sideDrawer");
@@ -118,7 +114,9 @@
   const openBtn = document.getElementById("menuToggle");
   const closeBtn = document.getElementById("menuClose");
   const badge = document.getElementById("cartBadgeTop");
-  const header = document.querySelector(".main-header");
+const bottomCartBadge = document.getElementById("bottomCartBadge");
+const header = document.querySelector(".main-header");
+const bottomNav = document.getElementById("bottomNav");
 
   function openDrawer(){
     drawer?.classList.add("is-open");
@@ -177,13 +175,15 @@
       return qty;
     }
 
-    function paint(){
-      const cart = loadCart();
-      const totalItems = cart.reduce((acc, x) => acc + getQty(x), 0);
+    if (badge){
+  badge.textContent = String(totalItems);
+  badge.style.display = totalItems > 0 ? "inline-flex" : "none";
+}
 
-      badge.textContent = String(totalItems);
-      badge.style.display = totalItems > 0 ? "inline-flex" : "none";
-    }
+if (bottomCartBadge){
+  bottomCartBadge.textContent = String(totalItems);
+  bottomCartBadge.style.display = totalItems > 0 ? "inline-flex" : "none";
+}
 
     paint();
 
@@ -215,13 +215,21 @@
     function updateHeader(){
       const currentScroll = window.scrollY;
 
-      if (currentScroll <= 10 || document.body.classList.contains("drawer-open")){
-        header.classList.remove("is-hidden");
-      } else if (currentScroll > lastScroll){
-        header.classList.add("is-hidden");
-      } else {
-        header.classList.remove("is-hidden");
-      }
+      const keepVisible =
+  currentScroll <= 10 ||
+  document.body.classList.contains("drawer-open") ||
+  document.body.classList.contains("filters-open");
+
+if (keepVisible){
+  if (header) header.classList.remove("is-hidden");
+  if (bottomNav) bottomNav.classList.remove("is-hidden");
+} else if (currentScroll > lastScroll){
+  if (header) header.classList.add("is-hidden");
+  if (bottomNav) bottomNav.classList.add("is-hidden");
+} else {
+  if (header) header.classList.remove("is-hidden");
+  if (bottomNav) bottomNav.classList.remove("is-hidden");
+}
 
       lastScroll = currentScroll;
       ticking = false;

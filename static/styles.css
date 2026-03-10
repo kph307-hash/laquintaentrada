@@ -1986,3 +1986,100 @@ body.filters-open{
     gap: 14px;
   }
 }
+
+/* =========================================
+   BARRA INFERIOR MOVIL
+   ========================================= */
+.bottom-nav{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0,0,0,.10);
+  box-shadow: 0 -10px 24px rgba(0,0,0,.08);
+  transition: transform .22s ease;
+}
+
+.bottom-nav.is-hidden{
+  transform: translateY(100%);
+}
+
+.bottom-nav__item{
+  position: relative;
+  min-height: 56px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: #111827;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(0,0,0,.05);
+}
+
+.bottom-nav__item:active{
+  transform: translateY(1px);
+}
+
+.bottom-nav__icon{
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bottom-nav__label{
+  font-size: 12px;
+  line-height: 1;
+}
+
+.bottom-nav__item--cart{
+  background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+  color: #fff;
+  border-color: rgba(17,24,39,.9);
+}
+
+.bottom-nav__badge{
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 8px 16px rgba(0,0,0,.18);
+}
+
+@media (max-width: 768px){
+  body{
+    padding-bottom: 84px;
+  }
+
+  .bottom-nav{
+    display: grid;
+  }
+}
+
+@media (min-width: 769px){
+  .bottom-nav{
+    display: none !important;
+  }
+}
