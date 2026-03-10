@@ -415,6 +415,140 @@ if (bottomBadge){
       alert("Agregado ✅");
     });
   </script>
+  
+<script>
+(function () {
+  function applyMobileTwoCols() {
+    const isMobile = window.innerWidth <= 768;
+    const list = document.getElementById("productList");
+    if (!list) return;
+
+    const cards = Array.from(list.querySelectorAll(".product-card"));
+
+    if (!isMobile) {
+      list.style.display = "";
+      list.style.flexWrap = "";
+      list.style.gap = "";
+      list.style.width = "";
+      list.style.alignItems = "";
+
+      cards.forEach((card) => {
+        card.style.flex = "";
+        card.style.width = "";
+        card.style.maxWidth = "";
+        card.style.minWidth = "";
+        card.style.margin = "";
+        card.style.display = "";
+        card.style.flexDirection = "";
+
+        const imgBox = card.querySelector(".img-box");
+        if (imgBox) {
+          imgBox.style.height = "";
+          imgBox.style.flex = "";
+        }
+
+        const body = card.querySelector(".card-body");
+        if (body) {
+          body.style.padding = "";
+          body.style.gap = "";
+        }
+
+        const title = card.querySelector(".product-title");
+        if (title) {
+          title.style.fontSize = "";
+          title.style.lineHeight = "";
+          title.style.minHeight = "";
+          title.style.wordBreak = "";
+          title.style.overflowWrap = "";
+        }
+
+        const family = card.querySelector(".product-family");
+        if (family) family.style.fontSize = "";
+
+        const price = card.querySelector(".product-price");
+        if (price) price.style.fontSize = "";
+
+        const btn = card.querySelector(".btn-add");
+        if (btn) {
+          btn.style.width = "";
+          btn.style.padding = "";
+          btn.style.fontSize = "";
+          btn.style.whiteSpace = "";
+        }
+
+        const warning = card.querySelector(".stock-warning");
+        if (warning) {
+          warning.style.fontSize = "";
+          warning.style.padding = "";
+          warning.style.lineHeight = "";
+        }
+      });
+      return;
+    }
+
+    list.style.display = "flex";
+    list.style.flexWrap = "wrap";
+    list.style.gap = "8px";
+    list.style.width = "100%";
+    list.style.alignItems = "stretch";
+
+    cards.forEach((card) => {
+      card.style.flex = "0 0 calc(50% - 4px)";
+      card.style.width = "calc(50% - 4px)";
+      card.style.maxWidth = "calc(50% - 4px)";
+      card.style.minWidth = "0";
+      card.style.margin = "0";
+      card.style.display = "flex";
+      card.style.flexDirection = "column";
+
+      const imgBox = card.querySelector(".img-box");
+      if (imgBox) {
+        imgBox.style.height = "95px";
+        imgBox.style.flex = "0 0 95px";
+      }
+
+      const body = card.querySelector(".card-body");
+      if (body) {
+        body.style.padding = "8px";
+        body.style.gap = "4px";
+      }
+
+      const title = card.querySelector(".product-title");
+      if (title) {
+        title.style.fontSize = "10px";
+        title.style.lineHeight = "1.15";
+        title.style.minHeight = "24px";
+        title.style.wordBreak = "break-word";
+        title.style.overflowWrap = "anywhere";
+      }
+
+      const family = card.querySelector(".product-family");
+      if (family) family.style.fontSize = "9px";
+
+      const price = card.querySelector(".product-price");
+      if (price) price.style.fontSize = "13px";
+
+      const btn = card.querySelector(".btn-add");
+      if (btn) {
+        btn.style.width = "100%";
+        btn.style.padding = "7px 6px";
+        btn.style.fontSize = "10px";
+        btn.style.whiteSpace = "nowrap";
+      }
+
+      const warning = card.querySelector(".stock-warning");
+      if (warning) {
+        warning.style.fontSize = "9px";
+        warning.style.padding = "3px 6px";
+        warning.style.lineHeight = "1.15";
+      }
+    });
+  }
+
+  window.addEventListener("load", applyMobileTwoCols);
+  window.addEventListener("resize", applyMobileTwoCols);
+})();
+</script>
 
 </body>
 </html>
