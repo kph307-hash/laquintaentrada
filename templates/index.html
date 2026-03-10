@@ -10,7 +10,6 @@
 
 <body class="tienda" data-page-size="{{ page_size|default(25) }}">
   {% include "_header.html" with context %}
-  const PAGE_SIZE = Number(document.body.dataset.pageSize || 25);
   
   <main class="container">
     <div class="meta-row">
@@ -45,11 +44,6 @@
           <a class="btn-clear" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Limpiar</a>
         {% endif %}
       </form>
-
-      <div class="meta-actions">
-        <button type="button" id="filtersOpenBtn" class="meta-chip filters-open-btn">Filtrar</button>
-        <a class="meta-chip" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Inicio</a>
-      </div>
     </div>
 
     <div class="filters-backdrop" id="filtersBackdrop"></div>
@@ -220,6 +214,7 @@
     // FILTROS + BÚSQUEDA + DRAWER MÓVIL
     // ============================
     (function(){
+      const PAGE_SIZE = Number(document.body.dataset.pageSize || 25);
       const famChecks = Array.from(document.querySelectorAll(".fam-check"));
       const clearFamiliesBtn = document.getElementById("clearFamilies");
 
