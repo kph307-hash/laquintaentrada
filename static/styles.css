@@ -2083,3 +2083,48 @@ body.filters-open{
     display: none !important;
   }
 }
+
+.bottom-nav{
+  transition: transform .22s ease;
+}
+
+.bottom-nav.is-hidden{
+  transform: translateY(100%);
+}
+
+.bottom-nav{
+  transition: transform .22s ease;
+}
+
+.bottom-nav.is-hidden{
+  transform: translateY(100%);
+}
+
+/* =========================
+   BOTON FILTRO HEADER
+   ========================= */
+
+.header-right{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.filter-toggle{
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #fff;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: .18s ease;
+}
+
+.filter-toggle:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+}

@@ -1,5 +1,6 @@
 <header class="main-header">
   <div class="main-header__inner main-header__inner--drawer">
+
     <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">
       ☰
     </button>
@@ -8,7 +9,16 @@
       <a class="main-brand" href="/">La quinta entrada</a>
     </div>
 
+    {% if request.path.startswith('/tienda') %}
+    <div class="header-right">
+      <button class="filter-toggle" id="filtersOpenBtn" type="button" aria-label="Abrir filtros">
+        🔍
+      </button>
+    </div>
+    {% else %}
     <div></div>
+    {% endif %}
+
   </div>
 </header>
 
@@ -208,39 +218,63 @@ if (bottomCartBadge){
   }
 
   /* header inteligente: se oculta al bajar y aparece al subir */
-  if (header){
-    let lastScroll = window.scrollY;
-    let ticking = false;
+  (function(){
+  if (!header && !bottomNav) return;
 
-    function updateHeader(){
-      const currentScroll = window.scrollY;
+  const scrollContainer = document.querySelector(".snap-container") || window;
+  let lastScroll = 0;
+  let ticking = false;
 
-      const keepVisible =
-  currentScroll <= 10 ||
-  document.body.classList.contains("drawer-open") ||
-  document.body.classList.contains("filters-open");
+  function getScrollTop(){
+    if (scrollContainer === window) {
+      return window.pageYOffset || document.documentElement.scrollTop || 0;
+    }
+    return scrollContainer.scrollTop || 0;
+  }
 
-if (keepVisible){
-  if (header) header.classList.remove("is-hidden");
-  if (bottomNav) bottomNav.classList.remove("is-hidden");
-} else if (currentScroll > lastScroll){
-  if (header) header.classList.add("is-hidden");
-  if (bottomNav) bottomNav.classList.add("is-hidden");
-} else {
-  if (header) header.classList.remove("is-hidden");
-  if (bottomNav) bottomNav.classList.remove("is-hidden");
-}
+  function showBars(){
+    if (header) header.classList.remove("is-hidden");
+    if (bottomNav) bottomNav.classList.remove("is-hidden");
+  }
 
-      lastScroll = currentScroll;
-      ticking = false;
+  function hideBars(){
+    if (header) header.classList.add("is-hidden");
+    if (bottomNav) bottomNav.classList.add("is-hidden");
+  }
+
+  function updateBars(){
+    const currentScroll = getScrollTop();
+
+    const keepVisible =
+      currentScroll <= 10 ||
+      document.body.classList.contains("drawer-open") ||
+      document.body.classList.contains("filters-open");
+
+    if (keepVisible){
+      showBars();
+    } else if (currentScroll > lastScroll + 6){
+      hideBars();
+    } else if (currentScroll < lastScroll - 6){
+      showBars();
     }
 
-    window.addEventListener("scroll", () => {
-      if (!ticking){
-        window.requestAnimationFrame(updateHeader);
-        ticking = true;
-      }
-    }, { passive: true });
+    lastScroll = currentScroll;
+    ticking = false;
   }
+
+  scrollContainer.addEventListener("scroll", function(){
+    if (!ticking){
+      window.requestAnimationFrame(updateBars);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  window.addEventListener("resize", showBars);
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) showBars();
+  });
+
+  showBars();
+})();
 })();
 </script>
