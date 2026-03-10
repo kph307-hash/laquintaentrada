@@ -9,29 +9,15 @@
 
   <style>
     /* ===== Scroll Snap (hojas) ===== */
-    body.snap{
-      height: 100vh;
-      margin: 0;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* El scroll vive SOLO aquí */
     .snap-container{
-      flex: 1;
-      overflow-y: auto;
-      scroll-snap-type: y mandatory;
-      scroll-behavior: smooth;
-    }
+  overflow-y: visible;
+}
 
-    .snap-page{
-      scroll-snap-align: start;
-      min-height: 100vh;
-      padding: 22px 0;
-      display: flex;
-      align-items: center;
-    }
+.snap-page{
+  min-height: auto;
+  padding: 22px 0;
+  display: block;
+}
 
     /* más coherente con fondo claro */
     .snap-page.alt{ background: rgba(0,0,0,.03); }
@@ -163,7 +149,7 @@
   </style>
 </head>
 
-<body class="snap">
+<body>
   {% include "_header.html" %}
 
   <main class="snap-container">
