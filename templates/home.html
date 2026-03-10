@@ -146,13 +146,27 @@
       .promo-nav.next{ right: 8px; }
       .snap-page{ align-items: flex-start; }
     }
+
+    body{
+  margin: 0;
+}
+
+.promo-scroll{
+  overflow-y: visible;
+}
+
+.promo-section{
+  min-height: auto;
+  padding: 22px 0;
+  display: block;
+}
   </style>
 </head>
 
 <body>
   {% include "_header.html" %}
 
-  <main class="snap-container">
+  <main class="promo-scroll">
 
     <!-- HOJA 1: HERO + Carrusel -->
     <section class="snap-page">
@@ -224,7 +238,7 @@
     </section>
 
     <!-- HOJA 2 -->
-    <section class="snap-page alt">
+    <section class="promo-section alt">
       <div class="container">
         <h2 style="margin:0 0 10px;">Comprar es más fácil</h2>
 
@@ -252,7 +266,7 @@
     </section>
 
     <!-- HOJA 3 -->
-    <section class="snap-page">
+    <section class="promo-section">
       <div class="container">
         <h2 style="margin:0 0 10px;">Horario y contacto</h2>
 
