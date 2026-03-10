@@ -2074,7 +2074,7 @@ body.filters-open{
   }
 
   .main-header{
-    background: #b91c1c !important;
+    background: #011057 !important;
     border-bottom: 1px solid rgba(255,255,255,.15) !important;
   }
 
@@ -2092,7 +2092,7 @@ body.filters-open{
 
   .bottom-nav{
     display: grid !important;
-    background: #b91c1c !important;
+    background: #011057 !important;
     border-top: 1px solid rgba(255,255,255,.15) !important;
   }
 
