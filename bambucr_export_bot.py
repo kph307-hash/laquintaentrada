@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 
-LOGIN_URL = "https://bambucr.app/"
+LOGIN_URL = "https://bambucr.app/app/login/"
 PRODUCTS_URL = "https://bambucr.app/app/modules/productos/?tt=adm-pro"
 BACKEND_SYNC_URL = "https://laquintaentrada.com/admin/sync-upload"
 
@@ -21,18 +21,19 @@ TIMEOUT_MS = 120000
 
 
 async def first_visible_frame(page):
-    for _ in range(20):
+    for _ in range(30):
         for frame in page.frames:
             try:
-                if await frame.locator('input[type="password"]').count() > 0:
-                    return frame
-                if await frame.locator('input[type="email"]').count() > 0:
-                    return frame
-                if await frame.locator('input[type="text"]').count() > 0:
+                has_password = await frame.locator('input[type="password"]').count()
+                has_submit = await frame.locator('button[type="submit"], input[type="submit"]').count()
+
+                if has_password > 0 and has_submit > 0:
                     return frame
             except Exception:
                 pass
+
         await page.wait_for_timeout(500)
+
     return page.main_frame
 
 
@@ -221,6 +222,13 @@ async def export_excel_and_send():
 
             frame = await first_visible_frame(page)
             print(f"➡️ Usando frame: {frame.url}")
+
+            if "/login" not in frame.url:
+                print("➡️ No cayó en login, redirigiendo manualmente...")
+            await page.goto(LOGIN_URL, wait_until="domcontentloaded")
+            await page.wait_for_timeout(3000)
+            frame = await first_visible_frame(page)
+            print(f"➡️ Reintentando frame login: {frame.url}")
 
             print("➡️ Llenando credenciales...")
             await fill_user_and_password(frame, EMAIL, PASSWORD)
