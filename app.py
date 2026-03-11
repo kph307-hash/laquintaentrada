@@ -23,11 +23,12 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from db import SessionLocal, init_db, Producto, UsuarioCliente, get_db, get_conn
-
+from fastapi.responses import FileResponse
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from pathlib import Path
 from datetime import datetime
 import shutil
+
 
 app = FastAPI()
 
@@ -36,6 +37,8 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # ======================
 # CONFIG
 # ======================
+PROMOS_DISK_DIR = Path(os.getenv("PROMOS_DISK_DIR", "/var/data/promos"))
+PROMOS_DISK_DIR.mkdir(parents=True, exist_ok=True)
 
 SHIPPING_PER_KM = 500  # ₡ por km
 SYNC_STATUS_FILE = Path("sync_status.json")
@@ -96,6 +99,12 @@ def startup():
     logger.info("✅ STATIC_DIR: %s", STATIC_DIR)
     logger.info("✅ ENV=%s HTTPS_ONLY=%s", ENV, HTTPS_ONLY)
 
+@app.get("/media/promos/{filename}")
+def media_promo(filename: str):
+    file_path = PROMOS_DISK_DIR / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+    return FileResponse(file_path)
 
 # ======================
 # HELPERS
@@ -1056,19 +1065,16 @@ async def admin_promos_create(
     activo_int = 1 if activo else 0
 
     imagen_url = ""
-    if imagen and imagen.filename:
-        upload_dir = os.path.join(STATIC_DIR, "uploads", "promos")
-        os.makedirs(upload_dir, exist_ok=True)
+    ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
+    safe_name = f"promo_{int(time.time())}{ext}"
+    path = PROMOS_DISK_DIR / safe_name
 
-        ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
-        safe_name = f"promo_{int(time.time())}{ext}"
-        path = os.path.join(upload_dir, safe_name)
+    content = await imagen.read()
+    with open(path, "wb") as f:
+        f.write(content)
 
-        content = await imagen.read()
-        with open(path, "wb") as f:
-            f.write(content)
+    imagen_url = f"/media/promos/{safe_name}"
 
-        imagen_url = f"/static/uploads/promos/{safe_name}"
 
     conn = get_conn()
     cur = conn.cursor()
@@ -1109,18 +1115,15 @@ async def admin_promos_update(
     imagen_url = promo["imagen_url"] or ""
 
     if imagen and imagen.filename:
-        upload_dir = os.path.join(STATIC_DIR, "uploads", "promos")
-        os.makedirs(upload_dir, exist_ok=True)
-
         ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
-        safe_name = f"promo_{promo_id}_{int(time.time())}{ext}"
-        path = os.path.join(upload_dir, safe_name)
+    safe_name = f"promo_{promo_id}_{int(time.time())}{ext}"
+    path = PROMOS_DISK_DIR / safe_name
 
-        content = await imagen.read()
-        with open(path, "wb") as f:
-            f.write(content)
+    content = await imagen.read()
+    with open(path, "wb") as f:
+        f.write(content)
 
-        imagen_url = f"/static/uploads/promos/{safe_name}"
+    imagen_url = f"/media/promos/{safe_name}"
 
     conn = get_conn()
     cur = conn.cursor()
