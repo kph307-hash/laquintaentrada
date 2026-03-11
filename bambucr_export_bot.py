@@ -14,7 +14,7 @@ EMAIL = os.getenv("BAMBUCR_EMAIL", "")
 PASSWORD = os.getenv("BAMBUCR_PASSWORD", "")
 SYNC_TOKEN = os.getenv("ADMIN_SYNC_TOKEN", "")
 
-DOWNLOAD_DIR = Path(os.getenv("DOWNLOAD_DIR", "downloads"))
+DOWNLOAD_DIR = Path(os.getenv("DOWNLOAD_DIR", "/tmp/bambucr"))
 XLSX_FILENAME = "bambucr_productos.xlsx"
 
 HEADLESS = True
