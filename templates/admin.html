@@ -20,12 +20,28 @@
 
 
     <div class="card">
-      <h3>Sync XLSX por SKU</h3>
-      <form method="post" action="/admin/sync-xlsx" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".xlsx" required />
-        <button type="submit">Subir y sincronizar</button>
-      </form>
+  <h3>Sync XLSX por SKU</h3>
+
+  <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+    <form method="post" action="/admin/sync-xlsx" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".xlsx" required />
+      <button type="submit">Subir y sincronizar</button>
+    </form>
+
+    {% if estado_sync %}
+    <div style="padding:12px 16px; border:1px solid #ddd; border-radius:12px; min-width:320px;">
+      <div><strong>Última actualización:</strong> {{ estado_sync.ultima_actualizacion_legible }}</div>
+      <div><strong>Archivo:</strong> {{ estado_sync.archivo }}</div>
+      <div><strong>Productos sincronizados:</strong> {{ estado_sync.total_productos }}</div>
+      <div><strong>Estado:</strong> {{ estado_sync.mensaje }}</div>
     </div>
+    {% else %}
+    <div style="padding:12px 16px; border:1px solid #ddd; border-radius:12px; min-width:320px;">
+      Aún no se ha realizado ninguna sincronización.
+    </div>
+    {% endif %}
+  </div>
+</div>
 
     <hr />
 

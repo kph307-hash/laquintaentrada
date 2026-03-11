@@ -24,6 +24,13 @@ from passlib.context import CryptContext
 
 from db import SessionLocal, init_db, Producto, UsuarioCliente, get_db, get_conn
 
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from pathlib import Path
+from datetime import datetime
+import shutil
+
+app = FastAPI()
+
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # ======================
@@ -31,6 +38,8 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # ======================
 
 SHIPPING_PER_KM = 500  # ₡ por km
+SYNC_STATUS_FILE = Path("sync_status.json")
+ADMIN_SYNC_TOKEN = os.getenv("ADMIN_SYNC_TOKEN", "cambie-esto")
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
@@ -793,6 +802,20 @@ def cliente_perfil(request: Request):
 # ADMIN
 # ======================
 
+def leer_estado_sync():
+    if not SYNC_STATUS_FILE.exists():
+        return None
+
+    data = json.loads(SYNC_STATUS_FILE.read_text(encoding="utf-8"))
+
+    iso = data.get("ultima_actualizacion")
+    if iso:
+        dt = datetime.fromisoformat(iso)
+        data["ultima_actualizacion_legible"] = dt.strftime("%d/%m/%Y %I:%M %p")
+
+    return data
+
+
 @app.get("/admin", response_class=HTMLResponse)
 def admin_panel(request: Request, db: Session = Depends(get_db)):
     if not is_admin(request):
@@ -802,9 +825,15 @@ def admin_panel(request: Request, db: Session = Depends(get_db)):
         )
 
     productos = db.query(Producto).order_by(Producto.nombre.asc()).all()
+    estado_sync = leer_estado_sync()
+
     return templates.TemplateResponse(
         "admin.html",
-        {"request": request, "productos": productos},
+        {
+            "request": request,
+            "productos": productos,
+            "estado_sync": estado_sync,
+        },
     )
 
 
@@ -825,6 +854,114 @@ def admin_logout(request: Request):
     request.session.pop("is_admin", None)
     return RedirectResponse("/admin", status_code=303)
 
+def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
+    wb = openpyxl.load_workbook(file_path, read_only=True, data_only=True)
+    ws = wb.active
+
+    header_row_idx = 4
+    headers = next(
+        ws.iter_rows(
+            min_row=header_row_idx,
+            max_row=header_row_idx,
+            values_only=True,
+        )
+    )
+    idx = {str(h).strip(): i for i, h in enumerate(headers) if h is not None}
+
+    col_sku = idx.get("Código")
+    col_nombre = idx.get("Descripción")
+    col_precio = idx.get("Precio de venta")
+    col_familia = idx.get("Familia")
+    col_cantidad = idx.get("Inventario")
+
+    if col_sku is None or col_nombre is None or col_precio is None:
+        wb.close()
+        raise ValueError("No encuentro columnas: 'Código', 'Descripción', 'Precio de venta'.")
+
+    existentes = db.query(Producto).all()
+    by_sku = {(p.sku or "").strip(): p for p in existentes if (p.sku or "").strip()}
+
+    creados = 0
+    actualizados = 0
+    saltados = 0
+
+    for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
+        sku = row[col_sku] if col_sku < len(row) else None
+        nombre = row[col_nombre] if col_nombre < len(row) else None
+        precio = row[col_precio] if col_precio < len(row) else None
+
+        familia = None
+        if col_familia is not None and col_familia < len(row):
+            familia = row[col_familia]
+
+        cantidad = 0
+        if col_cantidad is not None and col_cantidad < len(row):
+            cantidad = parse_int_safe(row[col_cantidad])
+
+        if not sku:
+            saltados += 1
+            continue
+
+        sku_txt = str(sku).strip()
+        if not sku_txt:
+            saltados += 1
+            continue
+
+        nombre_txt = str(nombre).strip() if nombre else ""
+        if not nombre_txt:
+            saltados += 1
+            continue
+
+        precio_int = parse_precio_cr(precio)
+        if precio_int <= 0:
+            saltados += 1
+            continue
+
+        familia_txt = str(familia).strip() if familia else ""
+
+        p = by_sku.get(sku_txt)
+        if p:
+            changed = False
+
+            if (p.nombre or "") != nombre_txt:
+                p.nombre = nombre_txt
+                changed = True
+
+            if int(p.precio) != precio_int:
+                p.precio = precio_int
+                changed = True
+
+            if (p.familia or "") != familia_txt:
+                p.familia = familia_txt
+                changed = True
+
+            if int(getattr(p, "cantidad", 0) or 0) != int(cantidad):
+                p.cantidad = int(cantidad)
+                changed = True
+
+            if changed:
+                actualizados += 1
+        else:
+            nuevo = Producto(
+                sku=sku_txt,
+                nombre=nombre_txt,
+                precio=precio_int,
+                familia=familia_txt,
+                cantidad=int(cantidad),
+            )
+            db.add(nuevo)
+            by_sku[sku_txt] = nuevo
+            creados += 1
+
+    db.commit()
+    wb.close()
+
+    return {
+        "creados": creados,
+        "actualizados": actualizados,
+        "saltados": saltados,
+        "total": creados + actualizados,
+    }
 
 # ======================
 # ADMIN: SYNC XLSX por SKU
@@ -849,121 +986,31 @@ async def sync_xlsx(
             tmp_file_path = tmp.name
             tmp.write(await file.read())
 
-        wb = openpyxl.load_workbook(tmp_file_path, read_only=True, data_only=True)
-        ws = wb.active
+        resultado = procesar_sync_xlsx_desde_archivo(tmp_file_path, db)
 
-        header_row_idx = 4
-        headers = next(
-            ws.iter_rows(
-                min_row=header_row_idx,
-                max_row=header_row_idx,
-                values_only=True,
-            )
+        guardar_estado_sync(
+            ok=True,
+            mensaje="Sincronización completada",
+            total_productos=resultado["total"],
+            archivo=file.filename or "archivo.xlsx",
         )
-        idx = {str(h).strip(): i for i, h in enumerate(headers) if h is not None}
-
-        col_sku = idx.get("Código")
-        col_nombre = idx.get("Descripción")
-        col_precio = idx.get("Precio de venta")
-        col_familia = idx.get("Familia")
-        col_cantidad = idx.get("Inventario")
-
-        if col_sku is None or col_nombre is None or col_precio is None:
-            wb.close()
-            return HTMLResponse(
-                "No encuentro columnas: 'Código', 'Descripción', 'Precio de venta'.",
-                status_code=400,
-            )
-
-        existentes = db.query(Producto).all()
-        by_sku = {(p.sku or "").strip(): p for p in existentes if (p.sku or "").strip()}
-
-        creados = 0
-        actualizados = 0
-        saltados = 0
-
-        for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
-            sku = row[col_sku] if col_sku < len(row) else None
-            nombre = row[col_nombre] if col_nombre < len(row) else None
-            precio = row[col_precio] if col_precio < len(row) else None
-
-            familia = None
-            if col_familia is not None and col_familia < len(row):
-                familia = row[col_familia]
-
-            # cantidad/inventario
-            cantidad = 0
-            if col_cantidad is not None and col_cantidad < len(row):
-                cantidad = parse_int_safe(row[col_cantidad])
-
-            if not sku:
-                saltados += 1
-                continue
-
-            sku_txt = str(sku).strip()
-            if not sku_txt:
-                saltados += 1
-                continue
-
-            nombre_txt = str(nombre).strip() if nombre else ""
-            if not nombre_txt:
-                saltados += 1
-                continue
-
-            precio_int = parse_precio_cr(precio)
-            if precio_int <= 0:
-                saltados += 1
-                continue
-
-            familia_txt = str(familia).strip() if familia else ""
-
-            p = by_sku.get(sku_txt)
-            if p:
-                changed = False
-
-                if (p.nombre or "") != nombre_txt:
-                    p.nombre = nombre_txt
-                    changed = True
-
-                if int(p.precio) != precio_int:
-                    p.precio = precio_int
-                    changed = True
-
-                if (p.familia or "") != familia_txt:
-                    p.familia = familia_txt
-                    changed = True
-
-                if int(getattr(p, "cantidad", 0) or 0) != int(cantidad):
-                    p.cantidad = int(cantidad)
-                    changed = True
-
-                if changed:
-                    actualizados += 1
-            else:
-                nuevo = Producto(
-                    sku=sku_txt,
-                    nombre=nombre_txt,
-                    precio=precio_int,
-                    familia=familia_txt,
-                    cantidad=int(cantidad),
-                )
-                db.add(nuevo)
-                by_sku[sku_txt] = nuevo
-                creados += 1
-
-        db.commit()
-        wb.close()
 
         return HTMLResponse(
             f"<h2>Sync por SKU completado ✅</h2>"
-            f"<p>Creados: {creados}</p>"
-            f"<p>Actualizados: {actualizados}</p>"
-            f"<p>Saltados: {saltados}</p>"
+            f"<p>Creados: {resultado['creados']}</p>"
+            f"<p>Actualizados: {resultado['actualizados']}</p>"
+            f"<p>Saltados: {resultado['saltados']}</p>"
             f'<p><a href="/admin">Volver al panel</a></p>'
         )
 
     except Exception as e:
         logger.exception("Error en sync-xlsx")
+        guardar_estado_sync(
+            ok=False,
+            mensaje=str(e),
+            total_productos=0,
+            archivo=file.filename or "",
+        )
         return HTMLResponse(f"Error en sync: {e}", status_code=500)
 
     finally:
@@ -1210,3 +1257,71 @@ def go_tienda():
 @app.get("/test-login-route")
 def test_login_route():
     return {"ok": True}
+
+def guardar_estado_sync(ok: bool, mensaje: str, total_productos: int = 0, archivo: str = ""):
+    data = {
+        "ok": ok,
+        "mensaje": mensaje,
+        "total_productos": total_productos,
+        "archivo": archivo,
+        "ultima_actualizacion": datetime.now().isoformat(),
+    }
+    SYNC_STATUS_FILE.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+
+
+@app.post("/admin/sync-upload")
+async def admin_sync_upload(
+    token: str = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    if token != ADMIN_SYNC_TOKEN:
+        raise HTTPException(status_code=403, detail="Token inválido")
+
+    filename = (file.filename or "").lower()
+    if not filename.endswith(".xlsx"):
+        raise HTTPException(status_code=400, detail="Solo se permiten archivos .xlsx")
+
+    tmp_dir = Path("tmp")
+    tmp_dir.mkdir(exist_ok=True)
+    tmp_file = tmp_dir / (file.filename or "archivo.xlsx")
+
+    with tmp_file.open("wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    try:
+        resultado = procesar_sync_xlsx_desde_archivo(str(tmp_file), db)
+
+        guardar_estado_sync(
+            ok=True,
+            mensaje="Sincronización completada",
+            total_productos=resultado["total"],
+            archivo=file.filename or "archivo.xlsx",
+        )
+
+        return {
+            "ok": True,
+            "mensaje": "Sincronización completada",
+            "creados": resultado["creados"],
+            "actualizados": resultado["actualizados"],
+            "saltados": resultado["saltados"],
+            "total_productos": resultado["total"],
+            "archivo": file.filename,
+        }
+
+    except Exception as e:
+        logger.exception("Error en sync-upload")
+        guardar_estado_sync(
+            ok=False,
+            mensaje=str(e),
+            total_productos=0,
+            archivo=file.filename or "",
+        )
+        raise HTTPException(status_code=500, detail=f"Error sincronizando: {e}")
+
+    finally:
+        if tmp_file.exists():
+            tmp_file.unlink()
