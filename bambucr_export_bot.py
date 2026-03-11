@@ -24,10 +24,12 @@ async def first_visible_frame(page):
     for _ in range(30):
         for frame in page.frames:
             try:
-                has_password = await frame.locator('input[type="password"]').count()
-                has_submit = await frame.locator('button[type="submit"], input[type="submit"]').count()
+                user_count = await frame.locator(
+                    'input[name*="user" i], input[type="email"], input[autocomplete="username"]'
+                ).count()
+                pass_count = await frame.locator('input[type="password"]').count()
 
-                if has_password > 0 and has_submit > 0:
+                if user_count > 0 and pass_count > 0:
                     return frame
             except Exception:
                 pass
@@ -207,11 +209,8 @@ async def export_excel_and_send():
     DOWNLOAD_DIR.mkdir(exist_ok=True)
 
     async with async_playwright() as p:
-        context = await p.chromium.launch_persistent_context(
-            user_data_dir=str(DOWNLOAD_DIR / "playwright-profile"),
-            headless=HEADLESS,
-            accept_downloads=True,
-        )
+        browser = await p.chromium.launch(headless=HEADLESS)
+        context = await browser.new_context(accept_downloads=True)
         page = await context.new_page()
         page.set_default_timeout(TIMEOUT_MS)
 
@@ -225,10 +224,10 @@ async def export_excel_and_send():
 
             if "/login" not in frame.url:
                 print("➡️ No cayó en login, redirigiendo manualmente...")
-            await page.goto(LOGIN_URL, wait_until="domcontentloaded")
-            await page.wait_for_timeout(3000)
-            frame = await first_visible_frame(page)
-            print(f"➡️ Reintentando frame login: {frame.url}")
+                await page.goto(LOGIN_URL, wait_until="domcontentloaded")
+                await page.wait_for_timeout(3000)
+                frame = await first_visible_frame(page)
+                print(f"➡️ Reintentando frame login: {frame.url}")
 
             print("➡️ Llenando credenciales...")
             await fill_user_and_password(frame, EMAIL, PASSWORD)
@@ -256,6 +255,7 @@ async def export_excel_and_send():
             raise
         finally:
             await context.close()
+            await browser.close()
 
     enviar_xlsx_al_backend(final_path)
     print("✅ Flujo completo terminado.")
