@@ -517,3 +517,22 @@
     transform: translateY(100%) !important;
   }
 }
+
+@media (max-width: 768px){
+  .container,
+  .cart-page,
+  .result-page,
+  .page-wrap,
+  .profile-shell{
+    padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .bottom-nav{
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9998 !important;
+    margin: 0 !important;
+  }
+}
