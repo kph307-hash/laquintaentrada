@@ -1,5 +1,6 @@
 <header class="main-header">
-  <div class="main-header__inner main-header__inner--drawer">
+  <!-- HEADER MOBILE / ACTUAL -->
+  <div class="main-header__inner main-header__inner--drawer header-mobile-only">
 
     <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú">
       ☰
@@ -19,6 +20,33 @@
     <div></div>
     {% endif %}
 
+  </div>
+
+  <!-- HEADER SOLO PC -->
+  <div class="main-header__inner header-desktop-only">
+    <nav class="main-nav main-nav--left" aria-label="Navegación principal">
+      <a class="main-link main-link--promo" href="/">Promos</a>
+      <a class="main-link" href="/tienda">Productos</a>
+    </nav>
+
+    <div class="main-center">
+      <a class="main-brand" href="/">La quinta entrada</a>
+    </div>
+
+    <nav class="main-nav main-nav--right" aria-label="Accesos">
+      {% if cliente %}
+        <a class="main-link" href="/perfil">Mi perfil</a>
+        <a class="main-link" href="/logout">Salir</a>
+      {% else %}
+        <a class="main-link" href="/login">Iniciar sesión</a>
+        <a class="main-link" href="/registro">Crear cuenta</a>
+      {% endif %}
+
+      <a class="main-link main-link--cart" href="/carrito">
+        <span>Carrito</span>
+        <span id="cartBadgeTop" class="main-badge">0</span>
+      </a>
+    </nav>
   </div>
 </header>
 
@@ -49,6 +77,29 @@
   {% endif %}
 
   <nav class="side-drawer__nav">
+    <a class="side-drawer__link" href="/">
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">🏷️</span>
+        <span class="side-drawer__text">Promos</span>
+      </span>
+      <span class="side-drawer__arrow">›</span>
+    </a>
+
+    <a class="side-drawer__link" href="/tienda">
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">🧺</span>
+        <span class="side-drawer__text">Productos</span>
+      </span>
+      <span class="side-drawer__arrow">›</span>
+    </a>
+
+    <a class="side-drawer__link" href="/carrito">
+      <span class="side-drawer__link-main">
+        <span class="side-drawer__icon">🛒</span>
+        <span class="side-drawer__text">Carrito</span>
+      </span>
+      <span class="side-drawer__arrow">›</span>
+    </a>
 
     {% if cliente %}
       <a class="side-drawer__link" href="/perfil">
@@ -115,6 +166,7 @@
   const openBtn = document.getElementById("menuToggle");
   const closeBtn = document.getElementById("menuClose");
   const bottomCartBadge = document.getElementById("bottomCartBadge");
+  const topCartBadge = document.getElementById("cartBadgeTop");
   const header = document.querySelector(".main-header");
   const bottomNav = document.getElementById("bottomNav");
 
@@ -154,9 +206,6 @@
     bottomNav?.classList.add("is-hidden");
   }
 
-  /* =========================
-     BADGES DEL CARRITO
-     ========================= */
   const KEYS = ["superweb_cart_v2", "superweb_cart", "cart", "CART"];
 
   function safeParse(raw) {
@@ -201,6 +250,11 @@
       bottomCartBadge.textContent = String(totalItems);
       bottomCartBadge.style.display = totalItems > 0 ? "inline-flex" : "none";
     }
+
+    if (topCartBadge) {
+      topCartBadge.textContent = String(totalItems);
+      topCartBadge.style.display = totalItems > 0 ? "inline-flex" : "inline-flex";
+    }
   }
 
   paintCartBadges();
@@ -233,9 +287,6 @@
     }
   }, 1000);
 
-  /* =========================
-     HEADER / BOTTOM NAV INTELIGENTE
-     ========================= */
   const scrollContainer = document.querySelector(".snap-container") || window;
   let lastScroll = 0;
   let ticking = false;

@@ -1220,6 +1220,157 @@ textarea::placeholder{
 }
 
 /* =========================
+   GUIA DE UBICACION
+   ========================= */
+
+body.loc-guide-open{
+  overflow: hidden;
+}
+
+.loc-guide-backdrop{
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15,23,42,.42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.loc-guide-modal{
+  width: 100%;
+  max-width: 620px;
+  max-height: min(88vh, 820px);
+  overflow-y: auto;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 20px;
+  box-shadow: 0 22px 60px rgba(0,0,0,.20);
+  padding: 18px;
+}
+
+.loc-guide-head{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.loc-guide-head h3{
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #111827;
+}
+
+.loc-guide-sub{
+  margin: 8px 0 0;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.loc-guide-close{
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.loc-guide-close:hover{
+  background: rgba(0,0,0,.04);
+}
+
+.loc-guide-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.loc-guide-btn-main,
+.loc-guide-btn-secondary{
+  width: auto;
+  min-width: 140px;
+}
+
+.loc-guide-content{
+  display: grid;
+  gap: 12px;
+}
+
+.loc-guide-block{
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(0,0,0,.02);
+}
+
+.loc-guide-block h4{
+  margin: 0 0 10px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.loc-guide-block ol{
+  margin: 0;
+  padding-left: 20px;
+  color: #374151;
+}
+
+.loc-guide-block li{
+  margin-bottom: 8px;
+  line-height: 1.45;
+}
+
+.loc-guide-note{
+  margin: 2px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #f9fafb;
+  border: 1px solid rgba(0,0,0,.08);
+  color: #374151;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================
+   HEADER RESPONSIVE
+   ========================= */
+
+/* por defecto: escritorio */
+.header-desktop-only{
+  display: grid;
+}
+
+.header-mobile-only{
+  display: none;
+}
+
+/* en celular: mostrar móvil y ocultar escritorio */
+@media (max-width: 768px){
+  .header-desktop-only{
+    display: none !important;
+  }
+
+  .header-mobile-only{
+    display: grid !important;
+  }
+}
+
+/* =========================
    MOBILE DRAWER MEJORADO
    ========================= */
 
@@ -2116,5 +2267,31 @@ body.filters-open{
   .bottom-nav__badge{
     background: #ef4444 !important;
     color: #fff !important;
+  }
+}
+
+/* =========================
+   FIX HEADER DOBLE
+   ========================= */
+
+/* escritorio */
+@media (min-width: 769px){
+  .header-mobile-only{
+    display: none !important;
+  }
+
+  .header-desktop-only{
+    display: grid !important;
+  }
+}
+
+/* celular */
+@media (max-width: 768px){
+  .header-desktop-only{
+    display: none !important;
+  }
+
+  .header-mobile-only{
+    display: grid !important;
   }
 }

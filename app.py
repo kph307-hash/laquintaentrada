@@ -430,8 +430,8 @@ def crear_pedido(
     if not nombre:
         return HTMLResponse("Falta el nombre.", status_code=400)
 
-    if delivery_mode == "delivery" and not direccion_clean:
-        return HTMLResponse("Falta la dirección de envío.", status_code=400)
+    if delivery_mode == "delivery" and not direccion_clean and not ((lat is not None) and (lng is not None)):
+        return HTMLResponse("Falta la dirección de envío o la ubicación GPS.", status_code=400)
 
     # Shipping / distancia
     shipping = 0
@@ -607,7 +607,8 @@ def crear_pedido(
 
     if delivery_mode == "delivery":
         mensaje += "🚚 Entrega: Envío a domicilio\n"
-        mensaje += f"📍 Dirección: {direccion_clean}\n"
+        if direccion_clean:
+            mensaje += f"📍 Dirección: {direccion_clean}\n"
         if maps_url_clean:
             mensaje += f"📌 Ubicación: {maps_url_clean}\n"
         if dist is not None:
@@ -646,6 +647,8 @@ def crear_pedido(
             "whatsapp_url": whatsapp_url,
             "pedido_id": pedido_id,
             "cliente": cliente,
+            "shipping_per_km": SHIPPING_PER_KM,
+            "shipping_verified": dist is not None,
         },
     )
 

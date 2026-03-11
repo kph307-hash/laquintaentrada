@@ -169,6 +169,69 @@
         </section>
       </aside>
     </div>
+      <!-- MODAL GUÍA DE UBICACIÓN -->
+  <div id="locationGuideModal" class="loc-guide-backdrop" style="display:none;">
+    <div class="loc-guide-modal" role="dialog" aria-modal="true" aria-labelledby="locGuideTitle">
+      <div class="loc-guide-head">
+        <div>
+          <h3 id="locGuideTitle">No tiene permisos de ubicación</h3>
+          <p class="loc-guide-sub">
+            Para usar su ubicación actual, debe permitir el acceso a la ubicación en su navegador.
+          </p>
+        </div>
+        <button type="button" class="loc-guide-close" id="btnCloseLocationGuide" aria-label="Cerrar guía">✕</button>
+      </div>
+
+      <div class="loc-guide-actions" id="locGuideActions">
+        <button type="button" class="btn-add loc-guide-btn-main" id="btnShowLocationGuide">Ver guía</button>
+        <button type="button" class="btn-ghost loc-guide-btn-secondary" id="btnDismissLocationGuide">Cerrar</button>
+      </div>
+
+      <div id="locGuideContent" class="loc-guide-content" style="display:none;">
+        <div class="loc-guide-block">
+          <h4>iPhone con Chrome</h4>
+          <ol>
+            <li>Cierre Chrome.</li>
+            <li>Abra <strong>Ajustes</strong> en su iPhone.</li>
+            <li>Busque y toque <strong>Chrome</strong>.</li>
+            <li>Entre en <strong>Ubicación</strong>.</li>
+            <li>Seleccione <strong>Mientras se usa la app</strong>.</li>
+            <li>Vuelva a Chrome y regrese a esta página.</li>
+          </ol>
+        </div>
+
+        <div class="loc-guide-block">
+          <h4>Android con Chrome</h4>
+          <ol>
+            <li>Abra <strong>Chrome</strong>.</li>
+            <li>Toque <strong>Configuración</strong>.</li>
+            <li>Entre en <strong>Configuración de sitios</strong>.</li>
+            <li>Abra <strong>Ubicación</strong> y verifique que esté permitida.</li>
+            <li>Si no funciona, abra <strong>Ajustes del teléfono</strong>.</li>
+            <li>Entre en <strong>Apps &gt; Chrome &gt; Permisos &gt; Ubicación</strong>.</li>
+            <li>Active el permiso de ubicación para Chrome.</li>
+          </ol>
+        </div>
+
+        <div class="loc-guide-block">
+          <h4>Computadora con Chrome</h4>
+          <ol>
+            <li>Abra <strong>Chrome</strong>.</li>
+            <li>Entre a este sitio.</li>
+            <li>Abra <strong>Configuración</strong>.</li>
+            <li>Entre en <strong>Privacidad y seguridad</strong>.</li>
+            <li>Abra <strong>Configuración de sitios</strong>.</li>
+            <li>Entre en <strong>Ubicación</strong>.</li>
+            <li>Permita el acceso a la ubicación para este sitio.</li>
+          </ol>
+        </div>
+
+        <p class="loc-guide-note">
+          Después de activar el permiso, vuelva a esta página y toque <strong>Usar mi ubicación actual</strong>.
+        </p>
+      </div>
+    </div>
+  </div>
   </main>
 
   <script>
@@ -199,10 +262,42 @@
     const sumSubtotalEl = document.getElementById("sumSubtotal");
     const sumItemsEl = document.getElementById("sumItems");
 
+    const locationGuideModal = document.getElementById("locationGuideModal");
+    const btnCloseLocationGuide = document.getElementById("btnCloseLocationGuide");
+    const btnDismissLocationGuide = document.getElementById("btnDismissLocationGuide");
+    const btnShowLocationGuide = document.getElementById("btnShowLocationGuide");
+    const locGuideContent = document.getElementById("locGuideContent");
     /* =========================
        HELPERS
     ========================= */
     const CART_KEY = "superweb_cart_v2";
+    const CHECKOUT_DRAFT_KEY = "superweb_checkout_draft_v1";
+
+        function openLocationGuide(){
+      if (!locationGuideModal) return;
+      locationGuideModal.style.display = "flex";
+      document.body.classList.add("loc-guide-open");
+
+      if (locGuideContent) {
+        locGuideContent.style.display = "none";
+      }
+    }
+
+    function closeLocationGuide(){
+      if (!locationGuideModal) return;
+      locationGuideModal.style.display = "none";
+      document.body.classList.remove("loc-guide-open");
+
+      if (locGuideContent) {
+        locGuideContent.style.display = "none";
+      }
+    }
+
+    function showLocationGuideContent(){
+      if (locGuideContent) {
+        locGuideContent.style.display = "block";
+      }
+    }
 
     function money(n){
       return "₡" + Number(n || 0).toLocaleString("es-CR");
@@ -256,27 +351,99 @@
       return `https://www.google.com/maps?q=${lat},${lng}`;
     }
 
+    function saveCheckoutDraft(){
+  const data = {
+    delivery_mode: getMode(),
+    nombre: nameEl?.value || "",
+    correo: correoEl?.value || "",
+    telefono: telefonoEl?.value || "",
+    direccion: addressEl?.value || "",
+    lat: latEl?.value || "",
+    lng: lngEl?.value || "",
+    maps_url: mapsUrlEl?.value || ""
+  };
+
+  try {
+    localStorage.setItem(CHECKOUT_DRAFT_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function loadCheckoutDraft(){
+  try {
+    const raw = localStorage.getItem(CHECKOUT_DRAFT_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    return data && typeof data === "object" ? data : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+function restoreCheckoutDraft(){
+  const data = loadCheckoutDraft();
+  if (!data) return;
+
+  if (data.delivery_mode) {
+    const radio = document.querySelector(`input[name="delivery_mode"][value="${data.delivery_mode}"]`);
+    if (radio) radio.checked = true;
+  }
+
+  if (nameEl && !nameEl.value) nameEl.value = data.nombre || "";
+  if (correoEl && !correoEl.value) correoEl.value = data.correo || "";
+  if (telefonoEl && !telefonoEl.value) telefonoEl.value = data.telefono || "";
+  if (addressEl && !addressEl.value) addressEl.value = data.direccion || "";
+
+  if (latEl && !latEl.value) latEl.value = data.lat || "";
+  if (lngEl && !lngEl.value) lngEl.value = data.lng || "";
+  if (mapsUrlEl && !mapsUrlEl.value) mapsUrlEl.value = data.maps_url || "";
+
+  if (locMsg && latEl?.value && lngEl?.value) {
+    locMsg.textContent = "✅ Ubicación GPS agregada (opcional).";
+    if (btnUbicacion) btnUbicacion.textContent = "✅ Ubicación agregada";
+  }
+}
+
+function clearCheckoutDraft(){
+  try {
+    localStorage.removeItem(CHECKOUT_DRAFT_KEY);
+  } catch(e) {}
+}
+
     /* =========================
        FORM VALIDATION
     ========================= */
-    function validateForm(){
+        function validateForm(){
       const nombre = (nameEl?.value || "").trim();
       const direccion = (addressEl?.value || "").trim();
       const mode = getMode();
+      const hasGps = !!((latEl?.value || "").trim() && (lngEl?.value || "").trim());
 
       if (!nombre){
         setEnviarEnabled(false, "✍️ Escribí tu nombre para continuar.");
         return;
       }
+
       if (mode === "pickup"){
         setEnviarEnabled(true, "🏪 Listo. Podés enviar para recoger.");
         return;
       }
-      if (!direccion){
-        setEnviarEnabled(false, "📍 Escribí la dirección (GPS es opcional).");
+
+      if (!direccion && !hasGps){
+        setEnviarEnabled(false, "📍 Escribí la dirección o agregá tu ubicación actual.");
         return;
       }
-      setEnviarEnabled(true, "✅ Dirección lista. GPS es opcional.");
+
+      if (hasGps && direccion){
+        setEnviarEnabled(true, "✅ Dirección y GPS listos.");
+        return;
+      }
+
+      if (hasGps){
+        setEnviarEnabled(true, "✅ Ubicación GPS lista.");
+        return;
+      }
+
+      setEnviarEnabled(true, "✅ Dirección lista.");
     }
 
     function applyModeUI(){
@@ -305,13 +472,14 @@
             mapsUrlEl.value = toMapsLink(latitude, longitude);
 
             btnUbicacion.textContent = "✅ Ubicación agregada";
-            if (locMsg) locMsg.textContent = "✅ Ubicación GPS agregada (opcional).";
-            validateForm();
+if (locMsg) locMsg.textContent = "✅ Ubicación GPS agregada (opcional).";
+validateForm();
+saveCheckoutDraft();
           },
           () => {
-            alert("No se pudo obtener la ubicación. Permití acceso en el navegador.");
             btnUbicacion.textContent = "📍 Usar mi ubicación actual";
-            if (locMsg) locMsg.textContent = "⚠️ No se pudo obtener GPS. Igual podés seguir con la dirección.";
+            if (locMsg) locMsg.textContent = "⚠️ No tiene permisos de ubicación.";
+            openLocationGuide();
             validateForm();
           },
           { enableHighAccuracy: true, timeout: 10000 }
@@ -474,11 +642,30 @@
     /* =========================
        EVENTS
     ========================= */
-    if (nameEl) nameEl.addEventListener("input", validateForm);
-    if (correoEl) correoEl.addEventListener("input", validateForm);
-    if (telefonoEl) telefonoEl.addEventListener("input", validateForm);
-    if (addressEl) addressEl.addEventListener("input", validateForm);
-    modeRadios.forEach(r => r.addEventListener("change", applyModeUI));
+    if (nameEl) nameEl.addEventListener("input", () => {
+  validateForm();
+  saveCheckoutDraft();
+});
+
+if (correoEl) correoEl.addEventListener("input", () => {
+  validateForm();
+  saveCheckoutDraft();
+});
+
+if (telefonoEl) telefonoEl.addEventListener("input", () => {
+  validateForm();
+  saveCheckoutDraft();
+});
+
+if (addressEl) addressEl.addEventListener("input", () => {
+  validateForm();
+  saveCheckoutDraft();
+});
+
+modeRadios.forEach(r => r.addEventListener("change", () => {
+  applyModeUI();
+  saveCheckoutDraft();
+}));
 
     pedidoForm.addEventListener("submit", (e) => {
       const cart = loadCart();
@@ -502,9 +689,29 @@
 
     window.addEventListener("cart:changed", renderCart);
 
-    setEnviarEnabled(false, "✍️ Escribí tu nombre para continuar.");
-    applyModeUI();
-    renderCart();
+        if (btnShowLocationGuide){
+      btnShowLocationGuide.addEventListener("click", showLocationGuideContent);
+    }
+
+    if (btnDismissLocationGuide){
+      btnDismissLocationGuide.addEventListener("click", closeLocationGuide);
+    }
+
+    if (btnCloseLocationGuide){
+      btnCloseLocationGuide.addEventListener("click", closeLocationGuide);
+    }
+
+    if (locationGuideModal){
+      locationGuideModal.addEventListener("click", (e) => {
+        if (e.target === locationGuideModal) closeLocationGuide();
+      });
+    }
+
+    restoreCheckoutDraft();
+setEnviarEnabled(false, "✍️ Escribí tu nombre para continuar.");
+applyModeUI();
+renderCart();
+validateForm();
   </script>
 </body>
 </html>
