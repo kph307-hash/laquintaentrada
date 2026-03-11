@@ -9,9 +9,9 @@
   }
 
   body{
-    padding-top: 62px;
-    padding-bottom: 84px;
-  }
+  padding-top: 62px;
+  padding-bottom: 0 !important;
+}
 
   .container{
     width: 100%;
