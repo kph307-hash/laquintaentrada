@@ -490,3 +490,30 @@
     line-height: 1.15 !important;
   }
 }
+
+@media (max-width: 768px){
+  html,
+  body{
+    margin: 0;
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  body{
+    padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .bottom-nav{
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9998 !important;
+    margin: 0 !important;
+    transform: translateY(0) !important;
+  }
+
+  .bottom-nav.is-hidden{
+    transform: translateY(100%) !important;
+  }
+}
