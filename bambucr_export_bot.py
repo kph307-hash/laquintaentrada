@@ -14,7 +14,7 @@ EMAIL = os.getenv("BAMBUCR_EMAIL", "")
 PASSWORD = os.getenv("BAMBUCR_PASSWORD", "")
 SYNC_TOKEN = os.getenv("ADMIN_SYNC_TOKEN", "")
 
-DOWNLOAD_DIR = Path("downloads")
+DOWNLOAD_DIR = Path(os.getenv("DOWNLOAD_DIR", "downloads"))
 XLSX_FILENAME = "bambucr_productos.xlsx"
 
 HEADLESS = True
@@ -207,7 +207,7 @@ async def export_excel_and_send():
     if not EMAIL or not PASSWORD or not SYNC_TOKEN:
         raise RuntimeError("Faltan variables de entorno: BAMBUCR_EMAIL, BAMBUCR_PASSWORD o ADMIN_SYNC_TOKEN")
 
-    DOWNLOAD_DIR.mkdir(exist_ok=True)
+    DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=HEADLESS)

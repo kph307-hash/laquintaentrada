@@ -1,0 +1,1638 @@
+<!doctype html>
+<html lang="es" >
+
+<head>
+    <meta charset="utf-8" />
+<link rel="icon" type="image/png" href="/app/assets/img/../../images/logo_bambucr_192.png" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="theme-color" content="#1C2534"/>
+<title>BambuCR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<link href="/app/assets/css/bootstrap.min.css?=1.2.7" rel="stylesheet" />
+<link href="/app/assets/css/material-dashboard.min.css?v=1.9.17" rel="stylesheet" />
+<link href="/app/assets/css/font-awesome.min.css" rel="stylesheet">
+<link href="/app/assets/css/fonts.css?v=1.0" rel="stylesheet" />
+<link href="/app/assets/icons/style.css?v=1.0.5" rel="stylesheet">
+<link href="/app/css/app.css?v=1.8.13" rel="stylesheet">
+<link rel="stylesheet" href="/app/assets/css/ag-grid.css"/>
+<link rel="stylesheet" href="/app/assets/css/ag-theme-material.css?v1.0.4"/>
+
+<link rel="stylesheet" href="/app/styles/bambu.css?ts=1744144786"/>
+<link href="/app/webmanifest.json" rel="manifest">
+<script>
+    // Check that service workers are supported
+    if ('serviceWorker' in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/app/sw.js');
+        });
+    }
+</script>
+
+    <link rel="stylesheet" href="css/dashboard.css?v=1.9.2">
+    <link rel="stylesheet" href="/app/modules/productos/css/graphics.css?v=1.0.9">
+    <!-- Importacion para que sirva todo bien -->
+    <script src="/app/assets/js/ag-grid-community.min.noStyle.js"></script>
+</head>
+
+<body class=" bg-index">
+    <svg xmlns="http://www.w3.org/2000/svg" style="height: 0; width: 0; position: absolute;"><symbol id="icon-currency-exchange-2-1-1" viewBox="0 0 48 48"><title>currency exchange 2 1 1</title><g class="nc-icon-wrapper" stroke="none"><path d="M31.4,28.111a4.744,4.744,0,0,1-1.647,3.714A8.39,8.39,0,0,1,25,33.628V37H22.928V33.721A16.046,16.046,0,0,1,16.6,32.54V29.261a15.7,15.7,0,0,0,3.123,1.1,14,14,0,0,0,3.2.459V25l-1.306-.481A9.184,9.184,0,0,1,17.9,22.182a4.965,4.965,0,0,1-1.173-3.365,4.379,4.379,0,0,1,1.67-3.528,8.289,8.289,0,0,1,4.531-1.678V11H25v2.564a17.152,17.152,0,0,1,5.983,1.275l-1.135,2.844A16.663,16.663,0,0,0,25,16.533v5.656l1.181.451a10.818,10.818,0,0,1,4.087,2.393A4.433,4.433,0,0,1,31.4,28.111ZM20.379,18.786a2.076,2.076,0,0,0,.552,1.476,5.636,5.636,0,0,0,2,1.166V16.6a3.642,3.642,0,0,0-1.9.761A1.83,1.83,0,0,0,20.379,18.786Zm7.351,9.558a1.933,1.933,0,0,0-.63-1.484A6.448,6.448,0,0,0,25,25.733V30.69Q27.73,30.272,27.73,28.344Z" ></path><path d="M5,24A18.983,18.983,0,0,1,34.154,7.955l-3.029,2.569A1,1,0,0,0,31.5,12.25l10.867,3.028a.969.969,0,0,0,.268.037,1,1,0,0,0,1-1,1.036,1.036,0,0,0-.008-.125L42.24,3.123a1,1,0,0,0-1.64-.638L37.332,5.258A23,23,0,0,0,1,24a2,2,0,0,0,4,0Z" fill="#248f00"></path><path d="M45,22a2,2,0,0,0-2,2A18.982,18.982,0,0,1,13.847,40.045l3.028-2.569A1,1,0,0,0,16.5,35.75L5.629,32.722a1,1,0,0,0-1.26,1.088L5.76,44.877a1,1,0,0,0,1.639.638l3.269-2.773A23,23,0,0,0,47,24,2,2,0,0,0,45,22Z" fill="#248f00"></path></g></symbol><symbol id="icon-alarm-2" viewBox="0 0 48 48"><title>alarm 2</title><g class="nc-icon-wrapper" stroke="none"><path d="M24 47C27.3137 47 30 44.3137 30 41C30 37.6863 27.3137 35 24 35C20.6863 35 18 37.6863 18 41C18 44.3137 20.6863 47 24 47Z" fill="url(#nc-ui-7-0_linear_219_34)"></path> <path d="M43.814 39.419C43.766 39.352 39 32.6 39 27V16C39 7.716 32.284 1 24 1C15.716 1 9.00003 7.716 9.00003 16V27C9.00003 32.6 4.23403 39.352 4.18603 39.419C3.86503 39.869 3.96903 40.493 4.41903 40.814C4.58903 40.935 4.79203 41 5.00003 41H43C43.552 41 44 40.552 44 40C44 39.792 43.935 39.588 43.814 39.419Z" fill="url(#nc-ui-7-1_linear_219_34)"></path> <defs> <linearGradient id="nc-ui-7-0_linear_219_34" x1="24" y1="35" x2="24" y2="47" gradientUnits="userSpaceOnUse"> <stop stop-color="#C2C3CD"></stop> <stop offset="1" stop-color="#A2A3B4"></stop> </linearGradient> <linearGradient id="nc-ui-7-1_linear_219_34" x1="23.9999" y1="1" x2="23.9999" y2="41" gradientUnits="userSpaceOnUse"> <stop stop-color="#E0E0E6"></stop> <stop offset="1" stop-color="#C2C3CD"></stop> </linearGradient> </defs></g></symbol><symbol id="icon-alarm-1" viewBox="0 0 48 48"><title>alarm 1</title><g class="nc-icon-wrapper" stroke="none"><path d="M24 47C27.3137 47 30 44.3137 30 41C30 37.6863 27.3137 35 24 35C20.6863 35 18 37.6863 18 41C18 44.3137 20.6863 47 24 47Z" fill="url(#nccpnc-ui-7-0_linear_219_34)"></path> <path d="M43.814 39.419C43.766 39.352 39 32.6 39 27V16C39 7.716 32.284 1 24 1C15.716 1 9.00003 7.716 9.00003 16V27C9.00003 32.6 4.23403 39.352 4.18603 39.419C3.86503 39.869 3.96903 40.493 4.41903 40.814C4.58903 40.935 4.79203 41 5.00003 41H43C43.552 41 44 40.552 44 40C44 39.792 43.935 39.588 43.814 39.419Z" fill="url(#nccpnc-ui-7-1_linear_219_34)"></path> <defs> <linearGradient id="nccpnc-ui-7-0_linear_219_34" x1="24" y1="35" x2="24" y2="47" gradientUnits="userSpaceOnUse"> <stop stop-color="#f6b828"></stop> <stop offset="1" stop-color="#c88509"></stop> </linearGradient> <linearGradient id="nccpnc-ui-7-1_linear_219_34" x1="23.9999" y1="1" x2="23.9999" y2="41" gradientUnits="userSpaceOnUse"> <stop stop-color="#ffd36e"></stop> <stop offset="1" stop-color="#f6b828"></stop> </linearGradient> </defs></g></symbol><symbol id="icon-chat-bot" viewBox="0 0 48 48"><title>chat bot</title><g class="nc-icon-wrapper" stroke="none"><path d="M41 39C43.7614 39 46 36.7614 46 34C46 31.2386 43.7614 29 41 29C38.2386 29 36 31.2386 36 34C36 36.7614 38.2386 39 41 39Z" fill="url(#nc-chat-bot-0_linear_347_2)"></path> <path d="M5 39C7.76142 39 10 36.7614 10 34C10 31.2386 7.76142 29 5 29C2.23858 29 0 31.2386 0 34C0 36.7614 2.23858 39 5 39Z" fill="url(#nc-chat-bot-1_linear_347_2)"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M15 11.7486C13.836 11.3358 13 10.2236 13 8.92004C13 7.26604 14.346 5.92004 16 5.92004C17.654 5.92004 19 7.26604 19 8.92004C19 10.2236 18.164 11.3358 17 11.7486V21H15V11.7486Z" fill="url(#nc-chat-bot-2_linear_347_2)"></path> <path d="M5 26C5 23.239 7.239 21 10 21H36C38.761 21 41 23.239 41 26V42C41 44.761 38.761 47 36 47H10C7.239 47 5 44.761 5 42V26Z" fill="url(#nc-chat-bot-3_linear_347_2)"></path> <path d="M15 32C16.1046 32 17 31.1046 17 30C17 28.8954 16.1046 28 15 28C13.8954 28 13 28.8954 13 30C13 31.1046 13.8954 32 15 32Z" fill="url(#nc-chat-bot-4_linear_347_2)"></path> <path d="M27 37H19C17.8954 37 17 37.8954 17 39C17 40.1046 17.8954 41 19 41H27C28.1046 41 29 40.1046 29 39C29 37.8954 28.1046 37 27 37Z" fill="url(#nc-chat-bot-5_linear_347_2)"></path> <path d="M31 32C32.1046 32 33 31.1046 33 30C33 28.8954 32.1046 28 31 28C29.8954 28 29 28.8954 29 30C29 31.1046 29.8954 32 31 32Z" fill="url(#nc-chat-bot-6_linear_347_2)"></path> <path d="M43.5 1H28.5C26.567 1 25 2.567 25 4.5V20.92C25 21.278 25.191 21.608 25.502 21.787C25.656 21.876 25.828 21.92 26 21.92C26.174 21.92 26.349 21.874 26.504 21.783L31.271 19H43.5C45.433 19 47 17.433 47 15.5V4.5C47 2.567 45.433 1 43.5 1Z" fill="url(#nc-chat-bot-7_linear_347_2)"></path> <path d="M36 13H30C29.4477 13 29 13.4477 29 14C29 14.5523 29.4477 15 30 15H36C36.5523 15 37 14.5523 37 14C37 13.4477 36.5523 13 36 13Z" fill="#9ED9FA"></path> <path d="M42 5H30C29.4477 5 29 5.44772 29 6C29 6.55228 29.4477 7 30 7H42C42.5523 7 43 6.55228 43 6C43 5.44772 42.5523 5 42 5Z" fill="#9ED9FA"></path> <path d="M42 9H30C29.4477 9 29 9.44772 29 10C29 10.5523 29.4477 11 30 11H42C42.5523 11 43 10.5523 43 10C43 9.44772 42.5523 9 42 9Z" fill="#9ED9FA"></path> <defs> <linearGradient id="nc-chat-bot-0_linear_347_2" x1="41" y1="29" x2="41" y2="39" gradientUnits="userSpaceOnUse"> <stop stop-color="#A2A3B4"></stop> <stop offset="1" stop-color="#83849B"></stop> </linearGradient> <linearGradient id="nc-chat-bot-1_linear_347_2" x1="5" y1="29" x2="5" y2="39" gradientUnits="userSpaceOnUse"> <stop stop-color="#A2A3B4"></stop> <stop offset="1" stop-color="#83849B"></stop> </linearGradient> <linearGradient id="nc-chat-bot-2_linear_347_2" x1="16" y1="5.92004" x2="16" y2="21" gradientUnits="userSpaceOnUse"> <stop stop-color="#A2A3B4"></stop> <stop offset="1" stop-color="#83849B"></stop> </linearGradient> <linearGradient id="nc-chat-bot-3_linear_347_2" x1="23" y1="21" x2="23" y2="47" gradientUnits="userSpaceOnUse"> <stop stop-color="#E0E0E6"></stop> <stop offset="1" stop-color="#C2C3CD"></stop> </linearGradient> <linearGradient id="nc-chat-bot-4_linear_347_2" x1="15" y1="28" x2="15" y2="32" gradientUnits="userSpaceOnUse"> <stop stop-color="#5B5E71"></stop> <stop offset="1" stop-color="#393A46"></stop> </linearGradient> <linearGradient id="nc-chat-bot-5_linear_347_2" x1="23" y1="37" x2="23" y2="41" gradientUnits="userSpaceOnUse"> <stop stop-color="#5B5E71"></stop> <stop offset="1" stop-color="#393A46"></stop> </linearGradient> <linearGradient id="nc-chat-bot-6_linear_347_2" x1="31" y1="28" x2="31" y2="32" gradientUnits="userSpaceOnUse"> <stop stop-color="#5B5E71"></stop> <stop offset="1" stop-color="#393A46"></stop> </linearGradient> <linearGradient id="nc-chat-bot-7_linear_347_2" x1="36" y1="1" x2="36" y2="21.92" gradientUnits="userSpaceOnUse"> <stop stop-color="#60BEF6"></stop> <stop offset="1" stop-color="#29A0EA"></stop> </linearGradient> </defs></g></symbol><symbol id="icon-file-question" viewBox="0 0 48 48"><title>file question</title><g class="nc-icon-wrapper" stroke="none"><path fill="#72C472" d="M41,47H7c-1.105,0-2-0.895-2-2V3c0-1.105,0.895-2,2-2l24,0l12,12v32C43,46.105,42.105,47,41,47z"></path> <path fill="#54A354" d="M31,1v10c0,1.105,0.895,2,2,2h10L31,1z"></path> <path fill="#FFFFFF" d="M24,31c-0.552,0-1-0.448-1-1v-6c0-0.552,0.448-1,1-1c2.664,0,5-2.336,5-5s-2.336-5-5-5 c-1.853,0-3.859,1.395-4.667,3.243c-0.222,0.506-0.811,0.736-1.317,0.516c-0.506-0.221-0.737-0.811-0.516-1.317 C18.625,12.868,21.358,11,24,11c3.794,0,7,3.206,7,7c0,3.456-2.659,6.423-6,6.925V30C25,30.552,24.552,31,24,31z"></path> <circle fill="#FFFFFF" cx="24" cy="36" r="2"></circle></g></symbol><symbol id="icon-online-banking" viewBox="0 0 48 48"><title>online banking</title><g class="nc-icon-wrapper" stroke="none"><rect x="5" y="9" width="38" height="29" fill="#867fe8"></rect><path d="M40,6H8a4,4,0,0,0-4,4V35H44V10A4,4,0,0,0,40,6ZM6,32V10H42V32Z" fill="#444"></path><path d="M31,34v3H17V34H0a8,8,0,0,0,8,8H40a8,8,0,0,0,8-8Z" fill="#e6e6e6"></path><path d="M16,34H32v2a1,1,0,0,1-1,1H17a1,1,0,0,1-1-1Z" fill="#b3b3b3"></path><path d="M29.457,24.3a3.58,3.58,0,0,1-1.242,2.8,6.333,6.333,0,0,1-3.586,1.359V31H23.07V28.527a12.1,12.1,0,0,1-4.769-.89V25.164a11.874,11.874,0,0,0,2.355.826,10.637,10.637,0,0,0,2.414.346V21.953l-.984-.363a6.929,6.929,0,0,1-2.807-1.764,3.744,3.744,0,0,1-.884-2.537,3.3,3.3,0,0,1,1.259-2.66,6.25,6.25,0,0,1,3.416-1.266V11.4h1.559v1.933a12.919,12.919,0,0,1,4.512.961l-.856,2.145a12.551,12.551,0,0,0-3.656-.868v4.266l.891.34a8.138,8.138,0,0,1,3.082,1.8A3.34,3.34,0,0,1,29.457,24.3Zm-8.309-7.031a1.569,1.569,0,0,0,.416,1.113,4.283,4.283,0,0,0,1.506.879V15.613a2.732,2.732,0,0,0-1.429.575A1.376,1.376,0,0,0,21.148,17.266Zm5.543,7.207a1.458,1.458,0,0,0-.474-1.119,4.884,4.884,0,0,0-1.588-.85v3.738Q26.692,25.926,26.691,24.473Z" fill="#fff"></path></g></symbol><symbol id="icon-settings-gear" viewBox="0 0 48 48"><title>settings gear</title><g class="nc-icon-wrapper" stroke="none"><path d="M40.728 27.007C40.907 26.015 40.998 25.008 41 24C40.998 22.992 40.907 21.987 40.728 20.995L45.655 17.263C46.059 16.959 46.172 16.4 45.918 15.963L41.918 9.035C41.666 8.598 41.128 8.418 40.663 8.614L34.956 11.021C33.414 9.717 31.653 8.696 29.756 8.005L28.989 1.875C28.926 1.376 28.503 1.002 28 1H20C19.496 1 19.071 1.376 19.008 1.876L18.241 8.006C16.344 8.697 14.583 9.718 13.041 11.022L7.33695 8.615C6.87195 8.419 6.33395 8.599 6.08195 9.036L2.08195 15.964C1.82795 16.401 1.94095 16.96 2.34495 17.264L7.27095 20.995C6.91295 22.984 6.91295 25.022 7.27095 27.011L2.34495 30.739C1.94095 31.043 1.82795 31.602 2.08195 32.039L6.08195 38.967C6.33395 39.404 6.87195 39.584 7.33695 39.388L13.044 36.981C14.586 38.285 16.347 39.306 18.244 39.997L19.011 46.127C19.075 46.625 19.498 46.999 20 47H28C28.504 47 28.929 46.624 28.992 46.124L29.759 39.994C31.656 39.303 33.417 38.282 34.959 36.978L40.666 39.385C41.131 39.581 41.669 39.401 41.921 38.964L45.921 32.036C46.175 31.599 46.062 31.04 45.658 30.736L40.728 27.007ZM24 31C20.134 31 17 27.866 17 24C17 20.134 20.134 17 24 17C27.866 17 31 20.134 31 24C31 27.866 27.866 31 24 31Z" fill="url(#nc-ui-3-0_linear_119_177)"></path> <path d="M24 32C19.589 32 16 28.411 16 24C16 19.589 19.589 16 24 16C28.411 16 32 19.589 32 24C32 28.411 28.411 32 24 32ZM24 18C20.691 18 18 20.691 18 24C18 27.309 20.691 30 24 30C27.309 30 30 27.309 30 24C30 20.691 27.309 18 24 18Z" fill="url(#nc-ui-3-1_linear_119_177)"></path> <defs> <linearGradient id="nc-ui-3-0_linear_119_177" x1="24.0015" y1="1" x2="24.0015" y2="47" gradientUnits="userSpaceOnUse"> <stop stop-color="#E0E0E6"></stop> <stop offset="1" stop-color="#C2C3CD"></stop> </linearGradient> <linearGradient id="nc-ui-3-1_linear_119_177" x1="24" y1="16" x2="24" y2="32" gradientUnits="userSpaceOnUse"> <stop stop-color="#C2C3CD"></stop> <stop offset="1" stop-color="#A2A3B4"></stop> </linearGradient> </defs></g></symbol><symbol id="icon-calendar-date-2" viewBox="0 0 48 48"><title>calendar date 2</title><g class="nc-icon-wrapper" stroke="none"><path d="M7 5H41C43.76 5 46 7.24 46 10V18H2V10C2 7.24 4.24 5 7 5Z" fill="url(#nc-ui-7-0_linear_219_158)"></path><path d="M2 18H46V41C46 43.76 43.76 46 41 46H7C4.24 46 2 43.76 2 41V18Z" fill="url(#nc-ui-7-1_linear_219_158)"></path><path d="M13 10C12.448 10 12 9.552 12 9V2C12 1.448 12.448 1 13 1C13.552 1 14 1.448 14 2V9C14 9.552 13.552 10 13 10Z" fill="url(#nc-ui-7-2_linear_219_158)"></path><path d="M35 10C34.448 10 34 9.552 34 9V2C34 1.448 34.448 1 35 1C35.552 1 36 1.448 36 2V9C36 9.552 35.552 10 35 10Z" fill="url(#nc-ui-7-3_linear_219_158)"></path><path d="M17 32H11C10.4477 32 10 32.4477 10 33V39C10 39.5523 10.4477 40 11 40H17C17.5523 40 18 39.5523 18 39V33C18 32.4477 17.5523 32 17 32Z" fill="url(#nc-ui-7-4_linear_219_158)"></path><path d="M17 22H11C10.4477 22 10 22.4477 10 23V29C10 29.5523 10.4477 30 11 30H17C17.5523 30 18 29.5523 18 29V23C18 22.4477 17.5523 22 17 22Z" fill="url(#nc-ui-7-5_linear_219_158)"></path><path d="M27 32H21C20.4477 32 20 32.4477 20 33V39C20 39.5523 20.4477 40 21 40H27C27.5523 40 28 39.5523 28 39V33C28 32.4477 27.5523 32 27 32Z" fill="url(#nc-ui-7-6_linear_219_158)"></path><path d="M27 22H21C20.4477 22 20 22.4477 20 23V29C20 29.5523 20.4477 30 21 30H27C27.5523 30 28 29.5523 28 29V23C28 22.4477 27.5523 22 27 22Z" fill="url(#nc-ui-7-7_linear_219_158)"></path><path d="M37 22H31C30.4477 22 30 22.4477 30 23V29C30 29.5523 30.4477 30 31 30H37C37.5523 30 38 29.5523 38 29V23C38 22.4477 37.5523 22 37 22Z" fill="url(#nc-ui-7-8_linear_219_158)"></path><defs><linearGradient id="nc-ui-7-0_linear_219_158" x1="24" y1="5" x2="24" y2="18" gradientUnits="userSpaceOnUse"><stop stop-color="#5B5E71"></stop><stop offset="1" stop-color="#393A46"></stop></linearGradient><linearGradient id="nc-ui-7-1_linear_219_158" x1="24" y1="18" x2="24" y2="46" gradientUnits="userSpaceOnUse"><stop stop-color="#E0E0E6"></stop><stop offset="1" stop-color="#C2C3CD"></stop></linearGradient><linearGradient id="nc-ui-7-2_linear_219_158" x1="13" y1="1" x2="13" y2="10" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient><linearGradient id="nc-ui-7-3_linear_219_158" x1="35" y1="1" x2="35" y2="10" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient><linearGradient id="nc-ui-7-4_linear_219_158" x1="14" y1="32" x2="14" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient><linearGradient id="nc-ui-7-5_linear_219_158" x1="14" y1="22" x2="14" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient><linearGradient id="nc-ui-7-6_linear_219_158" x1="24" y1="32" x2="24" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient><linearGradient id="nc-ui-7-7_linear_219_158" x1="24" y1="22" x2="24" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient><linearGradient id="nc-ui-7-8_linear_219_158" x1="34" y1="22" x2="34" y2="30" gradientUnits="userSpaceOnUse"><stop stop-color="#A2A3B4"></stop><stop offset="1" stop-color="#83849B"></stop></linearGradient></defs></g></symbol> <symbol id="icon-cart-simple-add" viewBox="0 0 48 48"><title>cart simple add</title><g class="nc-icon-wrapper" stroke="none"><path fill="#223E49" d="M14,37c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S16.209,37,14,37z M14,43c-1.105,0-2-0.895-2-2 s0.895-2,2-2s2,0.895,2,2S15.105,43,14,43z"></path> <path fill="#223E49" d="M38,37c-2.209,0-4,1.791-4,4s1.791,4,4,4s4-1.791,4-4S40.209,37,38,37z M38,43c-1.105,0-2-0.895-2-2 s0.895-2,2-2s2,0.895,2,2S39.105,43,38,43z"></path> <path fill="#B3B3B3" d="M44.771,12.362C44.581,12.133,44.298,12,44,12H9.022L7.9,5.821C7.814,5.346,7.4,5,6.917,5H2 C1.448,5,1,5.448,1,6s0.448,1,1,1h4.082l4.935,27.179C11.103,34.654,11.517,35,12,35h28c0.48,0,0.893-0.341,0.982-0.813l4-21 C45.038,12.895,44.96,12.592,44.771,12.362z M41.839,19h-6.406l0.476-5h6.882L41.839,19z M10.656,21h6.101l0.476,5h-5.669L10.656,21 z M27,21h6.233l-0.476,5H27V21z M18.576,19L18.1,14H25v5H18.576z M25,21v5h-5.757l-0.476-5H25z M19.433,28H25v5h-5.091L19.433,28z M27,28h5.567l-0.476,5H27V28z M27,19v-5h6.9l-0.476,5H27z M35.243,21h6.215l-0.952,5h-5.739L35.243,21z M16.091,14l0.476,5h-6.274 l-0.908-5H16.091z M11.927,28h5.497l0.476,5h-5.065L11.927,28z M39.172,33H34.1l0.476-5h5.549L39.172,33z"></path> <circle fill="#72C472" cx="39" cy="14" r="8"></circle> <path fill="#FFFFFF" d="M42,13h-2v-2c0-0.552-0.448-1-1-1s-1,0.448-1,1v2h-2c-0.552,0-1,0.448-1,1c0,0.552,0.448,1,1,1h2v2 c0,0.552,0.448,1,1,1s1-0.448,1-1v-2h2c0.552,0,1-0.448,1-1C43,13.448,42.552,13,42,13z"></path></g></symbol><symbol id="icon-c-question" viewBox="0 0 48 48"><title>c question</title><g class="nc-icon-wrapper" stroke="none"><path d="M24 1C11.297 1 1 11.297 1 24C1 36.703 11.297 47 24 47C36.703 47 47 36.703 47 24C46.986 11.303 36.697 1.014 24 1Z" fill="url(#nc-ui-7-0_linear_219_79)"></path> <path d="M23 39C24.3807 39 25.5 37.8807 25.5 36.5C25.5 35.1193 24.3807 34 23 34C21.6193 34 20.5 35.1193 20.5 36.5C20.5 37.8807 21.6193 39 23 39Z" fill="url(#nc-ui-7-1_linear_219_79)"></path> <path d="M28.0891 24.1588C25.2221 26.5848 25.0001 27.6948 25.0001 28.9998V29.9998C25.0001 30.5518 24.5521 30.9998 24.0001 30.9998H22.0001C21.4481 30.9998 21.0001 30.5518 21.0001 29.9998V28.9998C21.0001 26.0228 22.2211 23.8838 25.5051 21.1048C26.4611 20.2958 29.4421 17.4368 27.6781 14.5838C26.5341 12.7328 22.3061 12.4578 18.8091 14.0048L17.8951 14.4088C17.3901 14.6318 16.7991 14.4038 16.5761 13.8988L15.7671 12.0698C15.5441 11.5648 15.7721 10.9738 16.2771 10.7508L17.1911 10.3468C22.0421 8.20084 28.5671 8.41184 31.0801 12.4818C33.3701 16.1858 32.2241 20.6608 28.0891 24.1588Z" fill="url(#nc-ui-7-2_linear_219_79)"></path> <defs> <linearGradient id="nc-ui-7-0_linear_219_79" x1="24" y1="1" x2="24" y2="47" gradientUnits="userSpaceOnUse"> <stop stop-color="#FFF0CC"></stop> <stop offset="1" stop-color="#FFE39E"></stop> </linearGradient> <linearGradient id="nc-ui-7-1_linear_219_79" x1="23" y1="34" x2="23" y2="39" gradientUnits="userSpaceOnUse"> <stop stop-color="#FFD36E"></stop> <stop offset="1" stop-color="#F6B828"></stop> </linearGradient> <linearGradient id="nc-ui-7-2_linear_219_79" x1="23.9617" y1="8.99902" x2="23.9617" y2="30.9998" gradientUnits="userSpaceOnUse"> <stop stop-color="#FFD36E"></stop> <stop offset="1" stop-color="#F6B828"></stop> </linearGradient> </defs></g></symbol><symbol id="icon-virtual-assistant-2" viewBox="0 0 48 48"><title>virtual assistant 2</title><g class="nc-icon-wrapper" stroke="none"><path d="M41 9H3C1.89543 9 1 9.89543 1 11V41C1 42.1046 1.89543 43 3 43H41C42.1046 43 43 42.1046 43 41V11C43 9.89543 42.1046 9 41 9Z" fill="url(#nc-ui-1-0_linear_43_194)"></path><path d="M44 1H28C26.343 1 25 2.343 25 4V16C25 17.657 26.343 19 28 19H30V22C30 22.552 30.448 23 31 23C31.198 23 31.391 22.942 31.555 22.832L37.3 19H44C45.657 19 47 17.657 47 16V4C47 2.343 45.657 1 44 1Z" fill="url(#nc-ui-1-1_linear_43_194)"></path><path d="M35 14H30C29.448 14 29 13.552 29 13C29 12.448 29.448 12 30 12H35C35.552 12 36 12.448 36 13C36 13.552 35.552 14 35 14Z" fill="url(#nc-ui-1-2_linear_43_194)"></path><path d="M42 8H30C29.448 8 29 7.552 29 7C29 6.448 29.448 6 30 6H42C42.552 6 43 6.448 43 7C43 7.552 42.552 8 42 8Z" fill="url(#nc-ui-1-3_linear_43_194)"></path><path d="M15 25C17.7614 25 20 22.7614 20 20C20 17.2386 17.7614 15 15 15C12.2386 15 10 17.2386 10 20C10 22.7614 12.2386 25 15 25Z" fill="url(#nc-ui-1-4_linear_43_194)"></path><path d="M15 27C9.85701 27 5.62101 30.883 5.06201 35.877C4.99501 36.474 5.46201 37 6.06201 37H23.938C24.538 37 25.005 36.473 24.938 35.877C24.38 30.883 20.143 27 15 27Z" fill="url(#nc-ui-1-5_linear_43_194)"></path><defs><linearGradient id="nc-ui-1-0_linear_43_194" x1="22" y1="9" x2="22" y2="43" gradientUnits="userSpaceOnUse"><stop stop-color="#5B5E71"></stop><stop offset="1" stop-color="#393A46"></stop></linearGradient><linearGradient id="nc-ui-1-1_linear_43_194" x1="36" y1="1" x2="36" y2="23" gradientUnits="userSpaceOnUse"><stop stop-color="#C2C3CD"></stop><stop offset="1" stop-color="#A2A3B4"></stop></linearGradient><linearGradient id="nc-ui-1-2_linear_43_194" x1="29.5" y1="13" x2="36" y2="13" gradientUnits="userSpaceOnUse"><stop stop-color="#5B5E71"></stop><stop offset="1" stop-color="#393A46"></stop></linearGradient><linearGradient id="nc-ui-1-3_linear_43_194" x1="30" y1="7" x2="43" y2="7" gradientUnits="userSpaceOnUse"><stop stop-color="#5B5E71"></stop><stop offset="1" stop-color="#393A46"></stop></linearGradient><linearGradient id="nc-ui-1-4_linear_43_194" x1="15" y1="15" x2="15" y2="37" gradientUnits="userSpaceOnUse"><stop stop-color="#C2C3CD"></stop><stop offset="1" stop-color="#A2A3B4"></stop></linearGradient><linearGradient id="nc-ui-1-5_linear_43_194" x1="15" y1="15" x2="15" y2="37" gradientUnits="userSpaceOnUse"><stop stop-color="#C2C3CD"></stop><stop offset="1" stop-color="#A2A3B4"></stop></linearGradient></defs></g></symbol><symbol id="icon-comments" viewBox="0 0 48 48"><title>comments</title><g class="nc-icon-wrapper" stroke="none"><path d="M44 9H14V37H25.7L37.448 44.832C37.909 45.137 38.529 45.011 38.834 44.55C38.942 44.387 39 44.196 39 44V37H44C45.657 37 47 35.657 47 34V12C47 10.343 45.657 9 44 9Z" fill="url(#nc-ui-6-0_linear_215_178)"></path> <path d="M36 3H4C2.343 3 1 4.343 1 6V27C1 28.657 2.343 30 4 30H9V39C9 39.552 9.448 40 10 40C10.208 40 10.412 39.935 10.581 39.814L24.32 30H36C37.657 30 39 28.657 39 27V6C39 4.343 37.657 3 36 3Z" fill="url(#nc-ui-6-1_linear_215_178)"></path> <defs> <linearGradient id="nc-ui-6-0_linear_215_178" x1="30.5" y1="9" x2="30.5" y2="44.9984" gradientUnits="userSpaceOnUse"> <stop stop-color="#60BEF6"></stop> <stop offset="1" stop-color="#29A0EA"></stop> </linearGradient> <linearGradient id="nc-ui-6-1_linear_215_178" x1="20" y1="3" x2="20" y2="40" gradientUnits="userSpaceOnUse"> <stop stop-color="#DEF2FD"></stop> <stop offset="1" stop-color="#9ED9FA"></stop> </linearGradient> </defs></g></symbol><symbol id="icon-c-question-1-1" viewBox="0 0 48 48"><title>c question 1 1</title><g class="nc-icon-wrapper" stroke="none"><path d="M24 1C11.297 1 1 11.297 1 24C1 36.703 11.297 47 24 47C36.703 47 47 36.703 47 24C46.986 11.303 36.697 1.014 24 1Z" fill="url(#nccpnccpnc-ui-7-0_linear_219_79)"></path> <path d="M23 39C24.3807 39 25.5 37.8807 25.5 36.5C25.5 35.1193 24.3807 34 23 34C21.6193 34 20.5 35.1193 20.5 36.5C20.5 37.8807 21.6193 39 23 39Z" ></path> <path d="M28.0891 24.1588C25.2221 26.5848 25.0001 27.6948 25.0001 28.9998V29.9998C25.0001 30.5518 24.5521 30.9998 24.0001 30.9998H22.0001C21.4481 30.9998 21.0001 30.5518 21.0001 29.9998V28.9998C21.0001 26.0228 22.2211 23.8838 25.5051 21.1048C26.4611 20.2958 29.4421 17.4368 27.6781 14.5838C26.5341 12.7328 22.3061 12.4578 18.8091 14.0048L17.8951 14.4088C17.3901 14.6318 16.7991 14.4038 16.5761 13.8988L15.7671 12.0698C15.5441 11.5648 15.7721 10.9738 16.2771 10.7508L17.1911 10.3468C22.0421 8.20084 28.5671 8.41184 31.0801 12.4818C33.3701 16.1858 32.2241 20.6608 28.0891 24.1588Z" ></path> <defs> <linearGradient id="nccpnccpnc-ui-7-0_linear_219_79" x1="24" y1="1" x2="24" y2="47" gradientUnits="userSpaceOnUse"> <stop stop-color="#e3b154"></stop> <stop offset="1" stop-color="#c88509"></stop> </linearGradient> <linearGradient id="nccpnccpnc-ui-7-1_linear_219_79" x1="23" y1="34" x2="23" y2="39" gradientUnits="userSpaceOnUse"> <stop></stop> <stop offset="1"></stop> </linearGradient> <linearGradient id="nccpnccpnc-ui-7-2_linear_219_79" x1="23.9617" y1="8.99902" x2="23.9617" y2="30.9998" gradientUnits="userSpaceOnUse"> <stop ></stop> <stop offset="1" ></stop> </linearGradient> </defs></g></symbol><symbol id="icon-hand-card" viewBox="0 0 48 48"><title>hand card</title><g class="nc-icon-wrapper" stroke="none"><path fill="#F3C7A8" d="M46.074,23.565l-19.996-1.562c-0.168-0.012-0.332,0.016-0.484,0.083l-18,8 c-0.47,0.209-0.705,0.741-0.542,1.23l0.879,2.639c0.807,2.419,2.959,4.188,5.484,4.507C17.965,39.037,26.43,40,32,40 c4.05,0,7.814-1.548,10.598-4.359c2.877-2.905,4.439-6.843,4.398-11.088C46.991,24.035,46.591,23.606,46.074,23.565z"></path> <path fill="#444444" d="M24,19H2c-0.552,0-1-0.448-1-1s0.448-1,1-1h22c0.552,0,1,0.448,1,1S24.552,19,24,19z"></path> <path fill="#444444" d="M18.085,14H2c-0.552,0-1-0.448-1-1s0.448-1,1-1h16.085c0.552,0,1,0.448,1,1S18.638,14,18.085,14z"></path> <path fill="#4da34d" d="M31,7H3C1.895,7,1,7.895,1,9v20c0,1.105,0.895,2,2,2h28c1.105,0,2-0.895,2-2V9C33,7.895,32.105,7,31,7z"></path> <rect x="1" y="12" fill="#223E49" width="31" height="5"></rect> <path opacity="0.1" d="M33,12.05C32.668,12.028,32.337,12,32,12H18c-0.552,0-1,0.448-1,1c0,3.309,2.691,6,6,6h3 c0.382,3.45,3.743,6.967,7,8.365V12.05z"></path> <path fill="#F3C7A8" d="M32,10H18c-0.552,0-1,0.448-1,1c0,3.309,2.691,6,6,6h4.056c0.491,4.436,4.154,9,8.944,9 c0.015,0,0.029,0,0.044-0.001l9.996-0.438c0.538-0.023,0.961-0.47,0.956-1.009C46.918,16.528,40.191,10,32,10z"></path> <rect x="5" y="21" fill="#FFFFFF" width="14" height="3"></rect></g></symbol><symbol id="icon-headphones-mic" viewBox="0 0 48 48"><title>headphones mic</title><g class="nc-icon-wrapper" stroke="none"><path fill="#666666" d="M43,20h-2v-4c0-7.16846-5.83154-13-13-13h-8C12.83154,3,7,8.83154,7,16v4H5v-4C5,7.729,11.729,1,20,1h8 c8.271,0,15,6.729,15,15V20z"></path> <path fill="#999999" d="M11,17.05865C10.67133,17.02228,10.33838,17,10,17c-4.97058,0-9,4.02942-9,9s4.02942,9,9,9 c0.33838,0,0.67133-0.02228,1-0.05865V17.05865z"></path> <path fill="#444444" d="M11.5,36L11.5,36C10.11929,36,9,34.88071,9,33.5V18.5c0-1.38071,1.11929-2.5,2.5-2.5H11.5 c1.38071,0,2.5,1.11929,2.5,2.5V33.5C14,34.88071,12.88071,36,11.5,36z"></path> <path fill="#999999" d="M38,17c-0.33838,0-0.67133,0.02228-1,0.05865v17.88269C37.32867,34.97772,37.66162,35,38,35 c4.97058,0,9-4.02942,9-9S42.97058,17,38,17z"></path> <path fill="#444444" d="M36.5,36L36.5,36c-1.38072,0-2.5-1.11929-2.5-2.5V18.5c0-1.38071,1.11929-2.5,2.5-2.5H36.5 c1.38071,0,2.5,1.11929,2.5,2.5V33.5C39,34.88071,37.88071,36,36.5,36z"></path> <path fill="#666666" d="M5,36v-9c0-0.55228-0.44771-1-1-1h0c-0.55228,0-1,0.44771-1,1v9c0,4.9624,4.0376,9,9,9v-2 C8.14014,43,5,39.85986,5,36z"></path> <path fill="#444444" d="M18,47H14c-1.65685,0-3-1.34314-3-3V44c0-1.65685,1.34314-3,3-3H18c1.65685,0,3,1.34314,3,3V44 C21,45.65686,19.65686,47,18,47z"></path></g></symbol></svg>
+    <div class="wrapper">
+        <script>
+    const module_access = true;
+    const maintenance_access = true;
+    const scheduled_maintenance = false;
+    var getId = '';
+    var _widgetLoading = false;
+    var withReseller = false;
+
+    function copyTo(url) {
+        var dummy = document.createElement("input");
+        document.body.appendChild(dummy);
+        dummy.setAttribute("value", url);
+        dummy.select();
+        document.execCommand("copy");
+        document.body.removeChild(dummy);
+
+    }
+
+    function sidebarClick(id, url) { //en caso de que la opcion del sidebar necesite ejecutar una funcion
+        if (id == 'carrito-compras') {
+            //mostramos un swal para dar a escoger entre ir al Tienda en linea o copiar el link_
+            swal({
+                title: 'Elige una opción',
+                showCancelButton: true,
+                type: 'question',
+                width: 500,
+                confirmButtonText: 'Ir a tienda en línea',
+                cancelButtonText: 'Copiar enlace del carrito',
+                confirmButtonClass: 'swal-btn-carrito',
+                cancelButtonClass: 'swal-btn-carrito swal-btn-margin'
+            }).then(function(result) {
+                window.location.href = url;
+            }, function(dismiss) {
+                if (dismiss == 'cancel') {
+                    copyTo(url);
+                    swal('Vinculo copiado', 'Enlace del carrito copiado correctamente', 'success');
+                }
+            })
+        }
+
+        if (id == 'boton-modal-reparaciones') {
+            app.modalReparaciones();
+        }
+    }
+
+    function openLiveChat() {
+
+        //si no es de revendedores privados entonces abrir chat en linea
+        if (!withReseller) {
+            if (_widgetLoading == true) {
+                return;
+            }
+            if (typeof $chatwoot == 'object' && $chatwoot.hasLoaded) {
+                if ($chatwoot.isOpen == false) {
+                    $chatwoot.toggle();
+                }
+            } else {
+                initLiveChat(true);
+            }
+        } else {
+            //lamar al modal de hacer tickets
+            modalTicket();
+        }
+    }
+
+    function modalTicket() {
+
+        if ($("#modal_ticket").length == 0) {
+            $('body').append(`<div id="modal_ticket" ></div>`);
+            $('#modal_ticket').load(rootURL + "app/ajax/modalTickets.php", function() {
+                $("#modalTicket").modal('show')
+            })
+        } else {
+            $("#modalTicket").modal('show')
+        }
+    }
+
+    function initLiveChat(open = false) {
+        (function(d, t) {
+            var BASE_URL = "";
+            var g = d.createElement(t),
+                s = d.getElementsByTagName(t)[0];
+            g.src = BASE_URL + "/packs/js/sdk.js";
+            g.defer = true;
+            g.async = true;
+            s.parentNode.insertBefore(g, s);
+            g.onload = function() {
+                _widgetLoading = false;
+                window.chatwootSDK.run({
+                    websiteToken: "",
+                    baseUrl: BASE_URL
+                })
+            }
+        })(document, "script");
+
+        window.addEventListener('chatwoot:ready', function() {
+            var lastChatUuid = localStorage.getItem('lastChatUuid');
+            if (lastChatUuid != 'c3b4469116eb42d8adcdb064ca9bb5e7') {
+                localStorage.setItem('lastChatUuid', 'c3b4469116eb42d8adcdb064ca9bb5e7');
+                window.$chatwoot.reset();
+            } else {
+                const user = {
+                    name: `Kevin Phillips`,
+                    email: 'kph307@gmail.com',
+                    identifier_hash: '',
+                    avatar_url: ''
+                };
+                                    user.company_name = `Minisúper la Quinta Entrada`;
+                                window.$chatwoot.setUser('c3b4469116eb42d8adcdb064ca9bb5e7', user);
+                if (open) window.$chatwoot.toggle();
+            }
+        });
+        window.chatwootSettings = {
+            hideMessageBubble: true,
+            locale: 'es',
+            showPopoutButton: true
+        }
+    }
+
+    function swal_offline(execute, page) {
+        return new Promise(resolve => {
+            if (execute && page !== 'puntoDeVenta' && window.location.host.indexOf('localhost') === -1) {
+                swal({
+                    title: "¡Sin conexión a Internet!",
+                    text: "El sistema no detecta conexión a Internet. Puedes seguir facturando sin problemas, pero, mientras no se detecte conexión a internet no se podrá acceder a otro modulo del sistema.",
+                    cancelButtonText: "Cancelar",
+                    showConfirmButton: false,
+                    showCancelButton: true
+                }).then(() => {
+                    resolve()
+                }).catch(swal.noop);
+            } else {
+                resolve()
+            }
+        })
+    }
+    let offline_sidebar = !navigator.onLine;
+    window.addEventListener('online', function() {
+        offline_sidebar = false;
+    });
+
+    window.addEventListener('offline', function() {
+        offline_sidebar = true;
+    });
+
+    const pages = {
+        dashboard: '/app/',
+        limiteExistencias: '/app/modules/productos/index.php?tt=limites-existencias&f=0',
+        facturacionCompra: '/app/modules/compras/facturacion/index.php?tt=all&facturacion=1',
+        cuentasCobrar: '/app/modules/finanzas/index.php?tt=cuentas-cobrar',
+        reporteProformas: '/app/modules/ventas/index.php?tt=adm&type=8',
+        reporteVentas: '/app/modules/ventas/index.php?tt=adm&type=0',
+        resumenVentas: '/app/modules/ventas/resumen_ventas.php',
+        cierreCaja: '/app/modules/cierre/index.php?tt=add',
+        agregarDescuentos: '/app/modules/descuentos_globales/agregar_descuentos.php?tt=adm',
+        administrarDescuentos: '/app/modules/descuentos_globales/administrar_descuentos.php?tt=adm',
+        productos: '/app/modules/productos/index.php?tt=adm-pro',
+        clientes: '/app/modules/clientes/index.php?tt=adm',
+        cuentasPagar: '/app/modules/finanzas/index.php?tt=cuentas-pagar&f=0',
+        facturacion_fec: '/app/modules/facturacion/index.php?td=fec',
+        facturacion_g: '/app/modules/facturacion/index.php?td=g',
+        facturacionASADA: '/app/modules/facturacion_asada/index.php',
+        facturacionBulto: '/app/modules/facturacion_bulto/index.php',
+        puntoDeVenta: '/app/modules/punto_de_venta/',
+        facturacionRestaurante: '/app/modules/rest/facturacion.php',
+        facturacionRestauranteBeta: '/app/modules/rest/',
+        facturacionHoteles: '/app/modules/hoteles/facturacion.php',
+        ordenesRestaurante: '/app/modules/rest/ordenes.php',
+        notasCredito: '/app/modules/finanzas/index.php?tt=notas-credito&f=0',
+        estadoResultados: '/app/modules/finanzas/estado_resultados.php',
+        editarUsuario: '/app/modules/configuracion/index.php?tt=info',
+        cambiarEmpresa: '/app/user/update_user_login.php?_token=3a4ff8d31e4359ff9fc3',
+        cerrarSesion: '/app/user/logout.php?_token=3a4ff8d31e4359ff9fc3',
+        usuarios: '/app/modules/configuracion/index.php?tt=adm-usr',
+        configuracion: '/app/modules/configuracion/update.php',
+        proveedores: '/app/modules/proveedores/index.php?tt=adm',
+        reporteASADA: '/app/modules/facturacion_asada/reporte.php',
+        reporteCompras: '/app/modules/compras/index.php?tt=adm-c',
+        reporteGastos: '/app/modules/compras/index.php?tt=adm-g',
+        ordenCompra: '/app/modules/facturacion/index.php?td=oc',
+        recepcion: '/app/modules/compras/recepcion/index.php',
+        reporteOrdenesCompra: '/app/modules/compras/index.php?tt=adm-oc',
+        calendario: '/app/modules/calendar/',
+        centro_cobros: '/app/modules/centro_cobros/',
+        contratos: '/app/modules/contratos/contratos.php',
+        consultaPrecios: '/app/modules/productos/consulta.php',
+        promociones: '/app/modules/promociones/',
+        cotizaciones: '/app/modules/cotizaciones/',
+        auditoria: '/app/modules/auditoria/',
+        asistencia: '/app/modules/ayuda/',
+        planilla: '/app/modules/planillas/',
+        tickets: '/app/modules/tickets/'
+    }
+    const fe_modality = 2;
+    const cp_fantasy = 'Minisúper la Quinta Entrada';
+    let cp_name = 'MINISUPER LA QUINTA ENTRADA';
+
+    function goToPage(page, method = 'assign', URLparams = null) {
+
+        // if (e) {
+        //     method = e.button == 1  ?  "tab" : 'assign'
+        // }
+        swal_offline(offline_sidebar, page).then(() => {
+            const url = 'https://bambucr.app';
+            let location_url = url + pages[page];
+
+            if (URLparams) {
+                //objeto con los parametros extra a agregar al redireccionamiento
+                let UrlObject = new URL(location_url)
+                let params = UrlObject.searchParams;
+                for (let key in URLparams) {
+                    params.append(key, URLparams[key])
+                }
+                location_url = UrlObject.origin + UrlObject.pathname + '?' + params.toString();
+            }
+            if (method === 'assign') {
+                window.location.assign(location_url);
+            } else if (method === 'replace') {
+                window.location.replace(location_url);
+            } else if (method === 'tab') {
+                window.open(location_url, '_blank');
+            } else {
+                window.open(location_url);
+            }
+        })
+    }
+
+    async function sb_logout(logoutCp = false) {
+        if (!logoutCp) {
+            localStorage.setItem('lastChatUuid', '');
+                    }
+        goToPage(logoutCp ? 'cambiarEmpresa' : 'cerrarSesion', 'replace');
+    }
+
+    function modalSupport(id_company_selected) {
+        if(!id_company_selected){
+            id_company_selected = idCompany;
+        }
+        if ($("#vSupportModal").length == 0 || !$("#vSupportModal").data('bs.modal').isShown) {
+            $('#form_support_info').load(
+                "/app/modals/modal_support.php", {
+                    id_company_selected: id_company_selected
+                }
+            );
+        }
+    }
+    document.addEventListener("DOMContentLoaded", (event) => {
+        if (0 == 1) {
+            mostrarMod();
+        }
+        var element = document.getElementById('btn-openLiveChat');
+        if (typeof(element) != 'undefined' && element != null) {
+            initLiveChat();
+        }
+    });
+
+    function close_noticeModal(id) {
+        if (0 == 1) {
+            $.post('/app/user/update_user_login.php?tt=dont_show_more&_token=3a4ff8d31e4359ff9fc3', {
+                id
+            });
+        }
+    }
+
+    function mostrarMod() {
+        //  $("#NewnoticeModal").modal("show");
+        $("#noticeModal").modal("show");
+    }
+    window.onload = function() {
+        if (!module_access) {
+            url = '/app/modules/configuracion/show_update_plan.php';
+            ext = '?tt=' + getId;
+            //pasarle el nombre del modulo en el url
+            url = url + ext;
+            window.location = url;
+        }
+
+        if (!maintenance_access) {
+            // Redirigir a página de mantenimiento
+            url = '/app/modules/configuracion/show_maintenance.php';
+            ext = '?tt=' + encodeURIComponent(window.location.pathname + window.location.search);
+            //pasarle la ruta actual del módulo en el url
+            url = url + ext;
+            window.location = url;
+        }
+        if (scheduled_maintenance) {
+            // Verificar si ya se mostró esta alerta hoy
+            const today = '2026-03-10';
+            const moduleRef = 'app/';
+            const storageKey = `maintenance_alert_${moduleRef}_${today}`;
+            if (!localStorage.getItem(storageKey)) {
+                // Mostrar alerta de mantenimiento programado
+                swal({
+                    title: '<div style="display: flex; align-items: center; justify-content: center; gap: 12px; color: #e67e22;"><i class="material-icons" style="font-size: 32px;">build_circle</i><span>Mantenimiento Programado</span></div>',
+                    html: `
+                    <div style="
+                        background: linear-gradient(135deg, #fff5f0 0%, #fef3ec 100%);
+                        border-radius: 16px;
+                        padding: 32px 24px;
+                        margin: 16px 0;
+                        box-shadow: 0 8px 32px rgba(230, 126, 34, 0.1);
+                        border: 2px solid #f39c12;
+                        position: relative;
+                        overflow: hidden;
+                    ">
+                        <!-- Decorative elements -->
+                        <div style="
+                            position: absolute;
+                            top: -20px;
+                            right: -20px;
+                            width: 80px;
+                            height: 80px;
+                            background: linear-gradient(45deg, #f39c12, #e67e22);
+                            border-radius: 50%;
+                            opacity: 0.1;
+                        "></div>
+                        <div style="
+                            position: absolute;
+                            bottom: -15px;
+                            left: -15px;
+                            width: 60px;
+                            height: 60px;
+                            background: linear-gradient(45deg, #e67e22, #d35400);
+                            border-radius: 50%;
+                            opacity: 0.08;
+                        "></div>
+
+                        <!-- Main content -->
+                        <div style="position: relative; z-index: 2;">
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 12px;
+                                margin-bottom: 24px;
+                                padding: 16px;
+                                background: rgba(243, 156, 18, 0.1);
+                                border-radius: 12px;
+                                border-left: 4px solid #f39c12;
+                            ">
+                                <i class="material-icons" style="color: #f39c12; font-size: 24px;">settings</i>
+                                <span style="
+                                    font-weight: 600;
+                                    font-size: 18px;
+                                    color: #d35400;
+                                    text-transform: uppercase;
+                                    letter-spacing: 1px;
+                                ">${scheduled_maintenance['module_name']}</span>
+                            </div>
+
+                            <div style="
+                                display: grid;
+                                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                                gap: 16px;
+                                margin-bottom: 24px;
+                            ">
+                                <div style="
+                                    background: white;
+                                    padding: 16px;
+                                    border-radius: 12px;
+                                    border: 1px solid #f39c12;
+                                    text-align: center;
+                                    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.1);
+                                ">
+                                    <div style="
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        gap: 8px;
+                                        margin-bottom: 8px;
+                                    ">
+                                        <i class="material-icons" style="color: #27ae60; font-size: 20px;">play_circle</i>
+                                        <span style="font-weight: 600; color: #2c3e50; font-size: 14px;">INICIO</span>
+                                    </div>
+                                    <p style="
+                                        margin: 0;
+                                        color: #27ae60;
+                                        font-weight: 600;
+                                        font-size: 16px;
+                                    ">${scheduled_maintenance['start_date']}</p>
+                                </div>
+
+                                <div style="
+                                    background: white;
+                                    padding: 16px;
+                                    border-radius: 12px;
+                                    border: 1px solid #f39c12;
+                                    text-align: center;
+                                    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.1);
+                                ">
+                                    <div style="
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        gap: 8px;
+                                        margin-bottom: 8px;
+                                    ">
+                                        <i class="material-icons" style="color: #e74c3c; font-size: 20px;">stop_circle</i>
+                                        <span style="font-weight: 600; color: #2c3e50; font-size: 14px;">FINALIZACIÓN</span>
+                                    </div>
+                                    <p style="
+                                        margin: 0;
+                                        color: #e74c3c;
+                                        font-weight: 600;
+                                        font-size: 16px;
+                                    ">${scheduled_maintenance['end_date']}</p>
+                                </div>
+                            </div>
+
+                            <div style="
+                                background: white;
+                                padding: 20px;
+                                border-radius: 12px;
+                                border-left: 4px solid #3498db;
+                                margin-bottom: 20px;
+                                box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+                            ">
+                                <div style="
+                                    display: flex;
+                                    align-items: flex-start;
+                                    gap: 12px;
+                                ">
+                                    <i class="material-icons" style="color: #3498db; font-size: 24px; margin-top: 2px;">info</i>
+                                    <div>
+                                        <h4 style="
+                                            margin: 0 0 8px 0;
+                                            color: #2c3e50;
+                                            font-size: 16px;
+                                            font-weight: 600;
+                                        ">Detalles del mantenimiento:</h4>
+                                        <p style="
+                                            margin: 0;
+                                            color: #34495e;
+                                            line-height: 1.6;
+                                            font-size: 15px;
+                                        ">${scheduled_maintenance['message']}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                gap: 12px;
+                                padding: 16px;
+                                background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+                                border-radius: 12px;
+                                color: white;
+                                box-shadow: 0 4px 16px rgba(238, 90, 82, 0.3);
+                            ">
+                                <i class="material-icons" style="font-size: 20px;">warning</i>
+                                <span style="
+                                    font-weight: 500;
+                                    font-size: 14px;
+                                    text-align: center;
+                                    line-height: 1.4;
+                                ">Durante este período el módulo estará temporalmente no disponible</span>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                    type: 'warning',
+                    confirmButtonText: '✓ Entendido',
+                    confirmButtonColor: '#f39c12',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    customClass: 'maintenance-alert-modal',
+                }).then(() => {
+                    // Marcar como mostrado por hoy
+                    localStorage.setItem(storageKey, 'shown');
+                }).catch(swal.noop);
+            }
+        }
+    };
+
+    function mensaje1() {
+        swal({
+                title: '¿Deseas cerrar sesión?',
+                type: 'warning',
+                reverseButtons: true,
+                showCancelButton: true,
+                cancelButtonColor: '#d33 ',
+                confirmButtonColor: '#3085d6',
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Cerrar sesión',
+                customClass:'swal-logout'
+            })
+            .then(() => sb_logout())
+            .catch(swal.noop);
+    };
+
+    function forceSincro() {
+            if (!navigator.onLine) {
+                $.notify({
+                    icon: 'warning',
+                    message: msg || 'Esta acción no se pudo completar. Necesitas estar conectado a Internet.'
+                }, {
+                    type: type || 'danger',
+                    placement: {
+                        from: 'top',
+                        align: 'right'
+                    },
+                    animate: {
+                        enter: 'animated animate__bounceInRight',
+                        exit: 'animated animate__bounceOutRight'
+                    }
+                });
+                return;
+            }
+            swal({
+                title: "¿Deseas sincronizar los datos?",
+                type: 'warning',
+                text: "Podría demorarse unos momentos.",
+                showCancelButton: true
+            }).then(function (e) {
+                //por ahora solo sincronizar esas
+                app.forceSincro([
+                    'clients',
+                    'categories',
+                    'products',
+                    'inventories',
+                    'taxes',
+                    'settings',
+                    'warehouses',
+                    'users',
+                    'guarnitions',
+                    'payment_platforms',
+                    'templates'
+                ]).then(() => {
+                    //recargar pagina
+                    //forzamos para que no tome en cuenta cache del nav
+                    window.location.reload(true);
+                });
+            }).catch(swal.noop)
+        };
+</script>
+<div id="main_sidebar" class="sidebar" data-active-color="#2f3848" style="--sidebar-custom-color:#2f3848;" data-background-color="bambu">
+    <div class="logo">
+        <div class="photo">
+            <img alt="company-logo" src="/app/assets/img/../../images/logo_bambucr_192.png">
+        </div>
+        <a href="/app/" class="simple-text logo-normal">
+            <span>BambuCR</span>
+                            <span class="maxwidth-name">Minisúper la Quinta Entrada</span>
+                    </a>
+    </div>
+    <div class="sidebar-wrapper">
+        <div class="user">
+            <div class="photo">
+                <img alt="user-avatar" src="/app/assets/img/default-avatar.png">
+            </div>
+            <div class="info">
+                <a data-toggle="collapse" href="#c-user" class="collapsed">
+                    <span>
+                        Kevin Phillips                        <b class="caret"></b>
+                    </span>
+                </a>
+                <div class="clearfix"></div>
+                <div class="collapse" id="c-user">
+                    <ul class="nav">
+                        <li>
+                            <a href="javascript:;" onclick="goToPage('editarUsuario');" onauxclick="goToPage('editarUsuario', 'tab');">
+                                <i class="material-icons">account_box</i>
+                                <span class="sidebar-normal"> Editar mi cuenta </span>
+                            </a>
+                        </li>
+                                                    <li>
+                                <a href="javascript:;" onclick="sb_logout(true);">
+                                    <i class="material-icons">compare_arrows</i>
+                                    <span class="sidebar-normal"> Cambiar de cuenta </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/app/modules/access_tokens/">
+                                    <i class="material-icons">perm_contact_calendar</i>
+                                    <span class="sidebar-normal">Control de acceso</span>
+                                </a>
+                            </li>
+                                                <li>
+                            <a href="javascript:;" onclick="sb_logout()">
+                                <i class="material-icons">logout</i>
+                                <span class="sidebar-normal"> Cerrar sesión </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <ul class="nav">
+            <li>
+                <a href="javascript:;" onclick="goToPage('dashboard');" onauxclick="goToPage('dashboard', 'tab');">
+                    <i class="material-icons">dashboard</i>
+                    <p>Inicio </p>
+                </a>
+            </li>
+                                <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                                                                    <a href="#" onclick="sidebarClick('carrito-compras','https://bambucr.app/tienda/Minisuper_la_Quinta_Entrada' )">
+                                                                <i class="material-icons">
+                                        shopping_cart                                    </i>
+                                    <p>
+                                        Tienda en línea                                    </p>
+                                    </a>
+                                            </li>
+                                    <li >
+                                                            <a data-toggle="collapse" href="#inventario">
+                                        <i class="material-icons">
+                                            inventory                                        </i>
+                                        <p>
+                                            Productos y servicios                                            <b class="caret"></b>
+                                        </p>
+                                    </a>
+                                    <div class="collapse" id="inventario">
+                                        <ul class="nav fondo_sidebar">
+                                                                                                <li >
+                                                                                                                        <a class="sidebar-mini" href="/app/modules/productos/?tt=adm-pro">
+                                                                                                                        <i class="material-icons" style="line-height: 28px;">
+                                                                    dvr                                                                </i>
+                                                                <p>
+                                                                    Listado de productos                                                                    <span class="material-icons" style="float:right">navigate_next</span>
+                                                                </p>
+                                                                </a>
+                                                    </li>
+                                                                                                    <li >
+                                                                                                                        <a class="sidebar-mini" href="/app/modules/productos/?tt=adm-categories">
+                                                                                                                        <i class="material-icons" style="line-height: 28px;">
+                                                                    view_list                                                                </i>
+                                                                <p>
+                                                                    Listado de categorias                                                                    <span class="material-icons" style="float:right">navigate_next</span>
+                                                                </p>
+                                                                </a>
+                                                    </li>
+                                                                                        </ul>
+                                    </div>
+                                            </li>
+                                    <li >
+                                                            <a data-toggle="collapse" href="#ventas">
+                                        <i class="material-icons">
+                                            local_offer                                        </i>
+                                        <p>
+                                            Ventas                                            <b class="caret"></b>
+                                        </p>
+                                    </a>
+                                    <div class="collapse" id="ventas">
+                                        <ul class="nav fondo_sidebar">
+                                                                                                <li >
+                                                                                                                        <a class="sidebar-mini" href="/app/modules/productos/consulta.php">
+                                                                                                                        <i class="material-icons" style="line-height: 28px;">
+                                                                    price_change                                                                </i>
+                                                                <p>
+                                                                    Consulta de precios                                                                    <span class="material-icons" style="float:right">navigate_next</span>
+                                                                </p>
+                                                                </a>
+                                                    </li>
+                                                                                        </ul>
+                                    </div>
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                            </li>
+                                    <li >
+                                                            <a data-toggle="collapse" href="#reportes">
+                                        <i class="material-icons">
+                                            equalizer                                        </i>
+                                        <p>
+                                            Reportes                                            <b class="caret"></b>
+                                        </p>
+                                    </a>
+                                    <div class="collapse" id="reportes">
+                                        <ul class="nav fondo_sidebar">
+                                                                                                <li >
+                                                                                                                        <a class="sidebar-mini" href="/app/modules/productos/consulta.php">
+                                                                                                                        <i class="material-icons" style="line-height: 28px;">
+                                                                    price_change                                                                </i>
+                                                                <p>
+                                                                    Consulta de precios                                                                    <span class="material-icons" style="float:right">navigate_next</span>
+                                                                </p>
+                                                                </a>
+                                                    </li>
+                                                                                        </ul>
+                                    </div>
+                                            </li>
+                                        <a class="divider"></a>
+                        <li class="dark-mode-toggle">
+                <a href="#" class="hidden-opcion-menu text-header" title="Cambiar Apariencia"
+                    onclick="app.toggleDarkMode(event)">
+                    <i class="material-icons light-mode">light_mode</i>
+                    <i class="material-icons dark-mode">dark_mode</i>
+                    <p class="hidden-opcion-menu"> Cambiar apariencia </p>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" onclick="goToPage('asistencia');" onauxclick="goToPage('asistencia', 'tab');">
+                    <i class="fa fa-circle-o" style="color:#a20dff;"></i>
+                    <p>Centro de ayuda</p>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" onclick="modalSupport(21);">
+                    <i class="fa fa-circle-o" style="color:#f39c12;"></i>
+                    <p> Soporte técnico</p>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" onclick="goToPage('tickets')">
+                    <i class="fa fa-circle-o" style="color:#00c0ef;"></i>
+                    <p> Tickets</p>
+                </a>
+            </li>
+            
+            <li>
+                <a href="javascript:;" onClick="forceSincro()">
+                    <i class="material-icons">sync</i>
+                    <p> Forzar sincronización</p>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" onClick="mensaje1()">
+                    <i class="fa fa-sign-out" style="color:#dd4b39;"></i>
+                    <p> Cerrar sesión </p>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!-- notice modal -->
+<div class="modal fade" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-notice">
+        <div class="modal-content" style="border-radius:20px;border:10px solid #00b4cc85">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel" style="font-weight:bold;text-align:center"><span style="border-bottom:inset">¡Utiliza el Centro de ayuda!</span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="instruction">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Experimenta tener un soporte directo, rápido, a la mano y fiable. <br><br>
+                                Dentro de este módulo nos brindara ayuda directa sobre los módulos del sistema, intuitivita y guías de resolución de problemas o dudas del sistema, manejo previo e intensivos sobre el sistema y su contenido; catalogado con sus respectivos módulos y preguntas directas con su respectiva respuesta e inclusive videos breves explicando mejor y a la mano con la respuesta, con la opción de copiar en el portapapeles y también filtrar alguna pregunta deseada en el buscador superior derecho; dentro de este módulo, encontraras todo tipo de respuesta a tus necesidades, de todos los módulos y funcionalidades dentro del sistema. <br><br>
+                                Esta se ubica en el navegador lateral izquierda, al final de las opciones como "Centro de ayudas" con icono circular morado.<br><a href="/app/modules/ayuda/" class="btn btn-primary btn-sm" target="_blank">Ir a centro de ayuda</a><br><br>
+                                <strong>Importante recalcar:</strong> Algunos accesos, acciones, modificaciones, control y módulos no estarán visualizados y denegados a Usuarios con roles o permisos designados por el Súper Administrador de la empresa. <br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-center">
+                <button type="button" class="btn btn-info btn-round" data-dismiss="modal" onclick="close_noticeModal(102)">¡Entendido!</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--  new notice modal -->
+
+
+
+
+
+
+
+<!-- SUPPORT MODAL -->
+<div id="form_support_info"></div>
+
+<!--   Core JS Files   -->
+<script src="/app/assets/js/jquery-3.2.1.min.js" type="text/javascript"></script>
+<script src="/app/assets/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/app/assets/js/material.min.js" type="text/javascript"></script>
+<script src="/app/assets/js/vue.min.js?v=2.7.16" type="text/javascript"></script>
+<script src="/app/assets/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+<script src="/app/assets/js/arrive.min.js"></script>
+<!-- Forms Validations Plugin -->
+<script src="/app/assets/js/jquery.validate.min.js"></script>
+<script src="/app/js/validaciones.js"></script>
+<!--  Plugin for Date Time Picker and Full Calendar Plugin-->
+<script src="/app/assets/js/moment.min.js"></script>
+<!--  Notifications Plugin, full documentation here: http://bootstrap-notify.remabledesigns.com/    -->
+<script src="/app/assets/js/bootstrap-notify.min.js"></script>
+<!--  Plugin for the DateTimePicker, full documentation here: https://getdatepicker.com/4/ -->
+<script src="/app/assets/js/bootstrap-datetimepicker.js?v=4.17.37"></script>
+<!-- Sliders Plugin, full documentation here: https://refreshless.com/nouislider/ -->
+<script src="/app/assets/js/nouislider.min.js"></script>
+<!-- Plugin for IndexedDB Storage-->
+<script src="/app/assets/js/dexie.min.js?v=4.0.8"></script>
+<!--  Plugin for Select, full documentation here: https://developer.snapappointments.com/bootstrap-select/ -->
+<script src="/app/assets/js/jquery.select-bootstrap.js"></script>
+<!--  DataTables.net Plugin, full documentation here: https://datatables.net/    -->
+<script src="/app/assets/js/jquery.datatables.js"></script>
+<!-- Sweet Alert 2 plugin, full documentation here: https://sweetalert2.github.io/v7.html -->
+<script src="/app/assets/js/sweetalert2.js?v=1.0.1"></script>
+<!-- Plugin for Fileupload, full documentation here: http://www.jasny.net/bootstrap/javascript/#fileinput -->
+<script src="/app/assets/js/jasny-bootstrap.min.js"></script>
+<!-- Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+<script src="/app/assets/js/jquery.tagsinput.js"></script>
+<!-- Material Dashboard javascript methods -->
+<script src="/app/assets/js/app-dashboard.min.js?v=1.0.4"></script>
+<!-- Material Dashboard DEMO methods, don't include it in your project! -->
+<script src="/app/assets/js/demo.js"></script>
+<!-- Libreria para atajos de teclado -->
+<script src="/app/assets/js/hotkeys.min.js?v=3.13.9"></script>
+<!-- Libreria para calcular dinero -->
+<script src="/app/assets/js/dinero.min.js"></script>
+<!-- Libreria para imprimir divs https://github.com/jasonday/printThis -->
+<script src="/app/assets/js/printThis.min.js"></script>
+<!-- Dependencias para Navedi -->
+<script src="/app/assets/js/jsrsasign-rsa-min.js"></script>
+<script src="/app/assets/js/navedi.min.js?v=2.2.4"></script>
+
+<!-- Dependencia para Liquid https://liquidjs.com/index.html -->
+<script src="/app/assets/js/liquid.min.js?v10.9.4"></script>
+<!-- Dependencia para Flexsearch https://github.com/nextapps-de/flexsearch -->
+<script src="/app/assets/js/flexsearch.bundle.js"></script>
+<!-- Libreria para generar svg de codigos qr https://github.com/datalog/qrcode-svg/ -->
+<script src="/app/assets/js/qrcode.min.js"></script>
+<script src="/app/assets/js/pusher.min.js?v=8.0.1"></script>
+ <!-- script de tinymce para dar opciones de formato para los textos,  documentacion en https://www.tiny.cloud/docs/tinymce/6/ -->
+ <!-- en caso de necesitar insertar o obtener el texto https://www.tiny.cloud/blog/how-to-get-content-and-set-content-in-tinymce/-->
+<script src="/app/assets/js/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- DOOMPurify para limpiar html -->
+<script src="/app/assets/js/domPurify.min.js"></script>
+
+
+<script>
+    const serverURL = 'https://bambucr.app';
+    const rootURL = '/../';
+    const logoPath = '';
+    const isAndroid = false;
+    const idCompany = 21;
+    const idCompanyP = 21;
+    const idUser = 102;
+    const uuidCompany = 'cf5063a97b4c414a970b0ba5a3882871';
+    const uuidUser = 'c3b4469116eb42d8adcdb064ca9bb5e7';
+    const hierarchyUser = 2;
+    const pusherApiKey = '029d296470ec72d8f65d';
+    const pusherCluster = 'mt1';
+    const permisos = {"bitacora_caja":0,"permiso_para_retiros":false,"cerrar_caja_unificada":false,"cerrar_caja_comandas":false,"cierre_caja_sin_arqueo":false,"permitir_reabrir_caja":false,"permitir_cambiar_cierre_caja":false,"permitir_ver_resumen_caja":0,"permitir_ver_utlidades_caja":false,"permitir_imprimir_resumendetalle_caja":false,"permitir_enviar_resumen_de_caja_por_email_con_caja_abierta":false,"permitir_editar_arqueo":false,"show_apertura":2,"verificar_arqueo":false,"facturar":false,"facturar_credito":false,"facturar_apartado":false,"facturar_proforma":false,"facturar_preventa":false,"permitir_factura_electronica":false,"solo_comanda":false,"permitir_limpiar_mesa":false,"permitir_precio_guarnicion":true,"access_to_pending_orders":1,"editar_proforma":false,"apartar_proformas":false,"no_inventario_proforma":false,"quitar_productos_proforma":false,"proformas_en_ruta":false,"exigir_elegir_cliente_pv":false,"monto_mayor_tarjeta":false,"ver_sugerencias":false,"buscar_solo_codigo":false,"comodin":false,"no_inventario":false,"ver_columna_costo":false,"ver_columna_utilidad":false,"ver_margen_ganancia":false,"limpiar_producto":false,"abrir_cajon_f6":false,"precios":false,"max_descuento":5,"comprobante_pago_obligatorio":false,"cambiar_vendedor":false,"facturar_sin_caja":false,"ver_boton_pre_factura":false,"facturar_desde_otra_empresa":false,"mostrar_configuraciones_en_punto_venta":false,"editar_impuesto_en_punto_de_venta":false,"no_permitir_facturar_con_cierre_anterior":false,"eliminar_preventa":false,"elegir_usuarios_vendedor_sa":true,"ver_ultimo_doc_pv":false,"ver_proformas_pv":false,"ver_clientes_vendedor":false,"nota_credito":false,"nota_credito_en_caja_de_venta":false,"perm_eliminar_docs_ventas":false,"ver_reporte_de_ventas":false,"reporte_de_ventas_solo_usuario":false,"ver_total_servicio_cliente":false,"ver_utilidad_excel":false,"ver_costo_excel":false,"ver_reporte_de_compras":false,"ver_reporte_de_gastos":false,"ver_reporte_de_recepcion":false,"ver_reporte_de_descuentos":false,"ver_estado_de_resultados":false,"ver_solo_proformas_propias":false,"descargar_facturas_en_lote":false,"descargar_reporte_excel":false,"cambiar_vendedor_lista_ventas":false,"compras":false,"permitir_guardar_compra_sin_caja":false,"purchase_another_date":false,"crear_gastos":false,"permitir_editar_compra":false,"permitir_editar_gasto":false,"permitir_editar_metodo_pago":false,"permitir_editar_orden_compra":false,"ver_cuentas":false,"ver_cuentas_solo_ruta":false,"permitir_abonar_cuentas_cobrar":false,"permitir_cerrar_cuentas_cobrar":false,"ingresar_cuentas_por_pagar":false,"ver_inventario":true,"crear_producto":false,"modificar_producto":1,"acceso_tab_datos_principales":true,"acceso_tab_utilidades_costos":false,"acceso_tab_inventario_tallas":false,"acceso_tab_tienda_linea":false,"acceso_tab_guarniciones":false,"acceso_tab_componentes":false,"acceso_tab_historial":true,"bodegas":true,"administrar_proveedores":false,"administrar_categorias_productos":true,"administrar_bodegas":false,"redondear_precios":false,"ver_historial_precios_productos":false,"ver_productos_vendidos":0,"ver_productos_con_limite_existencia":true,"ver_movimientos_productos":false,"ver_promociones":false,"acceder_trasnf_inv_bodegas":false,"acceder_rep_trasnf_inv_bodegas":false,"impedir_acceder_lista_productos":false,"alistar_rutas":false,"cargar_camion":false,"permitir_eliminar_proformas_cargadas":false,"ver_todas_cargas_camion":false,"ver_servicio_mantenimiento":false,"acces_out_work_schedules":false,"permitir_ingresar_tokens_acceso":false,"permitir_registrar_acceso_sin_token":false,"permitir_ver_accesos_tokens":false,"permitir_editar_permisos":true,"permitir_ingresar_a_planillas":false,"ingresar_carrito_compras":true,"show_company_graphics":false,"cobros_agua":false,"permitir_crm":false,"crear_cliente":false,"contratos":false,"modificar_cliente":false,"eliminar_cliente":false,"permitir_exoneracion":true,"solicitar_datos_de_contacto":false,"permitir_editar_expendientes":0,"delete_bills":false,"edit_bills":false,"access_recurring_bills":false,"delete_own_bills":false,"edit_own_bills":false,"make_payments":false};
+    const is_admin = '';
+    const company_settings = {"metodosPago":[],"save_like_discount":0,"product_commission_percentage":0,"use_max_discount":0,"default_max_discount_percentage":100,"use_buy_cost":1,"type_calc_cost":1,"use_tallas":0,"use_order_ticket":0,"use_price_modal":0,"use_amount_modal":0,"use_customer_service":0,"company_service":10,"sum_price_guarnition":0,"restaurant_lockdown":0,"hide_subaccount_number":0,"use_content":0,"default_content_measure":9,"barcode_option":-1,"select_seller":0,"inventory_transfer_confirmation":0,"use_provided_utility":"","barcode_5_digits":0,"req_auth_users":0,"save_product_supplier":1,"verificar_producto_agregado":0,"rnd_denomination":50,"rnd_price_pv":1,"default_sort_order":2,"rnd_value_pv":5,"rnd_printing_amount":2,"show_worker_name":1,"no_fe_without_client":0,"show_full_report":0,"no_credit_new_clients":0,"show_products_report":0,"autofill_cash_closing_balance":1,"show_rejected_bills":1,"stamp_total_invoice":0,"read_romana":0,"update_product_price":0,"detail_cost":0,"view_img_punto_venta":1,"enable_product_images_on_printouts":0,"generate_warehouse_transfer_invoice":0,"use_marca_product":0,"use_linea_product":0,"use_composite":1,"qty_in_enter":"","price_without_tax":0,"printCabys":0,"printUPC":0,"search_first":2,"search_prods_cat_rest":1,"use_express":0,"size_print_command_restaurant_bt":58,"size_print_invoice_bt":80,"express_cost":0,"presale":0,"no_global_discount":0,"reduce_composite":0,"reset_seller":0,"general_change_seller_invoice":0,"other_company_quote":0,"reason_mod_product":0,"print_command_directly":0,"activate_open_cash":1,"company_decimals":8,"fe_with_client_or_card":0,"fe_solo_cash":0,"provisional_vouchers_all_documents":0,"pedir_metodo_pago":0,"hide_f7":0,"send_mails_no_fe":1,"usar_apartados":0,"show_coupon":0,"hide_total_proforma_maintenance":"","omit_cost_or_inv_reception":1,"allow_single_use_clients":0,"type_search_reception":1,"stamp_total_invoice_name":"","remover_cliente_al_facturar_provisional":0,"show_no_fe_button":1,"hide_default_templates":0,"require_observation_nc":0,"show_weight_report":0,"no_group_products_measurable":0,"hide_company_info":0,"show_product_desc":0,"bill_from_all_warehouses":0,"use_payment_platform":0,"use_commissions_by_sales":0,"modo_fi_abono_cobrar":0,"discount_over_utility":0,"omit_cost_by_default":0,"autofill_description_reception":0,"verify_negative_utility":1,"show_price_no_iva":0,"show_composite_product_desc":0,"allow_duplicate_clients":0,"no_repeat_voucher":0,"length_voucher":6,"group_clients_by_nid":0,"allow_duplicate_suppliers":0,"update_cost_composite":1,"use_restrict_units_sales":0,"use_restaurant_service":0,"send_mails_abono":0,"save_product_in_all_warehouses":0,"type_show_terms_conditions":"1"};
+    const idWarehouse = 24;
+    const useRoutes ='';
+    const useShoppingCart = '1';
+    const useReparaciones = '';
+    const IMAGES_URL = 'https://assets.bambucr.app/';
+    const _SERVER = 'bambucr-ash-1';
+    const APP_NAME = 'BambuCR';
+    const VUE_VERSION = 2;
+    const _TOKEN = '3a4ff8d31e4359ff9fc3';
+    const SYSAD = '';
+
+    </script>
+<script src="/app/js/app.js?v=3.13.18"></script>
+<!-- Se comenta debido a que pushier tiene un limite de conexiones, entonces estamos buscando alternativa.
+
+<script>
+(function() {
+    if (!pusherApiKey || !pusherCluster || !idCompany || useShoppingCart != '1') return;
+    try {
+        var _cartPusher = new Pusher(pusherApiKey, {
+            cluster: pusherCluster,
+            channelAuthorization: { endpoint: rootURL + 'app/user/auth.php' }
+        });
+        var _cartChannel = _cartPusher.subscribe('private-' + idCompany + '-notifications');
+        window._globalCartNotifPusher = _cartPusher;
+        window._globalCartNotifChannel = _cartChannel;
+
+        _cartChannel.bind('new-notification', function(data) {
+            // Solo notificaciones de tipo carrito, por el momento. cambiar cuando sea necesario
+            if (data.type == 'shopping_cart_order' && useShoppingCart != '1') return;
+
+            //si es de carrito pero no tiene permisos para ver proformas, no mostrar notificación
+            var tienePermisoProformas = (permisos.ver_proformas_pv === undefined || permisos.ver_proformas_pv === null) ? true : !!permisos.ver_proformas_pv;
+            if (!tienePermisoProformas && !is_admin) return;
+
+            // Determinar si estamos en POS (el POS maneja su propio toast)
+            if (window._posCartNotifActive) return;
+
+            // Construir botón "Ver pedido"
+            var idBill = (data.data && data.data.id_sales_bill) ? data.data.id_sales_bill : 0;
+            var posUrl = rootURL + 'app/modules/punto_de_venta/?action=invoice&id=' + idBill;
+            var orderButton = idBill
+                ? '<a href="' + posUrl + '" class="btn btn-sm btn-info pull-right" style="position:absolute;right:10px;margin-top:-16px;">Ver pedido</a>'
+                : '';
+
+            $.notify(
+                {
+                    title: data.title || '¡Nuevo pedido!',
+                    icon: 'shopping_cart',
+                    message: data.message || 'Se ha recibido un nuevo pedido desde la tienda en línea.',
+                },
+                {
+                    type: 'warning',
+                    delay: 15000,
+                    z_index: 10000,
+                    placement: { from: 'bottom', align: 'left' },
+                    template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert">' +
+                        '<button type="button" aria-hidden="true" class="close" style="color:initial;top:initial" data-notify="dismiss">×</button>' +
+                        '<i data-notify="icon" class="material-icons"></i>' +
+                        '<span data-notify="title"><strong>{1}</strong></span>' +
+                        '<span data-notify="message">{2}</span>' +
+                        orderButton +
+                        '</div>',
+                }
+            );
+
+            try {
+                var audio = new Audio(rootURL + '/app/assets/sounds/notificationSoud.wav');
+                audio.play().catch(function() {});
+            } catch (e) {}
+        });
+    } catch (e) {
+        console.error('Error al inicializar notificaciones globales de carrito:', e);
+    }
+})();
+</script> -->
+
+        <div class="main-panel" style="height: 100%;" id="vIndex">
+            <nav class="navbar navbar-transparent" style="padding: 10px 0 5px;">
+                <div class="container-fluid fondo-nav">
+                    <div class="navbar-minimize">
+                        <button id="minimizeSidebar" class="btn btn-round btn-white btn-fill btn-just-icon">
+                            <i class="material-icons visible-on-sidebar-regular">more_vert</i>
+                            <i class="material-icons text-header visible-on-sidebar-mini">view_list</i>
+                        </button>
+                    </div>
+                    <div class="navbar-header text-header">
+                        <button type="button" class="navbar-toggle text-header mg-toggle mb-toggle-movil"
+                            data-toggle="collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+
+                        <a href="#" class="mobile-dark-toggle dark-mode-toggle navbar-brand height-mode" title="Registro de novedades" :class="{ 'animation-pulse': count_new_version > 0 }"
+                            @click="getVersions()">
+                            <i class="material-icons">source_notes</i>
+                            <span id="nt-log" v-if="count_new_version > 0" class="notification-circle">{{ count_new_version }}</span>
+                        </a>
+
+                        <a href="#" class="mobile-dark-toggle dark-mode-toggle navbar-brand height-mode"
+                            onclick="app.toggleDarkMode(event)" style="padding: 10px 5px;">
+                            <i class="material-icons light-mode">light_mode</i>
+                            <i class="material-icons dark-mode">dark_mode</i>
+                        </a>
+
+                        <a href="javascript:;" class="text-header sync-movil" onclick="clearSiteData()"><i
+                                class="material-icons" style="line-height: 20px;">sync_problem</i></a>
+
+
+                        <div class="flex-profile" style="display:none" :style="{display: 'flex'}">
+                            <div class="dashboard-logo facturecr-logo" v-if="idCompany > 0">
+                                <img v-if="logo_url" class="img-circle size-img-index" :src="logo_url" alt="logo-empresa">
+                                <i v-else class="material-icons" style="font-size: 43px;">store</i>
+                            </div>
+                            <div class="name-mini text-header margin-name" id="nameCompanyHome"
+                                style="margin-left: 5px;">
+                                <h3
+                                    class="h3-home maxwidth-name ">
+                                    Minisúper la Quinta Entrada</h3>
+                                                                    <div style="display: flex;">
+                                        <h6 class="h6-home maxwidth-name">MINISUPER LA QUINTA ENTRADA</h6>
+                                    </div>
+                                                            </div>
+                        </div>
+                    </div>
+                    <div style="display:none" :style="{display: 'block'}">
+                        <div v-if="idCompany != 0">
+                            <div class="collapse navbar-collapse" style="padding-right: 15px!important;">
+                                <ul class="nav navbar-nav navbar-right">
+                                    
+
+                                    <li class="dark-mode-toggle hidden-sm hidden-xs">
+                                        <a href="#" class="hidden-opcion-menu text-header" title="Registro de novedades" :class="{ 'animation-pulse': count_new_version > 0 }"
+                                            @click="getVersions()">
+                                            <i class="material-icons">source_notes</i>
+                                            <span id="nt-log" v-if="count_new_version > 0" class="notification-circle"></span>
+                                        </a>
+                                    </li>
+                                    <li class="dark-mode-toggle hidden-sm hidden-xs">
+                                        <a href="#" class="hidden-opcion-menu text-header" title="Cambiar Apariencia"
+                                            onclick="app.toggleDarkMode(event)" style="margin-top: -1px;">
+                                            <i class="mt-0 material-icons light-mode" style="font-size: 17px;">light_mode</i>
+                                            <i class="material-icons dark-mode">dark_mode</i>
+                                        </a>
+                                    </li>
+                                    <li id="pending-documents" style="display: none;">
+                                        <a href="#" @click="pendingDocsMsg()">
+                                            <i class="material-icons text-cloud">cloud_queue</i>
+                                            <span class="badge" style="background:#da190b" id="qty-pending-docs"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="dropdown-toggle margin-mobile" data-toggle="dropdown">
+                                            <i class="material-icons color-sb-opciones"
+                                                style="margin-top:-3px;">menu</i><span class="color-sb-opciones">Más
+                                                opciones</span>
+                                        </a>
+                                        <ul class="dropdown-menu" style="top: 94%;">
+                                            <li><a href="javascript:;" class="button_sett"
+                                                    onclick="goToPage('editarUsuario');" style="margin-left: 5px;"><i
+                                                        class="material-icons"
+                                                        style="line-height: 20px;">border_color</i> Editar mi cuenta</a>
+                                            </li>
+                                            <li><a href="javascript:;" class="button_sett only-desk"
+                                                    onclick="clearSiteData()" style="margin-left: 5px;"><i
+                                                        class="material-icons" style="line-height: 20px;">cached</i>
+                                                    Limpiar cache</a></li>
+                                            <li><a href="javascript:;" class="button_sett"
+                                                    onclick="openModal(idCompany)" style="margin-left: 5px;"><i
+                                                        class="material-icons" style="line-height: 20px;">payment</i>
+                                                    Registrar pago</a></li>
+                                        </ul>
+                                    </li>
+
+                                    <li class="dropdown" v-show="idCompany && id_cobro">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <i class="material-icons">notifications</i>
+                                            <span class="notification">1</span>
+                                            <p>
+                                                Notificación
+                                                <b class="caret"></b>
+                                            </p>
+                                        </a>
+                                        <!-- <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="javascript:;" onclick="mostrar_cobro()">Usted tiene un cobro  de ₡</a>
+                                                </li>
+                                            </ul> -->
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div v-if="!idCompany">
+                            <div class="collapse navbar-collapse">
+                                <ul class="nav navbar-nav navbar-right text-header">
+                                    <li class="dark-mode-toggle" style="display:flex;">
+                                        <a href="#" onclick="app.toggleDarkMode(event)" class="text-header">
+                                            <i class="material-icons light-mode">light_mode</i>
+                                            <i class="material-icons dark-mode">dark_mode</i><span
+                                                class="hidden-md hidden-lg"
+                                                style="position: relative;top: 5px;">Apariencia</span>
+                                        </a>
+                                    </li>
+                                                                            <li>
+                                            <a href="modules/configuracion/index.php?tt=add"
+                                                class="dropdown-toggle text-header">
+                                                <i class="material-icons" style="margin-top: -4px;">add_box</i>Crear empresa
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div v-if="idCompany">
+
+                <div class="content mt-luces">
+                    <!-- <div class="dashboard-header" v-bind:class="{ 'needs-payment': boton_pago.length > 0 }">
+
+                        <div class="header-content text-header">
+
+                        </div>
+
+                    </div> -->
+                    <!--<hr class="hr-color">
+                    <hr class="hr-color1">
+                    <hr class="hr-color2">
+                    <hr class="hr-color3">
+                    <hr class="hr-color4">-->
+                    <div class="container-fluid">
+                        <div class="fluid-movil size-icon">
+                            <button class="btn btn-simple btn-default btn-just-icon desk-disp-only hovCol"
+                                href="javascript:;" @click="mensajeTienda()">
+                                <svg class="icon">
+                                    <use href="#icon-cart-simple-add" />
+                                </svg>
+                            </button>
+                            <button class="btn btn-simple btn-default btn-just-icon desk-disp-only hovCol" type="button"
+                                onclick="modalSupport(21);">
+                                <svg class="icon">
+                                    <use href="#icon-headphones-mic" />
+                                </svg>
+                            </button>
+
+                            <div class="float-bell size-icon" style="margin-top:0px;">
+                                <ul style="padding-left: 25px;margin-bottom: 0px;">
+                                    <li class="dropdown-container" style="overflow: visible;list-style-type: none;">
+                                        <button id="btnNoti" @click.prevent="toggleDropdown($event)"
+                                            data-dropdown="notificationMenu"
+                                            class="btn btn-simple btn-default btn-just-icon expanded notification-group hovCol">
+
+                                            <svg class="icon notifBell" v-if="total_notifications > 0" id="">
+                                                <use href="#icon-alarm-1" />
+                                            </svg>
+                                            <svg class="icon" id="" v-else>
+                                                <use href="#icon-alarm-2" />
+                                            </svg>
+
+                                            <span v-if="total_notifications > 0" class="notification"
+                                                style="font-size:11px;">{{total_notifications}}</span>
+                                        </button>
+                                        <ul class="dropdown menu-not notif-mov" name="notificationMenu">
+                                            <li class="notification-padding sin-marker primary-text">
+                                                <div class="notification-tab">
+                                                    <h4 style="margin-top: 0px;">Notificaciones</h4>
+                                                </div>
+                                                <ul class="notification-list color-noti" style="padding-left: 31px;">
+                                                    <div v-if="is_admin">
+                                                        <div v-if="peticiones_contrasena > 0 ">
+                                                            <li class="notification-list-item mb-noti-message simb"
+                                                                @click='modalChangePassword()'>
+                                                                <p class="message-noti"><b>¡Existen solicitudes de
+                                                                        contraseña!</b>
+                                                                    Existen {{peticiones_contrasena}} solicitudes de
+                                                                    contraseña.</p>
+                                                                <div class="item-footer">
+                                                                    <a href="#">
+                                                                        <span><b>Ver solicitudes de
+                                                                                contraseña</b></span>
+                                                                    </a>
+                                                                </div>
+                                                            </li>
+                                                        </div>
+                                                        <div v-else>
+                                                            <li class="notification-list-item mb-noti-message simb"
+                                                                @click='modalChangePassword()'>
+                                                                <p class="message-noti">¡No existen solicitudes de
+                                                                    contraseña!</p>
+                                                                <div class="item-footer">
+                                                                    <a href="#">
+                                                                        <span><b>Ver y crear solicitudes de
+                                                                                contraseña</b></span>
+                                                                    </a>
+                                                                </div>
+                                                            </li>
+                                                        </div>
+                                                        <div v-if="peticiones_caja > 0 ">
+                                                            <li class="notification-list-item mb-noti-message simb"
+                                                                @click='modalVerifyCashiers()'>
+                                                                <p class="message-noti"><b>Verificar cierre</b>
+                                                                    Existen {{peticiones_caja}} verificaciones de
+                                                                    cierre.</p>
+                                                                <div class="item-footer">
+                                                                    <a href="#">
+                                                                        <span><b>Ver verificaciones de
+                                                                        cierre</b></span>
+                                                                    </a>
+                                                                </div>
+                                                            </li>
+                                                        </div>
+                                                    </div>
+                                                    <div v-if="total_carrito > 0 && useShoppingCart ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click='goTo("proformas")'>
+                                                            <p class="message-noti">¡Tienes nuevas proformas de la
+                                                                tienda en línea! Se han detectado {{total_carrito}}
+                                                                proformas.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver proformas</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="total_pending_movements > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click='goTo("report_trans")'>
+                                                            <p class="message-noti">¡Existen transferencias de
+                                                                inventario pendientes! Se han detectado
+                                                                {{total_pending_movements}} transferencias de inventario
+                                                                pendientes.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver transferencias</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="total_apartados_vencidos > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="show_credits(3)">
+                                                            <p class="message-noti"><b>¡Existen
+                                                                    {{total_apartados_vencidos}} apartados vencidos!</b>
+                                                                Se han detectado {{total_apartados_vencidos}} apartados
+                                                                vencidos o cerca de su fecha de vencimiento.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver apartados</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="total_credito_vencidos > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="show_credits(1)">
+                                                            <p class="message-noti"><b>¡Existen
+                                                                    {{total_credito_vencidos}} creditos vencidos!</b>
+                                                                Se han detectado {{total_credito_vencidos}} creditos
+                                                                vencidos o cerca de su fecha de vencimiento.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver creditos</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div
+                                                        v-show="total_products > 0 && permisos.ver_productos_con_limite_existencia">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click='goTo("productos")'>
+                                                            <p class="message-noti"><b>¡Productos en punto de
+                                                                    pedido!</b> Se han detectado {{total_products}}
+                                                                artículos con su inventario en punto de pedido.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver productos</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="total_contracts > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="goTo('contractos')">
+                                                            <p class="message-noti"><b>¡Existen {{total_contracts}}
+                                                                    contratos morosos!</b> Se han detectado
+                                                                {{total_contracts}} contratos que su fecha de expiración
+                                                                se ha sobrepasado sin finalizar el contrato.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver contratos</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-show="total_contracts_hoy > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            onclick='window.location.replace("modules/contratos/contratos.php?morosos=1")'>
+                                                            <p class="message-noti"><b>¡Hoy finalizan
+                                                                    {{total_contracts_hoy}} contratos!</b> Se han
+                                                                detectado {{total_contracts_hoy}} contratos que su fecha
+                                                                de expiración corresponden al día de hoy.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver contratos</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="events_today.length > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="today_events()">
+                                                            <p class="message-noti"><b>¡Existen eventos para hoy!</b>
+                                                                Existen {{events_today.length}} eventos agendados para
+                                                                hoy.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><b>Ver Eventos para hoy</b></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="events_warnings.length > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="pending_events()">
+                                                            <p class="message-noti"><b>¡Existen eventos en
+                                                                    recordatorio!</b>
+                                                                Existen {{events_warnings.length}} eventos con
+                                                                recordatorio</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><b>Ver Eventos con recordatorio</b></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="total_bulk_bills > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb">
+                                                            <p class="message-noti"><b>¡Existen {{total_bulk_bills}}
+                                                                    exportaciones de documentos completadas!</b>
+                                                                Se han detectado {{total_bulk_bills}} exportaciones de
+                                                                documentos completadas sin descargar.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver exportaciones</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <!-- Clientes que cumplen años -->
+                                                    <div v-if="clients_today.length > 0">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="showBirthdayClients()">
+                                                            <p class="message-noti"><b>Hay clientes cumpliendo años
+                                                                    hoy</b>
+                                                                Hay {{clients_today.length}} clientes cumpliendo años
+                                                                hoy.
+                                                            </p>
+                                                            <a href="#"><span><b>Ver clientes</b></span></a>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="no_cashier_bills > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="goTo('no_cashier_bills')">
+                                                            <p class="message-noti"><b>¡Existen {{no_cashier_bills}}
+                                                                    facturas sin caja!</b> Se han detectado
+                                                                {{no_cashier_bills}} facturas sin caja asignada en los ultimos 7 dias.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver facturas</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="no_send_bills > 0 ">
+                                                        <li class="notification-list-item mb-noti-message simb"
+                                                            @click="goTo('no_send_bills')">
+                                                            <p class="message-noti"><b>¡Existen {{no_send_bills}}
+                                                                    facturas pendientes y/o rechazadas!</b> Se han detectado
+                                                                {{no_send_bills}} facturas  pendientes y/o rechazadas en los ultimos 7 días.</p>
+                                                            <div class="item-footer">
+                                                                <a href="#"><span><b>Ver facturas</b></span></a>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <!-- Notificaciones persistentes (pedidos, etc.) -->
+                                                    <div v-if="persistent_notifications.length > 0">
+                                                        <div style="display:flex;justify-content:space-between;align-items:center;padding: 4px 0;">
+                                                            <small style="color:#888;font-weight:600;">Pedidos recientes</small>
+                                                            <a href="#" @click.prevent="markAllNotificationsRead()" style="font-size:11px;">
+                                                                Marcar todas como leídas
+                                                            </a>
+                                                        </div>
+                                                        <li v-for="notif in persistent_notifications"
+                                                            :key="notif.id_notification"
+                                                            class="notification-list-item mb-noti-message simb"
+                                                            @click="markNotificationRead(notif.id_notification)"
+                                                            style="position:relative;">
+                                                            <p class="message-noti">
+                                                                <b>{{ notif.title }}</b>
+                                                                {{ notif.message }}
+                                                            </p>
+                                                            <div class="item-footer" style="display:flex;justify-content:space-between;align-items:center;">
+                                                                <a v-if="notif.data && notif.data.id_sales_bill"
+                                                                    :href="'modules/punto_de_venta?action=edit&id=' + notif.data.id_sales_bill">
+                                                                    <span><b>Ver pedido</b></span>
+                                                                </a>
+                                                                <small style="color:#999;">{{ notif.created_at }}</small>
+                                                            </div>
+                                                        </li>
+                                                    </div>
+                                                    <div v-if="total_notifications==0 && persistent_notifications.length==0">
+                                                        <li class="notification-list-item mb-noti-message simb">
+                                                            <p class="message-2">No tienes notificaciones</p>
+                                                        </li>
+                                                    </div>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <button class="btn btn-simple btn-default btn-just-icon hovCol"
+                                title="Administrar eventos en el calendario" onclick="goToPage('calendario');">
+                                <svg class="icon">
+                                    <use href="#icon-calendar-date-2" />
+                                </svg>
+                            </button>
+                            <button class="btn btn-simple btn-default btn-just-icon hovCol"
+                                title="Personalizar opciones" @click="modalOpciones()">
+                                <svg class="icon">
+                                    <use href="#icon-settings-gear" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="center-footer-mov">
+                            <footer class="footer bott-0" style="border-top: none;padding-top: 0px;" >
+    <div class="container-fluid">
+        <nav>
+            <ul v-if="idCompany > 0">
+                <li class="pull-top-static" >
+                    <div class="description-block flex-cambio" id="div-footer-exchange-rate" style="display: none;">
+                        <!-- <svg class="icon"><use class="color-mov" href="#icon-currency-exchange-2-1-1"/></svg> -->
+                        <span class="material-icons" style="color: green;">currency_exchange</span>
+                        <span class="color-mov" style="font-weight: 500;" id="span-footer-exchange-rate"></span>
+                    </div>
+                </li>
+                <div class="pull-right-static" >
+                    <li v-if="!useShoppingCart && is_admin == '1'" class="pull-cart">
+                        <a style="padding: 0px;" href="modules/configuracion/update.php#/tienda-online">
+                            <div class="description-block cart-active-now">
+                                <span class="cart-text">¡ACTIVA TU TIENDA EN LÍNEA AHORA!</span>
+                                <svg class="icon"><use href="#icon-cart-simple-add"/></svg>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="mobile-disp-only">
+                        <button class="btn btn-simple" style="padding:5px 10px" type="button" onclick="goToPage('asistencia');">
+                            <svg class="icon"><use class="color-question" href="#icon-c-question-1-1"/></svg>
+                        </button>
+                    </li>
+                    
+                                        <li class="mobile-disp-only">
+                        <button class="btn btn-simple" style="padding:5px 10px" type="button" onclick="modalSupport(21);">
+                            <svg class="icon"><use href="#icon-headphones-mic"/></svg>
+                        </button>
+                    </li>
+                </div>
+            </ul>
+        </nav>
+    </div>
+</footer>                        </div>
+                        <div class="dashboard-items width-dash" v-if="idCompany">
+                            <div class="mobile-pay pull-right speech-bubble"
+                                v-bind:class="{ 'needs-payment': boton_pago.length > 0 }">
+                                <p v-html="mensaje_vencimiento"></p>
+                                <span v-html="boton_pago"></span>
+                            </div>
+                            <div class="col-md-12 padding-mobile-0 mb-mov">
+                                <opciones></opciones>
+                            </div>
+                                                    </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="!idCompany">
+                <!-- el component para le buscador de empresas cuando se va a iniciar sesion -->
+                <search></search>
+            </div>
+
+            <aside class="releases-drawer" @click="closeVersions" :class="{ 'open': estadoNovedades > 0, 'closing': estadoNovedades === 2 }">
+                <div class="releases-container" @click.stop="() => false">
+                    <div class="releases-header">
+                        <h4>Registro de novedades</h4>
+                        <button class="btn btn-simple btn-just-icon" @click="closeVersions">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </div>
+                    <div class="releases-content">
+                        <div class="releases-item" v-for="release in novedades">
+                            <div class="releases-item-header">
+                                <h5>{{ release.title }}</h5>
+                                <span class="releases-item-date">{{ release.version }}</span>
+                            </div>
+                            <div class="releases-item-modules">
+                                <span class="badge" :style="{ backgroundColor: release.color }" v-for="module in release.modulesList">{{ module }} </span>
+                            </div>
+                            <div class="releases-item-content" v-html="release.description"></div>
+                        </div>
+                        <div v-if="!novedadesTodasCargadas" class="releases-navigator">
+                            <button class="btn btn-simple" :disabled="consiguiendo" @click="cargarNovedades">
+                                <i class="material-icons">add</i> Cargar más resultados...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+
+        <div id="into">
+            <!-- Se deja en blanco para que no de error, ya que pro_movements ocupa #into-->
+        </div>
+
+    </div>
+    <script>
+        //Para tener control de en cual pagina esta el usuario
+        window.currentPage = 'index';
+    </script>
+    <script src="/app/assets/js/chart.min.js"></script>
+     <!-- Se importan porque se ocupan para que la modal funcione bien, ya que se esta reutilizando el codigo de pro_movements-->
+    <script src="/app/assets/js/jquery.autocomplete.min.js"></script>
+    <script src="/app/modules/productos/js/reporte_hojas_ajustes.js?v=1.0.5"></script>
+    <script type="module" src="js/indexJs.js?v=1.1.4"></script>
+    <script>
+        //variables para vue
+        let show_new_notice = "";
+        let accepted_terms = "";
+        let opcionesSidebar = "";
+        let opciones = "";
+                    //vienen desde el sidebar
+            show_new_notice = '0';
+            accepted_terms = '0';
+            opcionesSidebar = [{"name":"Mi Empresa","id":"mi-empresa","icon":"view_carousel","href":"","show":false,"options":[{"name":"Configuraci\u00f3n","icon":"settings","id":"configuracion","desc":"Configuraci\u00f3n de la empresa","href":"\/app\/modules\/configuracion\/update.php","show":false},{"name":"Usuarios","icon":"people","id":"usuarios","desc":"Administraci\u00f3n de usuarios","href":"\/app\/modules\/configuracion\/?tt=adm-usr","show":false},{"name":"Planillas","icon":"assignment","id":"planillas","desc":"Administraci\u00f3n de planillas","href":"\/app\/modules\/planillas\/","show":false},{"name":"Agenda","icon":"date_range","id":"agenda","desc":"Administraci\u00f3n de agenda","href":"\/app\/modules\/calendar\/","show":false},{"name":"CRM","id":"crm","desc":"Gesti\u00f3n y seguimiento de clientes","icon":"touch_app","href":"\/app\/modules\/crm\/","show":false},{"name":"Auditor\u00eda","icon":"fact_check","id":"auditoria","desc":"Ver las diferentes acciones hechas por los usuarios","href":"\/app\/modules\/auditoria\/","show":false},{"name":"Contabilidad","icon":"paid","id":"contabilidad","desc":"M\u00f3dulo de contabilidad","href":"\/app\/modules\/contabilidad\/","show":false},{"name":"Control de acceso","icon":"perm_contact_calendar","id":"token","desc":"Generar token de acceso","href":"\/app\/modules\/access_tokens\/","show":true}]},{"name":"Centro de cobros","id":"centro-cobros","icon":"business_center","desc":"Control de cobros recurrentes","href":"\/app\/modules\/centro_cobros\/","show":false},{"name":"Planillas","id":"planillas","desc":"Administraci\u00f3n de planillas","icon":"assignment","href":"\/app\/modules\/planillas\/","show":false},{"name":"Promociones","id":"promociones","desc":"Promociones","icon":"local_offer","href":"\/app\/modules\/promociones\/","show":false},{"name":"Cotizaciones","id":"cotizaciones","desc":"Cotizar por medidas","icon":"straighten","href":"\/app\/modules\/cotizaciones\/","show":false},{"name":"Cronograma de trabajo","id":"work_groups_schedule","desc":"Cronograma de grupos de trabajo","icon":"calendar_view_week","href":"\/app\/modules\/work_groups_schedule\/","show":false},{"name":"Tienda en l\u00ednea","icon":"shopping_cart","id":"carrito-compras","desc":"Ingresar a tienda en l\u00ednea","href":"https:\/\/bambucr.app\/tienda\/Minisuper_la_Quinta_Entrada","onclick":true,"show":"1"},{"name":"Productos y servicios","id":"inventario","icon":"inventory","href":"","show":true,"options":[{"name":"Listado de productos","id":"productos","desc":"Buscar y modificar los productos y servicios","icon":"dvr","href":"\/app\/modules\/productos\/?tt=adm-pro","show":true},{"name":"Listado de categorias","id":"adm-categories","desc":"Buscar y modificar categorias de productos y servicios","icon":"view_list","href":"\/app\/modules\/productos\/?tt=adm-categories","show":true},{"name":"Kardex de productos","icon":"format_list_numbered_rtl","desc":"Reporte de movimientos de productos","id":"movimientos_productos","show":false,"href":"\/app\/modules\/productos\/?tt=adm-pro-movimientos"},{"name":"Crear hoja de ajuste","icon":"swap_horiz","desc":"Crear una hoja de ajuste para movimientos de productos","id":"hoja-ajuste","show":false,"href":"#","hideInSidebar":true},{"name":"Productos vendidos","icon":"format_list_numbered","desc":"Ver productos vendidos","id":"pro-ventas","show":false,"href":"\/app\/modules\/productos\/?tt=adm-pro-ventas"},{"name":"Productos comprados","icon":"format_list_numbered","desc":"Ver productos comprados","id":"pro-compras","show":false,"href":"\/app\/modules\/productos\/?tt=adm-pro-compras"},{"name":"Historial de precios","icon":"format_list_bulleted","desc":"Ver Historial de cambios permanentes de precios","id":"pro-precios","show":false,"href":"\/app\/modules\/productos\/cambios_de_precios.php"},{"name":"Transferir inventario","icon":"trending_flat","desc":"Transferir inventario entre bodegas","id":"adm-bodegas","show":false,"href":"\/app\/modules\/productos\/?tt=adm-bodegas"},{"name":"Art\u00edculos de producci\u00f3n","icon":"factory","desc":"Administrar los art\u00edculos de producci\u00f3n","id":"produccion","show":false,"href":"\/app\/modules\/inventario\/produccion\/#\/articulos"},{"name":"Ordenes de producci\u00f3n","icon":"list_alt","desc":"Administrar las ordenes de producci\u00f3n","id":"produccion-ordenes","show":false,"href":"\/app\/modules\/inventario\/produccion\/#\/ordenes"},{"name":"Promociones","icon":"percent_discount","desc":"Administrar los descuentos disponibles","id":"descuento-productos","show":false,"href":"\/app\/modules\/productos\/descuentos.php"}]},{"name":"Ventas","id":"ventas","icon":"local_offer","href":"","show":true,"options":[{"name":"Clientes","icon":"contact_phone","desc":"Buscar y modificar los clientes","id":"clientes","show":false,"href":"\/app\/modules\/clientes\/index.php?tt=adm","bgcolor":"bg-navy"},{"name":"Ordenar y facturar mesa","icon":"restaurant","desc":"Crear ventas a contado y a cr\u00e9dito y proformas","show":false,"id":"ordenar-facturar-mesa","href":"\/app\/modules\/rest\/facturacion.php"},{"name":"Ordenes pendientes","icon":"dinner_dining","desc":"Ordenes pendientes por entregar","show":false,"id":"ordenes-pendientes","href":"\/app\/modules\/rest\/ordenes.php"},{"name":"Reservar y facturar habitaciones.","icon":"hotel","desc":"Ordena y factura las habitaciones","show":false,"id":"ordenar-facturar-habitaciones","href":"\/app\/modules\/hoteles\/facturacion.php"},{"name":"Facturacion ASADA","icon":"water_drop","desc":"Cobros de agua","show":false,"id":"facturacion-asada","href":"\/app\/modules\/facturacion_asada\/"},{"name":"Cierre de caja","desc":"M\u00f3dulo de administraci\u00f3n de la caja","icon":"attach_money","id":"cierre-caja","show":false,"href":"\/app\/modules\/cierre\/?tt=add"},{"name":"Punto de venta","icon":"point_of_sale","desc":"Crear ventas a contado y a cr\u00e9dito y proformas","href":"\/app\/modules\/punto_de_venta\/","show":false,"id":"punto-de-venta"},{"name":"Reporte de ventas","icon":"receipt_long","desc":"Ve y administra las ventas de la empresa","href":"\/app\/modules\/ventas\/","show":false,"id":"reportes-ventas"},{"name":"Facturacion en lote ","icon":"drive_folder_upload","desc":"Modulo para facturar en lote","href":"\/app\/modules\/facturacion_bulto\/","show":false,"id":"facturacion-bulto"},{"name":"Contratos","icon":"assignment_ind","desc":"Ve y administra tus contratos","href":"\/app\/modules\/contratos\/contratos.php","show":false,"id":"contratos"},{"name":"Cuentas por cobrar","icon":"request_quote","desc":"Administra las cuentas por cobrar","href":"\/app\/modules\/finanzas\/?tt=cuentas-cobrar","show":false,"id":"cuentas-cobrar"},{"name":"Reporte de abonos","icon":"receipt_long","desc":"Ver abonos aplicados a cuentas por cobrar","href":"\/app\/modules\/ventas\/?tt=adm&type=3","show":false,"id":"abonos-cxc"},{"show":true,"href":"\/app\/modules\/productos\/consulta.php","name":"Consulta de precios","desc":"Consultar los precios de productos","icon":"price_change","id":"consulta-precios"},{"name":"Gesti\u00f3n de tiempo","icon":"hourglass_bottom","id":"gestion-tiempo","desc":"Gesti\u00f3n de tiempo","href":"\/app\/modules\/gestion_tiempo\/","show":false},{"name":"Mantenimientos y garant\u00edas","icon":"build","desc":"Crear servicios de mantenimientos y garant\u00edas","show":0,"id":"boton-modal-reparaciones","onclick":true,"href":"#"}]},{"name":"Compras y gastos","id":"compras","href":"","icon":"add_shopping_cart","show":false,"options":[{"name":"Proveedores","icon":"local_shipping","desc":"Buscar y modificar los proveedores","href":"\/app\/modules\/proveedores\/?tt=adm","show":false,"id":"proveedores"},{"name":"Crear compra","icon":"add_shopping_cart","desc":"Registrar facturas de compras y cargar el inventario","href":"\/app\/modules\/facturacion\/?td=cc","show":false,"id":"crear-compra"},{"name":"Crear compra electr\u00f3nica","icon":"ballot","href":"\/app\/modules\/facturacion\/?td=fec","show":false,"id":"compra-electronica","desc":"Crea compras electronicas"},{"name":"Crear orden de compra","icon":"shop_2","href":"\/app\/modules\/facturacion\/?td=oc","show":false,"id":"crear-orden-compra","desc":"Crea ordenes de compra"},{"name":"Crear gasto","icon":"paid","desc":"Ver y filtrar los gatos generados ","href":"\/app\/modules\/facturacion\/?td=g","show":false,"id":"crear-gasto"},{"name":"Reporte de compras","icon":"receipt_long","desc":"Ver y filtrar las compras generadas","href":"\/app\/modules\/compras\/?tt=adm-c","show":false,"id":"reportes-compras"},{"name":"Reporte de gastos","icon":"calculate","desc":"Ver y filtrar los gastos generados","href":"\/app\/modules\/compras\/?tt=adm-g","show":false,"id":"reporte-gastos"},{"name":"Ordenes de compra","icon":"assignment","desc":"Ver y filtrar las ordenes de compras generadas","href":"\/app\/modules\/compras\/?tt=adm-oc","show":false,"id":"ordenes_compra"},{"name":"Cuentas por pagar","icon":"money_off","desc":"Ver y filtrar las cuentas por pagar","href":"\/app\/modules\/finanzas\/?tt=cuentas-pagar&f=0","show":false,"id":"cuentas-pagar"},{"name":"Reporte de abonos","icon":"receipt_long","desc":"Ver y filtrar los abonos realizados a cuentas por pagar","href":"\/app\/modules\/compras\/?tt=adm-c&tipo_pago=6","show":false,"id":"reporte-abonos"}]},{"name":"Rutas","icon":"local_shipping","show":false,"href":"","id":"rutas-sidebar","options":[{"name":"Alistar proformas","icon":"gite","desc":"Alistar proformas","href":"\/app\/modules\/rutas\/?tt=alistar","show":false,"id":"adm-rutas"},{"name":"Cargar camiones","icon":"local_shipping","desc":"Cargar camiones","href":"\/app\/modules\/rutas\/?tt=cargar_camion&tab=load","show":false,"id":"adm-cargar-rutas"},{"name":"Carga de camiones","icon":"receipt_long","desc":"Carga de camiones","href":"\/app\/modules\/rutas\/?tt=cargar_camion&tab=listLoaded","show":true,"id":"adm-reporte-rutas"},{"name":"Mi carga","icon":"list_alt","desc":"Ver las proformas que se encuentran cargadas en mi ruta","href":"\/app\/modules\/rutas\/?tt=cargar_camion&tab=listMyRoute","show":true,"id":"adm-list-rutas"}]},{"name":"Recepci\u00f3n","id":"recepcion","icon":"done_all","desc":"Recepci\u00f3n de las facturas electr\u00f3nicas recibidas","show":false,"href":"\/app\/modules\/compras\/recepcion\/"},{"name":"Reportes","id":"reportes","icon":"equalizer","href":"","show":true,"options":[{"name":"Reporte de ventas","icon":"receipt_long","desc":"Ve y administra las ventas de la empresa","href":"\/app\/modules\/ventas\/?tt=adm&type=0","show":false,"id":"reportes-ventas"},{"name":"Reporte de compras","icon":"receipt_long","desc":"Ver y filtrar las compras generadas","href":"\/app\/modules\/compras\/?tt=adm-c","show":false,"id":"reportes-compras"},{"name":"Reporte de gastos","icon":"calculate","desc":"Ver y filtrar los gastos generados","href":"\/app\/modules\/compras\/?tt=adm-g","show":false,"id":"reporte-gastos"},{"name":"Reporte de proformas","icon":"analytics","desc":"Ver y filtrar las proformas generadas","href":"\/app\/modules\/ventas\/?tt=adm&type=8","show":false,"id":"reporte-proforma"},{"name":"Cuentas por cobrar","icon":"request_quote","desc":"Administra las cuentas por cobrar","href":"\/app\/modules\/finanzas\/?tt=cuentas-cobrar","show":false,"id":"cuentas-cobrar"},{"name":"Cuentas por pagar","icon":"money_off","desc":"Ver y filtrar las cuentas por pagar","href":"\/app\/modules\/finanzas\/?tt=cuentas-pagar&f=0","show":false,"id":"cuentas-pagar"},{"name":"Resumen de ventas","icon":"leaderboard","desc":"Ver y filtrar las ventas generadas","href":"\/app\/modules\/ventas\/resumen_ventas.php","show":false,"id":"resumen-ventas"},{"name":"Reporte de ASADA","icon":"shower","desc":"Ver y filtrar las ventas generadas","href":"\/app\/modules\/facturacion_asada\/reporte.php","show":false,"id":"reporte-asada"},{"name":"Reporte de descuentos","icon":"percent","desc":"Ver los descuentos generados","href":"\/app\/modules\/ventas\/descuentos.php","show":false,"id":"reporte-descuentos"},{"name":"Reporte de comisiones","icon":"percent_discount","desc":"Ver las comisiones ganadas por cada usuario","href":"\/app\/modules\/ventas\/comisiones.php","show":false,"id":"reporte-comisiones"},{"name":"Estado de resultados","icon":"savings","desc":"Ver y filtrar los resultados generados","href":"\/app\/modules\/finanzas\/estado_resultados.php","show":false,"id":"estado-resultados"},{"name":"Ordenes de compra","icon":"assignment","desc":"Ver y filtrar las ordenes de compras generadas","href":"\/app\/modules\/compras\/?tt=adm-oc","show":false,"id":"ordenes_compra"},{"name":"Productos vendidos","icon":"category","desc":"Ver y filtrar los productos vendidos","href":"\/app\/modules\/productos\/?tt=adm-pro-ventas","show":false,"id":"productos_vendidos"},{"name":"Productos comprados","icon":"category","desc":"Ver y filtrar los productos comprados","href":"\/app\/modules\/productos\/?tt=adm-pro-compras","show":false,"id":"productos_comprados"},{"name":"Kardex de productos","icon":"timeline","desc":" ver y filtrar movimientos de productos","href":"\/app\/modules\/productos\/?tt=adm-pro-movimientos","show":false,"id":"movimientos_productos"},{"show":true,"href":"\/app\/modules\/productos\/consulta.php","name":"Consulta de precios","desc":"Consultar los precios de productos","icon":"price_change","id":"consulta-precios"},{"name":"Expediente de clientes","icon":"format_list_numbered","desc":"Ver expediente de clientes","id":"exp-clientes","show":0,"href":"\/app\/modules\/clientes\/expedientes.php"},{"name":"Mantenimientos y garant\u00edas","icon":"build","desc":"Crear servicios de mantenimientos y garant\u00edas","show":0,"id":"boton-modal-reparaciones","onclick":true,"href":"#"}]}];
+                //script que mejor lo dejo aqui y no lo paso a vue
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const url = new URL(window.location);
+            const msg = url.searchParams.get('msg');
+            if (msg) {
+                let title = url.searchParams.get('title');
+                if (!title) {
+                    title = 'Pago procesado';
+                }
+                const type = url.searchParams.get('type');
+                history.replaceState({}, 'BambuCR', '/app/');
+                swal({
+                    title,
+                    text: msg,
+                    type: type,
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonClass: 'btn btn-success',
+                    buttonsStyling: false
+                }).then(() => swal.noop())
+            }
+            const err = url.searchParams.get('err');
+            if (err) {
+                history.replaceState({}, 'BambuCR', '/app/');
+                // Evitar ataques xss
+                const sanitize = (html) => {
+                    const trim = (node) => {
+                        $.each(node.attributes, () => {
+                            var attrName = this.name;
+                            var attrValue = this.value;
+                            if (attrName.indexOf('on') == 0 || attrValue.indexOf('javascript:') == 0) {
+                                $(node).removeAttr(attrName);
+                            }
+                        });
+                    };
+                    const output = $($.parseHTML('<div>' + html + '</div>', null, false));
+                    output.find('*').each(function () {
+                        trim(this);
+                    });
+                    return output.html();
+                };
+                swal({
+                    title: 'Error',
+                    html: sanitize(err),
+                    type: 'error',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonClass: 'btn btn-success',
+                    buttonsStyling: false
+                }).then(() => swal.noop())
+            }
+            const openHelp = url.searchParams.get('ayuda');
+            if (openHelp) {
+                history.replaceState({}, 'BambuCR', '/app/');
+                modalSupport(21);
+            }
+
+        });
+
+        //se llaman en indexJS
+        function modalPago(id_company_selected) {
+            app.modalPago(id_company_selected);
+        }
+        function modalPagoWorkgroup(id_company_selected) {
+            app.modalPagoWorkgroup(id_company_selected);
+        }
+        function modalTicket() {
+            app.modalTicket();
+        }
+
+        async function clearSiteData() {
+            //tomar todos los documentos de esta empresa
+            const db = app.getDb("dbApp")
+            const entries = await db.queue
+            .where("accountId")
+            .startsWith(uuidCompany.substr(0, 16))
+            .toArray();
+
+            const hasNavedi = await app.init_navedi().then(() => true).catch(() => false);//verificar si tiene navedi
+            let canClearCache = entries.length > 0 ? hasNavedi : true;
+            let doBackup = false;
+            if (hasNavedi && entries.length > 0) {
+                //crear copia de seguridad
+                //guardar en un archivo con navedi
+                await navedi.file.write(uuidCompany+"_backup"+'.json',{
+                    data:JSON.stringify(entries),
+                })
+                .catch(e => {
+                    console.error(e);
+                    canClearCache = false;//ocurrio algun error al guardar copia
+                })
+                doBackup = true;
+            }
+
+            if (!canClearCache) {
+                //no se puede eliminar porque hay documentos pendientes
+                swal({
+                    title:"No se puede eliminar caché",
+                    text: `Hay ${entries.length} documentos pendientes en esta empresa. Por favor, diríjase al punto de venta para reenviar o eliminar los documentos correspondientes.`
+                })
+            } else {
+                swal({
+                    title: "¿Está seguro?",
+                    text: "Se eliminará toda información en caché y se cerrará la sesión",
+                    showCancelButton: true,
+                    cancelButtonText: "Cancelar",
+                    confirmButtonText: "Aceptar"
+                })
+                .then(() => {
+                    let path = "/app/clearSiteData.php";
+                    if (doBackup) {
+                        path += `?uid=${uuidCompany}`;
+                    }
+                    window.location.assign(path);
+                })
+            }
+
+        }
+    </script>
+</body>
+
+</html>

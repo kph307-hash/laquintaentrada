@@ -1,0 +1,11 @@
+2026/03/10-20:15:46.132 6a0 Reusing MANIFEST C:\Users\kph30\Desktop\Super Web\downloads\playwright-profile\Default\IndexedDB\https_bambucr.app_0.indexeddb.leveldb/MANIFEST-000001
+2026/03/10-20:15:46.133 6a0 Recovering log #19
+2026/03/10-20:15:46.134 6a0 Reusing old log C:\Users\kph30\Desktop\Super Web\downloads\playwright-profile\Default\IndexedDB\https_bambucr.app_0.indexeddb.leveldb/000019.log 
+2026/03/10-20:15:46.350 5aa8 Compacting 1@1 + 2@2 files
+2026/03/10-20:15:46.479 5aa8 Generated table #23@1: 57564 keys, 2205381 bytes
+2026/03/10-20:15:46.542 5aa8 Generated table #24@1: 40345 keys, 1054294 bytes
+2026/03/10-20:15:46.542 5aa8 Compacted 1@1 + 2@2 files => 3259675 bytes
+2026/03/10-20:15:46.544 5aa8 compacted to: files[ 0 0 2 0 0 0 0 ]
+2026/03/10-20:15:46.546 5aa8 Delete type=2 #15
+2026/03/10-20:15:46.546 5aa8 Delete type=2 #16
+2026/03/10-20:15:46.547 5aa8 Delete type=2 #21
