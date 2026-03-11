@@ -1,0 +1,492 @@
+/* =========================
+   MOBILE ONLY
+   ========================= */
+
+@media (max-width: 768px){
+
+  html, body{
+    overflow-x: hidden;
+  }
+
+  body{
+    padding-top: 62px;
+    padding-bottom: 84px;
+  }
+
+  .container{
+    width: 100%;
+    max-width: 100%;
+    padding: 0 12px;
+    margin: 14px auto;
+  }
+
+  /* =========================
+     HEADER SOLO MOVIL
+     ========================= */
+  .header-desktop-only{
+    display: none !important;
+  }
+
+  .header-mobile-only{
+    display: grid !important;
+  }
+
+  .main-header{
+    background: #011057 !important;
+    border-bottom: 1px solid rgba(255,255,255,.15) !important;
+  }
+
+  .main-header__inner,
+  .main-header__inner--drawer{
+    padding: 10px 12px !important;
+  }
+
+  .main-header__inner--drawer{
+    min-height: 62px !important;
+    grid-template-columns: 44px 1fr 44px !important;
+    align-items: center !important;
+  }
+
+  .main-brand{
+    font-size: 17px !important;
+    max-width: 100% !important;
+    color: #fff !important;
+    text-align: center !important;
+  }
+
+  .menu-toggle,
+  .filter-toggle{
+    background: rgba(255,255,255,.15) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,.25) !important;
+    box-shadow: none !important;
+  }
+
+  /* evita que el menú de PC se meta en móvil */
+  .main-nav,
+  .main-link,
+  .main-link--promo,
+  .main-link--cart,
+  .main-badge{
+    all: unset;
+  }
+
+  /* =========================
+     META / TIENDA MOVIL
+     ========================= */
+  .meta-row{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .meta-search{
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: stretch;
+  }
+
+  .meta-search input[type="search"]{
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .meta-search button,
+  .meta-search .btn-clear{
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .shop-layout{
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  .shop-layout > *{
+    min-width: 0;
+  }
+
+  .filters-section{
+    display: none !important;
+  }
+
+  .products-section{
+    min-width: 0;
+  }
+
+  .panel{
+    width: 100%;
+    min-width: 0;
+  }
+
+  .panel-header,
+  .panel-body{
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .cats-list{
+    max-height: 260px;
+    overflow: auto;
+    padding-right: 2px;
+  }
+
+  .cat-item{
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .shop-sidebar,
+  .filters-sidebar,
+  .categories-sidebar,
+  aside.panel{
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .promo-card{
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .promo-media img{
+    width: 100%;
+    max-width: 100%;
+    max-height: 240px;
+  }
+
+  /* =========================
+     CARRITO MOVIL
+     ========================= */
+  .cart-page{
+    max-width: 100%;
+    padding: 12px 12px 36px;
+  }
+
+  .cart-head{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .cart-title-page{
+    font-size: 22px;
+    line-height: 1.1;
+  }
+
+  .cart-subtitle{
+    font-size: 14px;
+    line-height: 1.35;
+    max-width: 240px;
+  }
+
+  .cart-layout{
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .cart-layout > *{
+    min-width: 0;
+    width: 100%;
+  }
+
+  .cart-side{
+    order: 2;
+    display: grid;
+    gap: 12px;
+  }
+
+  .cart-card{
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .cart-empty{
+    padding: 14px;
+  }
+
+  .cart-item{
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    grid-template-areas:
+      "img info"
+      "qty qty"
+      "sub sub";
+    gap: 10px;
+    align-items: start;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cart-item-media{ grid-area: img; }
+
+  .cart-item-info{
+    grid-area: info;
+    min-width: 0;
+  }
+
+  .cart-item-name{
+    font-size: 14px;
+    line-height: 1.25;
+    word-break: break-word;
+  }
+
+  .cart-item-meta{
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .cart-item-qty{
+    grid-area: qty;
+    justify-self: start;
+    margin-top: 4px;
+  }
+
+  .cart-item-sub{
+    grid-area: sub;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+  }
+
+  .cart-item-subval{
+    text-align: left;
+  }
+
+  .cart-thumb{
+    width: 52px;
+    height: 52px;
+  }
+
+  .form-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .mode-row,
+  .loc-row,
+  .checkout-access__actions{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .radio-pill,
+  .btn-send,
+  .btn-ghost,
+  .btn-secondary{
+    width: 100%;
+  }
+
+  .checkout-access__box{
+    padding: 16px;
+  }
+
+  .checkout-access__actions .btn-secondary,
+  .checkout-access__actions .btn-link{
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* =========================
+     FACTURA / RESULTADO MOVIL
+     ========================= */
+  .result-page{
+    padding: 16px 12px 30px !important;
+  }
+
+  .result-shell{
+    grid-template-columns: 1fr !important;
+  }
+
+  .summary-card{
+    position: static !important;
+  }
+
+  .result-card{
+    padding: 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .result-title{
+    font-size: 28px !important;
+  }
+
+  .result-sub{
+    font-size: 14px !important;
+  }
+
+  .result-item{
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+  }
+
+  .result-item-sub{
+    text-align: left !important;
+    font-size: 18px !important;
+  }
+
+  .summary-total{
+    font-size: 20px !important;
+  }
+
+  /* =========================
+     PERFIL / OTROS MOVIL
+     ========================= */
+  .profile-grid{
+    grid-template-columns: 1fr;
+  }
+
+  .orders-card__header,
+  .order-item__top{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .side-drawer{
+    width: 86vw;
+    max-width: 320px;
+  }
+
+  .panel,
+  .product-card,
+  .cart-card,
+  .order-item,
+  .profile-card,
+  .orders-card,
+  .checkout-access__box,
+  .auth-card{
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  img{
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* =========================
+     BOTTOM NAV MOVIL
+     ========================= */
+  .bottom-nav{
+    display: grid !important;
+    background: #011057 !important;
+    border-top: 1px solid rgba(255,255,255,.15) !important;
+  }
+
+  .bottom-nav__item{
+    background: rgba(255,255,255,.12) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,.18) !important;
+    box-shadow: none !important;
+  }
+
+  .bottom-nav__icon,
+  .bottom-nav__label{
+    color: #fff !important;
+  }
+
+  .bottom-nav__item:hover,
+  .bottom-nav__item:active{
+    background: rgba(255,255,255,.25) !important;
+  }
+
+  .bottom-nav__badge{
+    background: #ef4444 !important;
+    color: #fff !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .meta-search input[type="search"],
+  .cat-search{
+    font-size: 16px !important;
+  }
+}
+
+/* grid 2 columnas productos móvil */
+@media (max-width: 768px){
+  body.tienda .products-section{
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2{
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+    align-items: stretch !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 > .product-card{
+    flex: 0 0 calc(50% - 4px) !important;
+    width: calc(50% - 4px) !important;
+    max-width: calc(50% - 4px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .img-box{
+    height: 95px !important;
+    flex: 0 0 95px !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .card-body{
+    padding: 8px !important;
+    gap: 4px !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .product-title{
+    font-size: 10px !important;
+    line-height: 1.15 !important;
+    min-height: 24px !important;
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .product-family{
+    font-size: 9px !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .product-price{
+    font-size: 13px !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .btn-add{
+    width: 100% !important;
+    padding: 7px 6px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+  }
+
+  body.tienda #productList.product-grid-mobile-2 .stock-warning{
+    font-size: 9px !important;
+    padding: 3px 6px !important;
+    line-height: 1.15 !important;
+  }
+}
