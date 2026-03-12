@@ -383,15 +383,15 @@ def tienda(
         sku_txt = (p.sku or "").strip()
 
     productos_list.append(
-    {
-        "sku": sku_txt,
-        "nombre": p.nombre,
-        "precio": int(p.precio),
-        "familia": fam_txt,
-        "cantidad": int(getattr(p, "cantidad", 0) or 0),
-        "imagen_url": get_producto_image_url(sku_txt),
-    }
-)
+        {
+            "sku": sku_txt,
+            "nombre": p.nombre,
+            "precio": int(p.precio),
+            "familia": fam_txt,
+            "cantidad": int(getattr(p, "cantidad", 0) or 0),
+            "imagen_url": get_producto_image_url(sku_txt),
+        }
+    )
 
     qs_parts = []
     if q and q.strip():
@@ -1357,37 +1357,6 @@ async def admin_sync_upload(
     finally:
         if tmp_file.exists():
             tmp_file.unlink()
-
-@app.post("/admin/productos/{sku}/upload-image")
-async def admin_producto_upload_image(
-    sku: str,
-    request: Request,
-    imagen: UploadFile = File(...),
-    db: Session = Depends(get_db),
-):
-    denied = require_admin(request)
-    if denied:
-        return denied
-
-    producto = db.query(Producto).filter(Producto.sku == sku).first()
-    if not producto:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-
-    if not imagen or not imagen.filename:
-        raise HTTPException(status_code=400, detail="Debe subir una imagen")
-
-    ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
-    safe_name = f"prod_{sku}_{int(time.time())}{ext}"
-    path = PRODUCTS_DISK_DIR / safe_name
-
-    content = await imagen.read()
-    with open(path, "wb") as f:
-        f.write(content)
-
-    producto.imagen_url = f"/media/productos/{safe_name}"
-    db.commit()
-
-    return RedirectResponse("/admin", status_code=303)
 
 @app.get("/admin/productos-imagenes", response_class=HTMLResponse)
 def admin_productos_imagenes(request: Request):
