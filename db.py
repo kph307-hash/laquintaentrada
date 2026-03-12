@@ -34,15 +34,13 @@ class Producto(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    # SKU como clave pública (carrito/sync)
     sku = Column(String(80), nullable=False, unique=True, index=True)
 
     nombre = Column(String(255), nullable=False, index=True)
     precio = Column(Integer, nullable=False, default=0)
     familia = Column(String(120), nullable=True, index=True)
-
-    # ✅ NUEVO: inventario/stock
     cantidad = Column(Integer, nullable=False, default=0)
+    imagen_url = Column(String(255), nullable=True, default="")
 
     __table_args__ = (
         UniqueConstraint("sku", name="uq_productos_sku"),
@@ -84,6 +82,18 @@ def ensure_productos_has_cantidad():
 
     if "cantidad" not in cols:
         cur.execute("ALTER TABLE productos ADD COLUMN cantidad INTEGER NOT NULL DEFAULT 0;")
+        conn.commit()
+
+    conn.close()
+
+def ensure_productos_has_imagen_url():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("PRAGMA table_info(productos);")
+    cols = [row["name"] for row in cur.fetchall()]
+
+    if "imagen_url" not in cols:
+        cur.execute("ALTER TABLE productos ADD COLUMN imagen_url TEXT DEFAULT '';")
         conn.commit()
 
     conn.close()
@@ -192,7 +202,7 @@ def init_db():
     # 3) Migraciones simples sobre tablas existentes
     ensure_productos_has_cantidad()
     ensure_pedidos_has_cliente_fields()
-
+    ensure_productos_has_imagen_url()
 
 # ======================
 # Dependency (FastAPI)

@@ -39,7 +39,8 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # ======================
 PROMOS_DISK_DIR = Path(os.getenv("PROMOS_DISK_DIR", "/var/data/promos"))
 PROMOS_DISK_DIR.mkdir(parents=True, exist_ok=True)
-
+PRODUCTS_DISK_DIR = Path(os.getenv("PRODUCTS_DISK_DIR", "/var/data/productos"))
+PRODUCTS_DISK_DIR.mkdir(parents=True, exist_ok=True)
 SHIPPING_PER_KM = 500  # ₡ por km
 SYNC_STATUS_FILE = Path("sync_status.json")
 ADMIN_SYNC_TOKEN = os.getenv("ADMIN_SYNC_TOKEN", "cambie-esto")
@@ -105,6 +106,13 @@ def startup():
 @app.get("/media/promos/{filename}")
 def media_promo(filename: str):
     file_path = PROMOS_DISK_DIR / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+    return FileResponse(file_path)
+
+@app.get("/media/productos/{filename}")
+def media_producto(filename: str):
+    file_path = PRODUCTS_DISK_DIR / filename
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Imagen no encontrada")
     return FileResponse(file_path)
@@ -367,6 +375,7 @@ def tienda(
                 "precio": int(p.precio),
                 "familia": fam_txt,
                 "cantidad": int(getattr(p, "cantidad", 0) or 0),
+                "imagen_url": (getattr(p, "imagen_url", "") or "").strip(),
             }
         )
 
@@ -1334,3 +1343,34 @@ async def admin_sync_upload(
     finally:
         if tmp_file.exists():
             tmp_file.unlink()
+
+@app.post("/admin/productos/{sku}/upload-image")
+async def admin_producto_upload_image(
+    sku: str,
+    request: Request,
+    imagen: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    denied = require_admin(request)
+    if denied:
+        return denied
+
+    producto = db.query(Producto).filter(Producto.sku == sku).first()
+    if not producto:
+        raise HTTPException(status_code=404, detail="Producto no encontrado")
+
+    if not imagen or not imagen.filename:
+        raise HTTPException(status_code=400, detail="Debe subir una imagen")
+
+    ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
+    safe_name = f"prod_{sku}_{int(time.time())}{ext}"
+    path = PRODUCTS_DISK_DIR / safe_name
+
+    content = await imagen.read()
+    with open(path, "wb") as f:
+        f.write(content)
+
+    producto.imagen_url = f"/media/productos/{safe_name}"
+    db.commit()
+
+    return RedirectResponse("/admin", status_code=303)

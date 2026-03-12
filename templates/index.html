@@ -192,13 +192,17 @@
               data-stock="{{ p.cantidad }}"
             >
               <div class="img-box">
-                <img
-                  src="/static/products/{{ p.sku }}.jpg"
-                  alt="{{ p.nombre }}"
-                  loading="lazy"
-                  onerror="this.outerHTML='<div class=&quot;img-ph&quot;>Sin imagen</div>';"
-                >
-              </div>
+  {% if p.imagen_url %}
+    <img
+      src="{{ p.imagen_url }}"
+      alt="{{ p.nombre }}"
+      loading="lazy"
+      onerror="this.outerHTML='<div class=&quot;img-ph&quot;>Sin imagen</div>';"
+    >
+  {% else %}
+    <div class="img-ph">Sin imagen</div>
+  {% endif %}
+</div>
 
               <div class="card-body">
                 <div class="product-title">{{ p.nombre }}</div>
