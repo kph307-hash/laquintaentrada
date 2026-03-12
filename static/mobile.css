@@ -4,14 +4,17 @@
 
 @media (max-width: 768px){
 
-  html, body{
+  html,
+  body{
+    margin: 0;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   body{
-  padding-top: 62px;
-  padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
-}
+    padding-top: 62px;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
 
   .container{
     width: 100%;
@@ -72,7 +75,7 @@
   }
 
   /* =========================
-     META / TIENDA MOVIL
+     TIENDA MOVIL
      ========================= */
   .meta-row{
     display: flex;
@@ -169,7 +172,7 @@
      ========================= */
   .cart-page{
     max-width: 100%;
-    padding: 12px 12px 36px;
+    padding: 12px 12px 0;
   }
 
   .cart-head{
@@ -312,7 +315,7 @@
      FACTURA / RESULTADO MOVIL
      ========================= */
   .result-page{
-    padding: 16px 12px 30px !important;
+    padding: 16px 12px 0 !important;
   }
 
   .result-shell{
@@ -390,9 +393,15 @@
      BOTTOM NAV MOVIL
      ========================= */
   .bottom-nav{
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 9998 !important;
     display: grid !important;
     background: #011057 !important;
     border-top: 1px solid rgba(255,255,255,.15) !important;
+    margin: 0 !important;
   }
 
   .bottom-nav__item{
@@ -417,6 +426,10 @@
     color: #fff !important;
   }
 
+  .bottom-nav.is-hidden{
+    transform: translateY(100%) !important;
+  }
+
   input,
   select,
   textarea,
@@ -424,9 +437,28 @@
   .cat-search{
     font-size: 16px !important;
   }
+
+  /* páginas cortas: llenar alto visible sin dejar hueco raro */
+  body.home .container,
+  body.tienda .container,
+  body.carrito .cart-page,
+  body .result-page,
+  body .page-wrap,
+  body .profile-shell{
+    min-height: calc(100dvh - 62px - 84px - env(safe-area-inset-bottom));
+  }
+
+  body.home .container,
+  body.tienda .container,
+  body.carrito .cart-page{
+    display: flex;
+    flex-direction: column;
+  }
 }
 
-/* grid 2 columnas productos móvil */
+/* =========================
+   GRID 2 COLUMNAS PRODUCTOS MOVIL
+   ========================= */
 @media (max-width: 768px){
   body.tienda .products-section{
     width: 100% !important;
@@ -488,50 +520,5 @@
     font-size: 9px !important;
     padding: 3px 6px !important;
     line-height: 1.15 !important;
-  }
-}
-
-@media (max-width: 768px){
-  html,
-  body{
-    margin: 0;
-    min-height: 100%;
-    overflow-x: hidden;
-  }
-
-  body{
-    padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
-  }
-
-  .bottom-nav{
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 9998 !important;
-    margin: 0 !important;
-    transform: translateY(0) !important;
-  }
-
-  .bottom-nav.is-hidden{
-    transform: translateY(100%) !important;
-  }
-}
-
-@media (max-width: 768px){
-  .cart-page,
-.result-page,
-.page-wrap,
-.profile-shell{
-  padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
-}
-
-  .bottom-nav{
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 9998 !important;
-    margin: 0 !important;
   }
 }
