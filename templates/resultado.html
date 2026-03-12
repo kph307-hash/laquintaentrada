@@ -230,6 +230,12 @@
       background: rgba(0,0,0,.03);
     }
 
+    .result-link-btn{
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
     .result-back-link{
       display: block;
       text-align: center;
@@ -423,13 +429,13 @@
             📲 Enviar pedido por WhatsApp
           </a>
 
-          <a href="#" id="clearCartBtn" class="result-back-link">
-            Vaciar carrito
-          </a>
+          <button id="clearCartBtn" type="button" class="ghost-btn">
+  Vaciar carrito
+</button>
 
-          <a href="/tienda" class="result-back-link">
-            Volver a la tienda
-          </a>
+<a href="/tienda" class="ghost-btn result-link-btn">
+  Volver a la tienda
+</a>
         </article>
       </aside>
     </div>
@@ -463,8 +469,7 @@
   }
 
   if (clearCartBtn){
-  clearCartBtn.addEventListener("click", (e) => {
-    e.preventDefault();
+  clearCartBtn.addEventListener("click", () => {
     clearCart();
     clearCheckoutDraft();
     window.location.href = "/carrito";

@@ -65,8 +65,8 @@ WHATSAPP_PHONE = must_env("WHATSAPP_PHONE", "50662154752")
 HTTPS_ONLY = True if ENV == "prod" else False
 
 # Coordenadas del supermercado (Alajuela)
-SUPER_LAT = 10.115389
-SUPER_LNG = -84.255028
+SUPER_LAT = 10.010209335902667
+SUPER_LNG = -84.21685918761378
 
 # Distancia máxima permitida en km
 MAX_DISTANCE_KM = 3
