@@ -214,6 +214,18 @@ def parse_int_safe(v) -> int:
     except Exception:
         return 0
 
+def get_producto_image_url(sku: str) -> str:
+    sku = (sku or "").strip()
+    if not sku:
+        return ""
+
+    for ext in (".jpg", ".jpeg", ".png", ".webp"):
+        filename = f"{sku}{ext}"
+        path = PRODUCTS_DISK_DIR / filename
+        if path.exists():
+            return f"/media/productos/{filename}"
+
+    return ""
 
 # ======================
 # HEALTHCHECK
@@ -368,16 +380,18 @@ def tienda(
     productos_list = []
     for p in productos_page:
         fam_txt = (getattr(p, "familia", "") or "").strip() or "Sin categoría"
-        productos_list.append(
-            {
-                "sku": (p.sku or "").strip(),
-                "nombre": p.nombre,
-                "precio": int(p.precio),
-                "familia": fam_txt,
-                "cantidad": int(getattr(p, "cantidad", 0) or 0),
-                "imagen_url": (getattr(p, "imagen_url", "") or "").strip(),
-            }
-        )
+        sku_txt = (p.sku or "").strip()
+
+    productos_list.append(
+    {
+        "sku": sku_txt,
+        "nombre": p.nombre,
+        "precio": int(p.precio),
+        "familia": fam_txt,
+        "cantidad": int(getattr(p, "cantidad", 0) or 0),
+        "imagen_url": get_producto_image_url(sku_txt),
+    }
+)
 
     qs_parts = []
     if q and q.strip():
