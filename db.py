@@ -12,10 +12,10 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 # ======================
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = (BASE_DIR / "super.db").resolve()
+DB_PATH = Path(os.getenv("SQLITE_PATH", "/var/data/super.db")).resolve()
 
 # SQLAlchemy URL usando path absoluto
-DB_URL = os.getenv("DB_URL", f"sqlite:///{DB_PATH}")
+DB_URL = f"sqlite:///{DB_PATH}"
 
 # check_same_thread solo aplica para sqlite
 connect_args = {"check_same_thread": False} if DB_URL.startswith("sqlite") else {}

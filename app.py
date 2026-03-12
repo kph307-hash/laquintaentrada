@@ -22,7 +22,7 @@ from sqlalchemy import case, or_
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
-from db import SessionLocal, init_db, Producto, UsuarioCliente, get_db, get_conn
+from db import SessionLocal, init_db, Producto, UsuarioCliente, get_db, get_conn, DB_PATH
 from fastapi.responses import FileResponse
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from pathlib import Path
@@ -98,6 +98,9 @@ def startup():
     logger.info("✅ TEMPLATES_DIR: %s", TEMPLATES_DIR)
     logger.info("✅ STATIC_DIR: %s", STATIC_DIR)
     logger.info("✅ ENV=%s HTTPS_ONLY=%s", ENV, HTTPS_ONLY)
+
+    print("DB_PATH =", DB_PATH)
+    print("PROMOS_DISK_DIR =", PROMOS_DISK_DIR)
 
 @app.get("/media/promos/{filename}")
 def media_promo(filename: str):
