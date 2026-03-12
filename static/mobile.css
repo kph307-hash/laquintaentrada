@@ -477,14 +477,14 @@ body.filters-open{
 }
 
 .main-brand__logo{
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
 }
 
 .main-brand__text{
   color: #fff;
-  font-size: 19px;
+  font-size: 21px;
   font-weight: 900;
   line-height: 1;
 }
