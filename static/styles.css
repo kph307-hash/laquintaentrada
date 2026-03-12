@@ -32,6 +32,15 @@ html, body{
   overflow-x: hidden;
 }
 
+body{
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  position: relative;
+  padding-top: 64px;
+}
+
 /* Fondo */
 body::before{
   content: "";
@@ -85,15 +94,6 @@ body::after{
   transform: translateY(-100%);
 }
 
-body{
-  margin: 0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  position: relative;
-  padding-top: 64px;
-}
-
 .main-header__inner{
   max-width: 1200px;
   margin: 0 auto;
@@ -144,6 +144,30 @@ body{
   font-size: 22px;
   letter-spacing: .2px;
   white-space: nowrap;
+  text-align: center;
+}
+
+.main-brand--mobile,
+.main-brand--with-logo{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  max-width: 100%;
+}
+
+.main-brand__logo{
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+  flex: 0 0 26px;
+  display: block;
+}
+
+.main-brand__text{
+  display: inline-block;
+  line-height: 1;
 }
 
 .main-link--promo{
@@ -928,6 +952,7 @@ textarea::placeholder{
 .checkout-access__box h3{
   margin: 0 0 8px;
   font-size: 20px;
+  font-weight: 900;
 }
 
 .checkout-access__box p{
@@ -1344,23 +1369,4 @@ body.loc-guide-open{
   color: #374151;
   font-size: 14px;
   line-height: 1.5;
-}
-
-.main-brand--mobile{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  text-decoration: none;
-}
-
-.main-brand__logo{
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  display: block;
-}
-
-.main-brand__text{
-  display: inline-block;
 }
