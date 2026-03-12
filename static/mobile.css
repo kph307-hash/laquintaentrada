@@ -947,3 +947,20 @@ body.filters-open{
     display: grid !important;
   }
 }
+
+.main-brand--mobile{
+  gap: 8px;
+}
+
+.main-brand__logo{
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
+}
+
+.main-brand__text{
+  color: #fff;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1;
+}

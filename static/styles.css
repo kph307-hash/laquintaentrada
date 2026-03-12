@@ -1345,3 +1345,22 @@ body.loc-guide-open{
   font-size: 14px;
   line-height: 1.5;
 }
+
+.main-brand--mobile{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.main-brand__logo{
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.main-brand__text{
+  display: inline-block;
+}
