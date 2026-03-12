@@ -329,7 +329,6 @@ def tienda(
 
     col_familia = getattr(Producto, "familia", None)
 
-    # Familias para sidebar (solo familias que aparecen en productos con stock > 0)
     familias: List[str] = []
     if col_familia is not None:
         fam_rows = (
@@ -347,7 +346,6 @@ def tienda(
 
     query = db.query(Producto).filter(Producto.cantidad > 0)
 
-    # ✅ filtro por búsqueda
     selected_familias = [x.strip() for x in (fam or []) if (x or "").strip()]
 
     if q and q.strip():
@@ -366,7 +364,6 @@ def tienda(
     else:
         query = query.order_by(Producto.nombre.asc())
 
-    # ✅ filtro por familias (si aplica)
     if selected_familias and col_familia is not None:
         query = query.filter(col_familia.in_(selected_familias))
 
@@ -380,18 +377,18 @@ def tienda(
     productos_list = []
     for p in productos_page:
         fam_txt = (getattr(p, "familia", "") or "").strip() or "Sin categoría"
-    sku_txt = (p.sku or "").strip()
+        sku_txt = (p.sku or "").strip()
 
-    productos_list.append(
-        {
-            "sku": sku_txt,
-            "nombre": p.nombre,
-            "precio": int(p.precio),
-            "familia": fam_txt,
-            "cantidad": int(getattr(p, "cantidad", 0) or 0),
-            "imagen_url": get_producto_image_url(sku_txt),
-        }
-    )
+        productos_list.append(
+            {
+                "sku": sku_txt,
+                "nombre": p.nombre,
+                "precio": int(p.precio),
+                "familia": fam_txt,
+                "cantidad": int(getattr(p, "cantidad", 0) or 0),
+                "imagen_url": get_producto_image_url(sku_txt),
+            }
+        )
 
     print("productos_page =", len(productos_page))
     print("productos_list =", len(productos_list))
