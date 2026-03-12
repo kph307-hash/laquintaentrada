@@ -380,7 +380,7 @@ def tienda(
     productos_list = []
     for p in productos_page:
         fam_txt = (getattr(p, "familia", "") or "").strip() or "Sin categoría"
-        sku_txt = (p.sku or "").strip()
+    sku_txt = (p.sku or "").strip()
 
     productos_list.append(
         {
@@ -392,6 +392,10 @@ def tienda(
             "imagen_url": get_producto_image_url(sku_txt),
         }
     )
+
+    print("productos_page =", len(productos_page))
+    print("productos_list =", len(productos_list))
+    print("request url =", request.url)
 
     qs_parts = []
     if q and q.strip():
