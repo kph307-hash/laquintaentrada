@@ -423,9 +423,9 @@
             📲 Enviar pedido por WhatsApp
           </a>
 
-          <button id="clearCartBtn" type="button" class="ghost-btn">
+          <a href="#" id="clearCartBtn" class="result-back-link">
             Vaciar carrito
-          </button>
+          </a>
 
           <a href="/tienda" class="result-back-link">
             Volver a la tienda
@@ -463,12 +463,13 @@
   }
 
   if (clearCartBtn){
-    clearCartBtn.addEventListener("click", () => {
-      clearCart();
-      clearCheckoutDraft();
-      alert("Carrito vaciado ✅");
-    });
-  }
+  clearCartBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    clearCart();
+    clearCheckoutDraft();
+    window.location.href = "/carrito";
+  });
+}
 </script>
 </body>
 </html>
