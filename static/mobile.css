@@ -1,17 +1,416 @@
 /* =========================
-   MOBILE ONLY
+   HEADER RESPONSIVE
    ========================= */
 
-@media (max-width: 768px){
+/* por defecto: escritorio */
+.header-desktop-only{
+  display: grid;
+}
 
-  html,
-  body{
-    margin: 0;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
+.header-mobile-only{
+  display: none;
+}
+
+/* en celular: mostrar móvil y ocultar escritorio */
+@media (max-width: 768px){
+  .header-desktop-only{
+    display: none !important;
   }
 
+  .header-mobile-only{
+    display: grid !important;
+  }
+}
 
+/* =========================
+   MOBILE DRAWER MEJORADO
+   ========================= */
+
+.main-header__inner--drawer{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+  min-height: 64px;
+}
+
+.menu-toggle{
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: rgba(255,255,255,.96);
+  border-radius: 14px;
+  font-size: 22px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+  box-shadow: 0 6px 16px rgba(0,0,0,.06);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.menu-toggle:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.10);
+}
+
+.main-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-brand{
+  text-decoration: none;
+  color: #111827;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: .2px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* fondo oscuro al abrir */
+.drawer-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.34);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.drawer-backdrop.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* panel lateral */
+.side-drawer{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 86vw;
+  max-width: 340px;
+  height: 100vh;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 24px 60px rgba(0,0,0,.18);
+  transform: translateX(-100%);
+  transition: transform .25s ease;
+  z-index: 1001;
+  padding: 16px 14px 22px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.side-drawer.is-open{
+  transform: translateX(0);
+}
+
+/* cabecera */
+.side-drawer__header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+
+.side-drawer__eyebrow{
+  font-size: 11px;
+  font-weight: 800;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.side-drawer__title{
+  font-size: 22px;
+  font-weight: 900;
+  color: #111827;
+  margin-top: 2px;
+}
+
+.side-drawer__close{
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(0,0,0,.08);
+  background: #fff;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  box-shadow: 0 4px 12px rgba(0,0,0,.05);
+}
+
+/* bloque usuario opcional */
+.side-drawer__user{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fafafa 0%, #f3f4f6 100%);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.side-drawer__avatar{
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: #111827;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.side-drawer__user-name{
+  font-size: 15px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.side-drawer__user-mail{
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* navegación */
+.side-drawer__nav{
+  display: grid;
+  gap: 10px;
+}
+
+.side-drawer__link{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 58px;
+  padding: 14px 15px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: #111827;
+  font-weight: 800;
+  background: rgba(255,255,255,.88);
+  border: 1px solid rgba(0,0,0,.07);
+  box-shadow: 0 6px 16px rgba(0,0,0,.05);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+.side-drawer__link:hover{
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+}
+
+.side-drawer__link-main{
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.side-drawer__icon{
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.side-drawer__text{
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.side-drawer__arrow{
+  font-size: 16px;
+  color: #9ca3af;
+  flex-shrink: 0;
+}
+
+.side-drawer__link--highlight{
+  background: linear-gradient(180deg, #111827 0%, #0f172a 100%);
+  color: #fff;
+  border-color: rgba(17,24,39,.9);
+  box-shadow: 0 12px 24px rgba(17,24,39,.22);
+}
+
+.side-drawer__link--highlight .side-drawer__text,
+.side-drawer__link--highlight .side-drawer__arrow{
+  color: #fff;
+}
+
+.side-drawer__link--highlight .side-drawer__icon{
+  background: rgba(255,255,255,.14);
+  color: #fff;
+}
+
+.side-drawer__link--danger{
+  color: #9f1239;
+}
+
+.side-drawer__footer{
+  margin-top: auto;
+  padding-top: 18px;
+  text-align: center;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+body.drawer-open{
+  overflow: hidden;
+}
+
+/* =========================
+   BOTON FILTRO HEADER
+   ========================= */
+
+.header-right{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.filter-toggle{
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #fff;
+  border-radius: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: .18s ease;
+}
+
+.filter-toggle:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,.08);
+}
+
+/* =========================================
+   TIENDA MOBILE — FILTROS EN DRAWER
+   ========================================= */
+.filters-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,.34);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+  z-index: 10020;
+  backdrop-filter: blur(4px);
+}
+
+.filters-backdrop.is-open{
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.filters-drawer{
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 86vw;
+  max-width: 340px;
+  height: 100vh;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: -18px 0 40px rgba(0,0,0,.16);
+  transform: translateX(100%);
+  transition: transform .25s ease;
+  z-index: 10021;
+  padding: 16px 14px 20px;
+  overflow-y: auto;
+}
+
+.filters-drawer.is-open{
+  transform: translateX(0);
+}
+
+.filters-drawer__header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.filters-drawer__title{
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.filters-drawer__close{
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+body.filters-open{
+  overflow: hidden;
+}
+
+@media (min-width: 769px){
+  .filters-backdrop,
+  .filters-drawer,
+  .filters-open-btn{
+    display: none !important;
+  }
+
+  .bottom-nav{
+    display: none !important;
+  }
+}
+
+/* =========================================
+   MOBILE FIX REAL — tienda + carrito
+   ========================================= */
+@media (max-width: 768px){
+  html, body{
+    overflow-x: hidden;
+  }
+
+  body{
+    padding-top: 62px;
+    padding-bottom: 84px;
+  }
 
   .container{
     width: 100%;
@@ -20,60 +419,34 @@
     margin: 14px auto;
   }
 
-  /* =========================
-     HEADER SOLO MOVIL
-     ========================= */
-  .header-desktop-only{
-    display: none !important;
-  }
-
-  .header-mobile-only{
-    display: grid !important;
-  }
-
   .main-header{
-    background: #011057 !important;
-    border-bottom: 1px solid rgba(255,255,255,.15) !important;
+    background: #b91c1c;
+    border-bottom: 1px solid rgba(255,255,255,.15);
   }
 
   .main-header__inner,
   .main-header__inner--drawer{
-    padding: 10px 12px !important;
+    padding: 10px 12px;
   }
 
   .main-header__inner--drawer{
-    min-height: 62px !important;
-    grid-template-columns: 44px 1fr 44px !important;
-    align-items: center !important;
+    min-height: 62px;
   }
 
   .main-brand{
-    font-size: 17px !important;
-    max-width: 100% !important;
-    color: #fff !important;
-    text-align: center !important;
+    font-size: 17px;
+    max-width: 100%;
+    color: #fff;
   }
 
   .menu-toggle,
   .filter-toggle{
-    background: rgba(255,255,255,.15) !important;
-    color: #fff !important;
-    border-color: rgba(255,255,255,.25) !important;
-    box-shadow: none !important;
+    background: rgba(255,255,255,.15);
+    color: #fff;
+    border-color: rgba(255,255,255,.25);
+    box-shadow: none;
   }
 
-  /* evita que el menú de PC se meta en móvil */
-  .main-nav,
-  .main-link,
-  .main-link--promo,
-  .main-link--cart,
-  .main-badge{
-    all: unset;
-  }
-
-  /* =========================
-     TIENDA MOVIL
-     ========================= */
   .meta-row{
     display: flex;
     flex-direction: column;
@@ -164,12 +537,9 @@
     max-height: 240px;
   }
 
-  /* =========================
-     CARRITO MOVIL
-     ========================= */
   .cart-page{
     max-width: 100%;
-    padding: 12px 12px 0;
+    padding: 12px 12px 36px;
   }
 
   .cart-head{
@@ -308,51 +678,6 @@
     justify-content: center;
   }
 
-  /* =========================
-     FACTURA / RESULTADO MOVIL
-     ========================= */
-  .result-page{
-    padding: 16px 12px 0 !important;
-  }
-
-  .result-shell{
-    grid-template-columns: 1fr !important;
-  }
-
-  .summary-card{
-    position: static !important;
-  }
-
-  .result-card{
-    padding: 14px !important;
-    border-radius: 18px !important;
-  }
-
-  .result-title{
-    font-size: 28px !important;
-  }
-
-  .result-sub{
-    font-size: 14px !important;
-  }
-
-  .result-item{
-    grid-template-columns: 1fr !important;
-    align-items: start !important;
-  }
-
-  .result-item-sub{
-    text-align: left !important;
-    font-size: 18px !important;
-  }
-
-  .summary-total{
-    font-size: 20px !important;
-  }
-
-  /* =========================
-     PERFIL / OTROS MOVIL
-     ========================= */
   .profile-grid{
     grid-template-columns: 1fr;
   }
@@ -386,45 +711,32 @@
     height: auto;
   }
 
-  /* =========================
-     BOTTOM NAV MOVIL
-     ========================= */
   .bottom-nav{
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 9998 !important;
-    display: grid !important;
-    background: #011057 !important;
-    border-top: 1px solid rgba(255,255,255,.15) !important;
-    margin: 0 !important;
+    display: grid;
+    background: #b91c1c;
+    border-top: 1px solid rgba(255,255,255,.15);
   }
 
   .bottom-nav__item{
-    background: rgba(255,255,255,.12) !important;
-    color: #fff !important;
-    border-color: rgba(255,255,255,.18) !important;
-    box-shadow: none !important;
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    border-color: rgba(255,255,255,.18);
+    box-shadow: none;
   }
 
   .bottom-nav__icon,
   .bottom-nav__label{
-    color: #fff !important;
+    color: #fff;
   }
 
-  .bottom-nav__item:hover,
-  .bottom-nav__item:active{
-    background: rgba(255,255,255,.25) !important;
+  .bottom-nav__item:active,
+  .bottom-nav__item:hover{
+    background: rgba(255,255,255,.25);
   }
 
   .bottom-nav__badge{
-    background: #ef4444 !important;
-    color: #fff !important;
-  }
-
-  .bottom-nav.is-hidden{
-    transform: translateY(100%) !important;
+    background: #ef4444;
+    color: #fff;
   }
 
   input,
@@ -435,10 +747,72 @@
     font-size: 16px !important;
   }
 }
+.bottom-nav{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9998;
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0,0,0,.10);
+  box-shadow: 0 -10px 24px rgba(0,0,0,.08);
+  transition: transform .22s ease;
+}
 
-/* =========================
-   GRID 2 COLUMNAS PRODUCTOS MOVIL
-   ========================= */
+.bottom-nav.is-hidden{
+  transform: translateY(100%);
+}
+
+.bottom-nav__item{
+  position: relative;
+  min-height: 56px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: #111827;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-weight: 800;
+  box-shadow: 0 6px 16px rgba(0,0,0,.05);
+}
+
+.bottom-nav__icon{
+  font-size: 18px;
+  line-height: 1;
+}
+
+.bottom-nav__label{
+  font-size: 12px;
+  line-height: 1;
+}
+
+.bottom-nav__badge{
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 900;
+  box-shadow: 0 8px 16px rgba(0,0,0,.18);
+}
+
 @media (max-width: 768px){
   body.tienda .products-section{
     width: 100% !important;
@@ -501,27 +875,75 @@
     padding: 3px 6px !important;
     line-height: 1.15 !important;
   }
-}
 
-@media (max-width: 768px){
-  html,
-  body{
-    margin: 0;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
+  .main-header{
+    background: #011057 !important;
+    border-bottom: 1px solid rgba(255,255,255,.15) !important;
   }
 
-  body{
-    padding-top: 62px !important;
-    padding-bottom: 0 !important;
+  .main-brand{
+    color: #fff !important;
+  }
+
+  .menu-toggle,
+  .filter-toggle{
+    background: rgba(255,255,255,.15) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,.25) !important;
+    box-shadow: none !important;
   }
 
   .bottom-nav{
-    position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    z-index: 9998 !important;
-    margin: 0 !important;
+    display: grid !important;
+    background: #011057 !important;
+    border-top: 1px solid rgba(255,255,255,.15) !important;
+  }
+
+  .bottom-nav__item{
+    background: rgba(255,255,255,.12) !important;
+    color: #fff !important;
+    border-color: rgba(255,255,255,.18) !important;
+    box-shadow: none !important;
+  }
+
+  .bottom-nav__icon,
+  .bottom-nav__label{
+    color: #fff !important;
+  }
+
+  .bottom-nav__item:hover,
+  .bottom-nav__item:active{
+    background: rgba(255,255,255,.25) !important;
+  }
+
+  .bottom-nav__badge{
+    background: #ef4444 !important;
+    color: #fff !important;
+  }
+}
+
+/* =========================
+   FIX HEADER DOBLE
+   ========================= */
+
+/* escritorio */
+@media (min-width: 769px){
+  .header-mobile-only{
+    display: none !important;
+  }
+
+  .header-desktop-only{
+    display: grid !important;
+  }
+}
+
+/* celular */
+@media (max-width: 768px){
+  .header-desktop-only{
+    display: none !important;
+  }
+
+  .header-mobile-only{
+    display: grid !important;
   }
 }
