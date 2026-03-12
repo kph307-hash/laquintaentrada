@@ -7,8 +7,11 @@
     </button>
 
     <div class="main-center">
-      <a class="main-brand" href="/">La quinta entrada</a>
-    </div>
+  <a class="main-brand main-brand--mobile" href="/">
+    <img src="/static/logo-5ta.png" alt="La quinta entrada" class="main-brand__logo">
+    <span class="main-brand__text">La quinta entrada</span>
+  </a>
+</div>
 
     {% if request.path.startswith('/tienda') %}
     <div class="header-right">
