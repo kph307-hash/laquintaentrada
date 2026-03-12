@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Imágenes productos</title>
+  <link rel="stylesheet" href="/static/admin.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="topbar">
+      <h2>Imágenes de productos</h2>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="btn" href="/admin">Panel Admin</a>
+        <a class="btn" href="/admin/pedidos">Pedidos</a>
+        <a class="btn" href="/admin/promos">Promos / Rifas</a>
+        <a class="btn" href="/admin/logout">Salir</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Subida masiva por SKU</h3>
+
+      <div style="margin-bottom:14px; line-height:1.5;">
+        <div><strong>Cómo funciona:</strong></div>
+        <div>El nombre del archivo debe ser exactamente el SKU del producto.</div>
+        <div>Ejemplos válidos: <code>013023.jpg</code>, <code>008779.png</code>, <code>12616.jpeg</code></div>
+        <div>Formatos permitidos: JPG, JPEG, PNG, WEBP.</div>
+      </div>
+
+      <form method="post" action="/admin/productos-imagenes" enctype="multipart/form-data">
+        <input type="file" name="files" accept=".jpg,.jpeg,.png,.webp,image/*" multiple required />
+        <button type="submit">Subir imágenes</button>
+      </form>
+    </div>
+
+    {% if resultado %}
+      <div class="card" style="margin-top:16px;">
+        <h3>Resultado</h3>
+
+        <p><strong>Subidas correctamente:</strong> {{ resultado.total_subidas }}</p>
+        <p><strong>No encontradas por SKU:</strong> {{ resultado.total_no_encontrados }}</p>
+        <p><strong>Errores:</strong> {{ resultado.total_errores }}</p>
+
+        {% if resultado.subidas %}
+          <hr>
+          <h4>Imágenes subidas</h4>
+          <ul>
+            {% for x in resultado.subidas %}
+              <li>{{ x }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if resultado.no_encontrados %}
+          <hr>
+          <h4>Archivos sin SKU encontrado</h4>
+          <ul>
+            {% for x in resultado.no_encontrados %}
+              <li>{{ x }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+
+        {% if resultado.errores %}
+          <hr>
+          <h4>Errores</h4>
+          <ul>
+            {% for x in resultado.errores %}
+              <li>{{ x }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>

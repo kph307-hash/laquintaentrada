@@ -1388,3 +1388,92 @@ async def admin_producto_upload_image(
     db.commit()
 
     return RedirectResponse("/admin", status_code=303)
+
+@app.get("/admin/productos-imagenes", response_class=HTMLResponse)
+def admin_productos_imagenes(request: Request):
+    denied = require_admin(request)
+    if denied:
+        return denied
+
+    return templates.TemplateResponse(
+        "admin_productos_imagenes.html",
+        {
+            "request": request,
+            "resultado": None,
+        },
+    )
+
+@app.post("/admin/productos-imagenes", response_class=HTMLResponse)
+async def admin_productos_imagenes_upload(
+    request: Request,
+    files: list[UploadFile] = File(...),
+    db: Session = Depends(get_db),
+):
+    denied = require_admin(request)
+    if denied:
+        return denied
+
+    subidas = []
+    no_encontrados = []
+    errores = []
+
+    permitidas = {".jpg", ".jpeg", ".png", ".webp"}
+
+    for f in files:
+        try:
+            filename = (f.filename or "").strip()
+            if not filename:
+                continue
+
+            ext = os.path.splitext(filename)[1].lower()
+            sku = os.path.splitext(filename)[0].strip()
+
+            if ext not in permitidas:
+                errores.append(f"{filename}: formato no permitido")
+                continue
+
+            if not sku:
+                errores.append(f"{filename}: nombre inválido")
+                continue
+
+            producto = db.query(Producto).filter(Producto.sku == sku).first()
+            if not producto:
+                no_encontrados.append(filename)
+                continue
+
+            # borrar archivos viejos del mismo SKU con otras extensiones
+            for old_ext in (".jpg", ".jpeg", ".png", ".webp"):
+                old_path = PRODUCTS_DISK_DIR / f"{sku}{old_ext}"
+                if old_path.exists():
+                    try:
+                        old_path.unlink()
+                    except Exception:
+                        pass
+
+            save_path = PRODUCTS_DISK_DIR / f"{sku}{ext}"
+
+            content = await f.read()
+            with open(save_path, "wb") as out:
+                out.write(content)
+
+            subidas.append(filename)
+
+        except Exception as e:
+            errores.append(f"{getattr(f, 'filename', 'archivo')}: {e}")
+
+    resultado = {
+        "subidas": subidas,
+        "no_encontrados": no_encontrados,
+        "errores": errores,
+        "total_subidas": len(subidas),
+        "total_no_encontrados": len(no_encontrados),
+        "total_errores": len(errores),
+    }
+
+    return templates.TemplateResponse(
+        "admin_productos_imagenes.html",
+        {
+            "request": request,
+            "resultado": resultado,
+        },
+    )
