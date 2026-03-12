@@ -10,7 +10,7 @@
 
   body{
   padding-top: 62px;
-  padding-bottom: 0 !important;
+  padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
 }
 
   .container{
@@ -519,13 +519,12 @@
 }
 
 @media (max-width: 768px){
-  .container,
   .cart-page,
-  .result-page,
-  .page-wrap,
-  .profile-shell{
-    padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
-  }
+.result-page,
+.page-wrap,
+.profile-shell{
+  padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+}
 
   .bottom-nav{
     position: fixed !important;
