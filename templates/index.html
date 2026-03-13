@@ -128,27 +128,33 @@
         </div>
 
         <div class="panel-body">
-          <input
-            id="catSearchMobile"
-            class="cat-search"
-            type="text"
-            placeholder="Buscar categoría..."
-          >
+  <input
+    id="catSearchMobile"
+    class="cat-search"
+    type="text"
+    placeholder="Buscar categoría..."
+  >
 
-          <div id="catsListMobile" class="cats-list">
-            {% for f in familias %}
-              <label class="cat-item">
-                <input
-                  type="checkbox"
-                  class="fam-check-mobile"
-                  value="{{ f }}"
-                  {% if f in selected_familias %}checked{% endif %}
-                >
-                <span>{{ f }}</span>
-              </label>
-            {% endfor %}
-          </div>
-        </div>
+  <div id="catsListMobile" class="cats-list">
+    {% for f in familias %}
+      <label class="cat-item">
+        <input
+          type="checkbox"
+          class="fam-check-mobile"
+          value="{{ f }}"
+          {% if f in selected_familias %}checked{% endif %}
+        >
+        <span>{{ f }}</span>
+      </label>
+    {% endfor %}
+  </div>
+
+  <div style="margin-top:12px; display:flex; gap:10px;">
+    <button type="button" id="applyFamiliesMobile" class="btn-small" style="flex:1;">
+      Aplicar filtros
+    </button>
+  </div>
+</div>
       </div>
     </aside>
 
@@ -423,16 +429,26 @@
         window.location.href = "/tienda?" + params.toString();
       }
 
-      famChecksMobile.forEach(function(c){
-        c.addEventListener("change", goFiltersFromMobile);
-      });
+      const applyFamiliesMobileBtn = document.getElementById("applyFamiliesMobile");
 
-      if (clearFamiliesMobileBtn){
-        clearFamiliesMobileBtn.addEventListener("click", function(){
-          famChecksMobile.forEach(function(c){ c.checked = false; });
-          goFiltersFromMobile();
-        });
-      }
+// En móvil: NO aplicar automáticamente al marcar
+famChecksMobile.forEach(function(c){
+  c.addEventListener("change", function(){
+    // no hacer redirect aquí
+  });
+});
+
+if (applyFamiliesMobileBtn){
+  applyFamiliesMobileBtn.addEventListener("click", function(){
+    goFiltersFromMobile();
+  });
+}
+
+if (clearFamiliesMobileBtn){
+  clearFamiliesMobileBtn.addEventListener("click", function(){
+    famChecksMobile.forEach(function(c){ c.checked = false; });
+  });
+}
     })();
   </script>
 
