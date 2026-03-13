@@ -101,7 +101,7 @@
         <button type="submit">Buscar</button>
 
         {% if q %}
-          <a class="btn-clear" href="/tienda?{{ qs_base }}{% if qs_base %}&{% endif %}page=1">Limpiar</a>
+          <a class="btn-clear" href="/tienda?page=1&page_size={{ page_size }}">Limpiar</a>
         {% endif %}
       </form>
     </div>
@@ -596,3 +596,4 @@ if (clearFamiliesMobileBtn){
   </script>
 </body>
 </html>
+
