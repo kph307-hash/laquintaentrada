@@ -81,7 +81,7 @@
   <main class="container">
     <div class="meta-row">
 
-      <form class="meta-search" method="get" action="/tienda">
+      <form class="meta-search" method="get" action="/tienda" id="metaSearchForm">
         <input type="hidden" name="page" value="1">
         <input type="hidden" name="page_size" value="{{ page_size }}">
 
@@ -101,7 +101,7 @@
         <button type="submit">Buscar</button>
 
         {% if q %}
-          <a class="btn-clear" href="/tienda?page=1&page_size={{ page_size }}">Limpiar</a>
+          <a class="btn-clear" id="clearSearchBtn" href="/tienda?page=1&page_size={{ page_size }}">Limpiar</a>
         {% endif %}
       </form>
     </div>
@@ -1015,6 +1015,212 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const strip = document.getElementById("categoryStrip");
+  const chips = document.querySelectorAll(".cat-chip");
+  const productList = document.getElementById("productList");
+  const noResults = document.getElementById("noResults");
+  const searchForm = document.getElementById("metaSearchForm");
+  const searchInput = document.getElementById("productSearchBar");
+  const clearBtn = document.getElementById("clearSearchBtn");
+
+  let currentFam = new URLSearchParams(window.location.search).get("fam") || "";
+  let currentQ = new URLSearchParams(window.location.search).get("q") || "";
+  let currentPageSize = new URLSearchParams(window.location.search).get("page_size") || "{{ page_size }}";
+
+  function formatPrice(n) {
+    return "₡" + Number(n || 0).toLocaleString("es-CR");
+  }
+
+  function stockHtml(p) {
+    const stock = Number(p.cantidad || 0);
+
+    if (p.unidad_medida === "KG") {
+      return "";
+    }
+
+    if (stock === 1) {
+      return `
+        <div class="stock-warning stock-danger">
+          🔴 ¡Última unidad disponible!
+        </div>
+      `;
+    }
+
+    if (stock < 5) {
+      return `
+        <div class="stock-warning">
+          ⚠️ Solo quedan ${Math.floor(stock)} unidades
+        </div>
+      `;
+    }
+
+    return "";
+  }
+
+  function imageHtml(p) {
+    if (p.imagen_url) {
+      return `
+        <img
+          src="${p.imagen_url}"
+          alt="${escapeHtml(p.nombre)}"
+          loading="lazy"
+          onerror="this.outerHTML='&lt;div class=&quot;img-ph&quot;&gt;Sin imagen&lt;/div&gt;';"
+        >
+      `;
+    }
+    return `<div class="img-ph">Sin imagen</div>`;
+  }
+
+  function priceHtml(p) {
+    if (p.unidad_medida === "KG") {
+      return `
+        <div class="product-price product-price--kg">
+          ${formatPrice(p.precio)}
+          <span class="price-note">por kilo aprox.</span>
+        </div>
+      `;
+    }
+    return `<div class="product-price">${formatPrice(p.precio)}</div>`;
+  }
+
+  function escapeHtml(text) {
+    return String(text || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function renderProducts(productos) {
+    if (!productList) return;
+
+    if (!productos.length) {
+      productList.innerHTML = "";
+      if (noResults) noResults.style.display = "block";
+      return;
+    }
+
+    if (noResults) noResults.style.display = "none";
+
+    productList.innerHTML = productos.map((p) => `
+      <article
+        class="product-card product-item product-click"
+        data-sku="${escapeHtml(p.sku)}"
+        data-name="${escapeHtml(p.nombre)}"
+        data-price="${Number(p.precio || 0)}"
+        data-familia="${escapeHtml(p.familia)}"
+        data-stock="${Number(p.cantidad || 0)}"
+        data-unidad-medida="${escapeHtml(p.unidad_medida)}"
+      >
+        <div class="img-box">
+          ${imageHtml(p)}
+        </div>
+
+        <div class="card-body">
+          <div class="product-title">${escapeHtml(p.nombre)}</div>
+          <div class="product-family">${escapeHtml(p.familia)}</div>
+
+          ${stockHtml(p)}
+
+          <div class="price-row">
+            ${priceHtml(p)}
+          </div>
+
+          <button type="button" class="btn-add">+ Agregar</button>
+        </div>
+      </article>
+    `).join("");
+
+    if (typeof bindProductCards === "function") {
+      bindProductCards();
+    }
+  }
+
+  function updateActiveChip() {
+    chips.forEach((chip) => {
+      const cat = chip.dataset.cat || "";
+      chip.classList.toggle("active", cat === currentFam || (!cat && !currentFam));
+    });
+  }
+
+  async function loadProducts({ pushUrl = true } = {}) {
+    try {
+      const params = new URLSearchParams();
+      params.set("page", "1");
+      params.set("page_size", currentPageSize);
+
+      if (currentQ) params.set("q", currentQ);
+      if (currentFam) params.set("fam", currentFam);
+
+      const res = await fetch(`/api/productos?${params.toString()}`, {
+        headers: { "X-Requested-With": "fetch" }
+      });
+
+      const data = await res.json();
+      if (!data.ok) return;
+
+      renderProducts(data.productos);
+      updateActiveChip();
+
+      if (pushUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete("page");
+        url.searchParams.set("page_size", currentPageSize);
+        url.searchParams.delete("q");
+        url.searchParams.delete("fam");
+
+        if (currentQ) url.searchParams.set("q", currentQ);
+        if (currentFam) url.searchParams.set("fam", currentFam);
+
+        window.history.pushState(
+          { q: currentQ, fam: currentFam },
+          "",
+          url.toString()
+        );
+      }
+    } catch (err) {
+      console.error("Error cargando productos:", err);
+    }
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", function () {
+      currentFam = this.dataset.cat || "";
+      loadProducts();
+    });
+  });
+
+  if (searchForm) {
+    searchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      currentQ = (searchInput?.value || "").trim();
+      loadProducts();
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      currentQ = "";
+      currentFam = "";
+      if (searchInput) searchInput.value = "";
+      loadProducts();
+    });
+  }
+
+  window.addEventListener("popstate", function () {
+    const params = new URLSearchParams(window.location.search);
+    currentFam = params.get("fam") || "";
+    currentQ = params.get("q") || "";
+    if (searchInput) searchInput.value = currentQ;
+    loadProducts({ pushUrl: false });
+  });
+});
+</script>
 
 
 
