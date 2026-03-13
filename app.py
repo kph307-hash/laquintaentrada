@@ -212,7 +212,12 @@ def parse_int_safe(v) -> int:
 def parse_unidad_medida(value) -> str:
     s = str(value or "").strip().lower()
 
-    if s in ("kg", "kgs", "kilo", "kilos", "kilogramo", "kilogramos", "kilogram", "kilograms"):
+    if not s:
+        return "UND"
+
+    if any(x in s for x in (
+        "kg", "kgs", "kilo", "kilos", "kilogramo", "kilogramos", "kilogram", "kilograms"
+    )):
         return "KG"
 
     return "UND"
@@ -649,7 +654,7 @@ def crear_pedido(
     pedido_id = cur.lastrowid
 
     for d in detalle:
-                cur.execute(
+        cur.execute(
             """
             INSERT INTO pedido_items (pedido_id, sku, producto, precio_unit, qty, unidad_medida, subtotal, es_promo)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -695,8 +700,9 @@ def crear_pedido(
         else:
             mensaje += f"- {d['producto']} x{int(round(d['qty']))} (₡{d['precio_unit']}): ₡{d['subtotal']}\n"
 
-        if any((d.get("unidad_medida") == "KG") for d in detalle):
-            mensaje += "\nNota: Los productos por kilo son aproximados y el monto final puede variar según el peso real.\n"
+    if any((d.get("unidad_medida") == "KG") for d in detalle):
+        mensaje += "\nNota: Los productos por kilo son aproximados y el monto final puede variar según el peso real.\n"
+
     mensaje += f"\n💰 TOTAL A PAGAR: ₡{grand_total}"
 
     texto = urllib.parse.quote(mensaje)
@@ -951,7 +957,10 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
             values_only=True,
         )
     )
+
     idx = {str(h).strip(): i for i, h in enumerate(headers) if h is not None}
+
+    print("HEADERS XLSX:", list(idx.keys()))
 
     col_sku = idx.get("Código")
     col_nombre = idx.get("Descripción")
@@ -959,6 +968,8 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
     col_familia = idx.get("Familia")
     col_cantidad = idx.get("Inventario")
     col_unidad = idx.get("Unidades")
+
+    print("COL_UNIDAD =", col_unidad)
 
     if col_sku is None or col_nombre is None or col_precio is None:
         wb.close()
@@ -972,9 +983,9 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
     saltados = 0
 
     for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
-        sku = row[col_sku] if col_sku < len(row) else None
-        nombre = row[col_nombre] if col_nombre < len(row) else None
-        precio = row[col_precio] if col_precio < len(row) else None
+        sku = row[col_sku] if col_sku is not None and col_sku < len(row) else None
+        nombre = row[col_nombre] if col_nombre is not None and col_nombre < len(row) else None
+        precio = row[col_precio] if col_precio is not None and col_precio < len(row) else None
 
         familia = None
         if col_familia is not None and col_familia < len(row):
@@ -984,9 +995,11 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
         if col_cantidad is not None and col_cantidad < len(row):
             cantidad = parse_int_safe(row[col_cantidad])
 
-        unidad_medida = "UND"
+        raw_unidad = None
         if col_unidad is not None and col_unidad < len(row):
-            unidad_medida = parse_unidad_medida(row[col_unidad])
+            raw_unidad = row[col_unidad]
+
+        unidad_medida = parse_unidad_medida(raw_unidad)
 
         if not sku:
             saltados += 1
@@ -1001,6 +1014,9 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
         if not nombre_txt:
             saltados += 1
             continue
+
+        if sku_txt == "013608":
+            print("SKU 013608 | RAW UNIDAD =", raw_unidad, "| FINAL =", unidad_medida)
 
         precio_int = parse_precio_cr(precio)
         if precio_int <= 0:
@@ -1503,3 +1519,52 @@ async def admin_productos_imagenes_upload(
             "resultado": resultado,
         },
     )
+
+
+@app.get("/debug-xlsx")
+def debug_xlsx():
+    import tempfile
+    import requests
+    import openpyxl
+
+    url = os.getenv("SHEET_XLSX_URL", "").strip()
+    if not url:
+        return {"ok": False, "error": "Falta SHEET_XLSX_URL en .env"}
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+        r = requests.get(url, timeout=30)
+        r.raise_for_status()
+        tmp.write(r.content)
+        tmp_path = tmp.name
+
+    wb = openpyxl.load_workbook(tmp_path, read_only=True, data_only=True)
+    ws = wb.active
+
+    header_row_idx = 4
+    headers = next(ws.iter_rows(min_row=header_row_idx, max_row=header_row_idx, values_only=True))
+    idx = {str(h).strip(): i for i, h in enumerate(headers) if h is not None}
+
+    col_sku = idx.get("Código")
+    col_unidad = idx.get("Unidades")
+
+    resultado = {
+        "headers": list(idx.keys()),
+        "col_unidad": col_unidad,
+        "muestra": []
+    }
+
+    for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
+        sku = row[col_sku] if col_sku is not None and col_sku < len(row) else None
+        unidad = row[col_unidad] if col_unidad is not None and col_unidad < len(row) else None
+
+        sku_txt = str(sku).strip() if sku else ""
+        if sku_txt in ("013608", "013609", "013610"):
+            resultado["muestra"].append({
+                "sku": sku_txt,
+                "raw_unidad": unidad,
+                "final_unidad": parse_unidad_medida(unidad),
+            })
+
+    wb.close()
+    os.remove(tmp_path)
+    return resultado

@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base, Session
 # ======================
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = Path(os.getenv("SQLITE_PATH", "/var/data/super.db")).resolve()
+DB_PATH = Path(os.getenv("SQLITE_PATH", "super.db")).resolve()
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
 # SQLAlchemy URL usando path absoluto
