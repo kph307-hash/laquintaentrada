@@ -23,6 +23,7 @@ from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from db import SessionLocal, init_db, Producto, UsuarioCliente, get_db, get_conn, DB_PATH
+from fastapi.responses import JSONResponse
 
 load_dotenv()
 
@@ -1608,3 +1609,77 @@ def debug_xlsx():
     finally:
         wb.close()
         os.remove(tmp_path)
+
+@app.get("/api/productos")
+def api_productos(
+    q: Optional[str] = None,
+    fam: Optional[List[str]] = Query(default=None),
+    page: int = 1,
+    page_size: int = 25,
+    db: Session = Depends(get_db),
+):
+    page = max(1, int(page or 1))
+    if page_size not in (25, 50, 100):
+        page_size = 25
+
+    col_familia = getattr(Producto, "familia", None)
+    query = db.query(Producto).filter(Producto.cantidad > 0)
+
+    selected_familias = [x.strip() for x in (fam or []) if (x or "").strip()]
+
+    if q and q.strip():
+        q_clean = q.strip()
+        query = query.filter(
+            or_(
+                Producto.nombre.ilike(f"%{q_clean}%"),
+                Producto.sku.ilike(f"%{q_clean}%"),
+            )
+        ).order_by(
+            case((Producto.nombre.ilike(f"{q_clean}%"), 0), else_=1),
+            case((Producto.sku.ilike(f"{q_clean}%"), 0), else_=1),
+            Producto.nombre.asc(),
+        )
+    else:
+        query = query.order_by(Producto.nombre.asc())
+
+    if selected_familias and col_familia is not None:
+        query = query.filter(col_familia.in_(selected_familias))
+
+    total = int(query.count())
+    total_pages = max(1, (total + page_size - 1) // page_size)
+    if page > total_pages:
+        page = total_pages
+
+    productos_page = query.offset((page - 1) * page_size).limit(page_size).all()
+
+    productos = []
+    for p in productos_page:
+        fam_txt = (getattr(p, "familia", "") or "").strip() or "Sin categoría"
+        sku_txt = (p.sku or "").strip()
+        unidad_medida = (getattr(p, "unidad_medida", "UND") or "UND").upper()
+        cantidad = float(getattr(p, "cantidad", 0) or 0)
+
+        productos.append(
+            {
+                "sku": sku_txt,
+                "nombre": p.nombre,
+                "precio": int(p.precio),
+                "familia": fam_txt,
+                "cantidad": cantidad,
+                "imagen_url": get_producto_image_url(sku_txt),
+                "unidad_medida": unidad_medida,
+            }
+        )
+
+    return JSONResponse(
+        {
+            "ok": True,
+            "productos": productos,
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "total_pages": total_pages,
+            "selected_familias": selected_familias,
+            "q": q or "",
+        }
+    )
