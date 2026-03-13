@@ -3,7 +3,7 @@ import sqlite3
 from pathlib import Path
 from typing import Generator
 
-from sqlalchemy import Column, Integer, String, create_engine, UniqueConstraint, Index
+from sqlalchemy import Column, Integer, String, Float, create_engine, Index
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 
 # ======================
@@ -14,10 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = Path(os.getenv("SQLITE_PATH", "super.db")).resolve()
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-# SQLAlchemy URL usando path absoluto
 DB_URL = f"sqlite:///{DB_PATH}"
-
-# check_same_thread solo aplica para sqlite
 connect_args = {"check_same_thread": False} if DB_URL.startswith("sqlite") else {}
 
 engine = create_engine(DB_URL, connect_args=connect_args, future=True)
@@ -37,7 +34,7 @@ class Producto(Base):
     nombre = Column(String(255), nullable=False, index=True)
     precio = Column(Integer, nullable=False, default=0)  # precio por unidad o por kilo
     familia = Column(String(120), nullable=True, index=True)
-    cantidad = Column(Integer, nullable=False, default=0)
+    cantidad = Column(Float, nullable=False, default=0.0)  # <- importante
     imagen_url = Column(String(255), nullable=True, default="")
     unidad_medida = Column(String(10), nullable=False, default="UND")  # UND | KG
 
@@ -67,14 +64,33 @@ def get_conn():
     return conn
 
 
+def table_exists(conn, table_name: str) -> bool:
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+        (table_name,),
+    )
+    return cur.fetchone() is not None
+
+
+def get_table_columns(conn, table_name: str) -> dict:
+    cur = conn.cursor()
+    cur.execute(f"PRAGMA table_info({table_name});")
+    rows = cur.fetchall()
+    return {row["name"]: row for row in rows}
+
+
+# ======================
+# Migraciones productos
+# ======================
+
 def ensure_productos_has_cantidad():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(productos);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "productos")
 
     if "cantidad" not in cols:
-        cur.execute("ALTER TABLE productos ADD COLUMN cantidad INTEGER NOT NULL DEFAULT 0;")
+        cur.execute("ALTER TABLE productos ADD COLUMN cantidad REAL NOT NULL DEFAULT 0;")
         conn.commit()
 
     conn.close()
@@ -83,8 +99,7 @@ def ensure_productos_has_cantidad():
 def ensure_productos_has_imagen_url():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(productos);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "productos")
 
     if "imagen_url" not in cols:
         cur.execute("ALTER TABLE productos ADD COLUMN imagen_url TEXT DEFAULT '';")
@@ -92,11 +107,11 @@ def ensure_productos_has_imagen_url():
 
     conn.close()
 
+
 def ensure_productos_has_unidad_medida():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(productos);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "productos")
 
     if "unidad_medida" not in cols:
         cur.execute("ALTER TABLE productos ADD COLUMN unidad_medida TEXT NOT NULL DEFAULT 'UND';")
@@ -104,11 +119,80 @@ def ensure_productos_has_unidad_medida():
 
     conn.close()
 
+
+def migrate_productos_cantidad_to_real():
+    conn = get_conn()
+    cur = conn.cursor()
+
+    if not table_exists(conn, "productos"):
+        conn.close()
+        return
+
+    cols = get_table_columns(conn, "productos")
+    if "cantidad" not in cols:
+        conn.close()
+        return
+
+    cantidad_type = str(cols["cantidad"]["type"] or "").upper()
+
+    # Si ya está como REAL/FLOAT/DOUBLE, no hacer nada
+    if any(t in cantidad_type for t in ("REAL", "FLOAT", "DOUBLE")):
+        conn.close()
+        return
+
+    # SQLite no soporta ALTER COLUMN TYPE, entonces se recrea tabla
+    cur.execute("PRAGMA foreign_keys = OFF;")
+    conn.commit()
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS productos_new (
+            id INTEGER PRIMARY KEY,
+            sku TEXT NOT NULL UNIQUE,
+            nombre TEXT NOT NULL,
+            precio INTEGER NOT NULL DEFAULT 0,
+            familia TEXT,
+            cantidad REAL NOT NULL DEFAULT 0,
+            imagen_url TEXT DEFAULT '',
+            unidad_medida TEXT NOT NULL DEFAULT 'UND'
+        );
+    """)
+
+    cur.execute("""
+        INSERT INTO productos_new (id, sku, nombre, precio, familia, cantidad, imagen_url, unidad_medida)
+        SELECT
+            id,
+            sku,
+            nombre,
+            precio,
+            familia,
+            CAST(COALESCE(cantidad, 0) AS REAL),
+            COALESCE(imagen_url, ''),
+            COALESCE(unidad_medida, 'UND')
+        FROM productos;
+    """)
+
+    cur.execute("DROP TABLE productos;")
+    cur.execute("ALTER TABLE productos_new RENAME TO productos;")
+
+    cur.execute("CREATE UNIQUE INDEX IF NOT EXISTS ix_productos_sku ON productos(sku);")
+    cur.execute("CREATE INDEX IF NOT EXISTS ix_productos_nombre ON productos(nombre);")
+    cur.execute("CREATE INDEX IF NOT EXISTS ix_productos_familia ON productos(familia);")
+    cur.execute("CREATE INDEX IF NOT EXISTS ix_productos_familia_nombre ON productos(familia, nombre);")
+
+    conn.commit()
+    cur.execute("PRAGMA foreign_keys = ON;")
+    conn.commit()
+    conn.close()
+
+
+# ======================
+# Migraciones pedidos
+# ======================
+
 def ensure_pedidos_has_cliente_fields():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(pedidos);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "pedidos")
 
     nuevas_columnas = {
         "usuario_id": "ALTER TABLE pedidos ADD COLUMN usuario_id INTEGER DEFAULT NULL;",
@@ -128,8 +212,7 @@ def ensure_pedidos_has_cliente_fields():
 def ensure_pedido_items_has_sku():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(pedido_items);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "pedido_items")
 
     if "sku" not in cols:
         cur.execute("ALTER TABLE pedido_items ADD COLUMN sku TEXT DEFAULT '';")
@@ -141,8 +224,7 @@ def ensure_pedido_items_has_sku():
 def ensure_pedido_items_has_es_promo():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(pedido_items);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "pedido_items")
 
     if "es_promo" not in cols:
         cur.execute("ALTER TABLE pedido_items ADD COLUMN es_promo INTEGER NOT NULL DEFAULT 0;")
@@ -150,17 +232,18 @@ def ensure_pedido_items_has_es_promo():
 
     conn.close()
 
+
 def ensure_pedido_items_has_unidad_medida():
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("PRAGMA table_info(pedido_items);")
-    cols = [row["name"] for row in cur.fetchall()]
+    cols = get_table_columns(conn, "pedido_items")
 
     if "unidad_medida" not in cols:
         cur.execute("ALTER TABLE pedido_items ADD COLUMN unidad_medida TEXT NOT NULL DEFAULT 'UND';")
         conn.commit()
 
     conn.close()
+
 
 # ======================
 # Init DB
@@ -212,16 +295,16 @@ def init_db():
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS pedido_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    pedido_id INTEGER NOT NULL,
-    sku TEXT DEFAULT '',
-    producto TEXT NOT NULL,
-    precio_unit INTEGER NOT NULL DEFAULT 0,
-    qty REAL NOT NULL DEFAULT 0,
-    unidad_medida TEXT NOT NULL DEFAULT 'UND',
-    subtotal INTEGER NOT NULL DEFAULT 0,
-    es_promo INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      pedido_id INTEGER NOT NULL,
+      sku TEXT DEFAULT '',
+      producto TEXT NOT NULL,
+      precio_unit INTEGER NOT NULL DEFAULT 0,
+      qty REAL NOT NULL DEFAULT 0,
+      unidad_medida TEXT NOT NULL DEFAULT 'UND',
+      subtotal INTEGER NOT NULL DEFAULT 0,
+      es_promo INTEGER NOT NULL DEFAULT 0,
+      FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
     );
     """)
 
@@ -234,10 +317,12 @@ def init_db():
     # 3) Migraciones simples
     ensure_productos_has_cantidad()
     ensure_productos_has_imagen_url()
+    ensure_productos_has_unidad_medida()
+    migrate_productos_cantidad_to_real()
+
     ensure_pedidos_has_cliente_fields()
     ensure_pedido_items_has_sku()
     ensure_pedido_items_has_es_promo()
-    ensure_productos_has_unidad_medida()
     ensure_pedido_items_has_unidad_medida()
 
 

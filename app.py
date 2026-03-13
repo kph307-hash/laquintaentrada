@@ -34,8 +34,10 @@ pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 # ======================
 PROMOS_DISK_DIR = Path(os.getenv("PROMOS_DISK_DIR", "/var/data/promos"))
 PROMOS_DISK_DIR.mkdir(parents=True, exist_ok=True)
+
 PRODUCTS_DISK_DIR = Path(os.getenv("PRODUCTS_DISK_DIR", "/var/data/productos"))
 PRODUCTS_DISK_DIR.mkdir(parents=True, exist_ok=True)
+
 SHIPPING_PER_KM = 500  # ₡ por km
 SYNC_STATUS_FILE = Path("sync_status.json")
 ADMIN_SYNC_TOKEN = os.getenv("ADMIN_SYNC_TOKEN", "cambie-esto")
@@ -57,9 +59,9 @@ ADMIN_KEY = must_env("ADMIN_KEY", "1234" if ENV != "prod" else None)
 SECRET_KEY = must_env("SECRET_KEY", "dev-secret" if ENV != "prod" else None)
 WHATSAPP_PHONE = must_env("WHATSAPP_PHONE", "50662154752")
 
-HTTPS_ONLY = True if ENV == "prod" else False
+HTTPS_ONLY = ENV == "prod"
 
-# Coordenadas del supermercado (Alajuela)
+# Coordenadas del supermercado
 SUPER_LAT = 10.010209335902667
 SUPER_LNG = -84.21685918761378
 
@@ -91,9 +93,9 @@ def startup():
     logger.info("✅ TEMPLATES_DIR: %s", TEMPLATES_DIR)
     logger.info("✅ STATIC_DIR: %s", STATIC_DIR)
     logger.info("✅ ENV=%s HTTPS_ONLY=%s", ENV, HTTPS_ONLY)
-
     print("DB_PATH =", DB_PATH)
     print("PROMOS_DISK_DIR =", PROMOS_DISK_DIR)
+
 
 @app.get("/media/promos/{filename}")
 def media_promo(filename: str):
@@ -102,12 +104,14 @@ def media_promo(filename: str):
         raise HTTPException(status_code=404, detail="Imagen no encontrada")
     return FileResponse(file_path)
 
+
 @app.get("/media/productos/{filename}")
 def media_producto(filename: str):
     file_path = PRODUCTS_DISK_DIR / filename
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Imagen no encontrada")
     return FileResponse(file_path)
+
 
 # ======================
 # HELPERS
@@ -121,6 +125,7 @@ def require_admin(request: Request) -> Optional[RedirectResponse]:
     if not is_admin(request):
         return RedirectResponse("/admin", status_code=303)
     return None
+
 
 def get_cliente_session(request: Request):
     cliente_id = request.session.get("cliente_id")
@@ -142,8 +147,8 @@ def get_cliente_session(request: Request):
 def is_cliente_logged(request: Request) -> bool:
     return bool(request.session.get("cliente_id"))
 
+
 def parse_precio_cr(value) -> int:
-    """Convierte precios a entero."""
     if value is None:
         return 0
 
@@ -177,22 +182,6 @@ def parse_precio_cr(value) -> int:
         return 0
 
 
-def distance_km(lat1, lon1, lat2, lon2):
-    R = 6371  # km
-    dlat = math.radians(lat2 - lat1)
-    dlon = math.radians(lon2 - lon1)
-
-    a = (
-        math.sin(dlat / 2) ** 2
-        + math.cos(math.radians(lat1))
-        * math.cos(math.radians(lat2))
-        * math.sin(dlon / 2) ** 2
-    )
-
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return R * c
-
-
 def parse_float_safe(v) -> float:
     try:
         if v is None:
@@ -214,24 +203,31 @@ def parse_unidad_medida(value) -> str:
     if not s:
         return "UND"
 
-    kg_tokens = (
+    kg_vals = {
         "kg", "kg.", "kgs", "kgs.",
         "kilo", "kilos",
         "kilogramo", "kilogramos",
         "kilogram", "kilograms",
         "kgr", "kgrs"
-    )
-    if any(token in s for token in kg_tokens):
+    }
+
+    und_vals = {
+        "unid", "und", "unds",
+        "unidad", "unidades",
+        "pz", "pieza", "piezas"
+    }
+
+    if s in kg_vals:
         return "KG"
 
-    und_tokens = (
-        "und", "unds", "unidad", "unidades",
-        "unit", "units", "pz", "pieza", "piezas"
-    )
-    if any(token in s for token in und_tokens):
+    if s in und_vals:
         return "UND"
 
+    if "kg" in s or "kilo" in s or "kilogram" in s:
+        return "KG"
+
     return "UND"
+
 
 def format_qty_display(qty: float, unidad_medida: str) -> str:
     unidad_medida = (unidad_medida or "UND").upper()
@@ -240,11 +236,28 @@ def format_qty_display(qty: float, unidad_medida: str) -> str:
         return f"{qty:.2f} kg"
 
     try:
-        n = int(qty)
+        n = int(round(float(qty)))
     except Exception:
         n = 0
 
     return f"{n}"
+
+
+def distance_km(lat1, lon1, lat2, lon2):
+    r = 6371
+    dlat = math.radians(lat2 - lat1)
+    dlon = math.radians(lon2 - lon1)
+
+    a = (
+        math.sin(dlat / 2) ** 2
+        + math.cos(math.radians(lat1))
+        * math.cos(math.radians(lat2))
+        * math.sin(dlon / 2) ** 2
+    )
+
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return r * c
+
 
 def get_producto_image_url(sku: str) -> str:
     sku = (sku or "").strip()
@@ -258,6 +271,33 @@ def get_producto_image_url(sku: str) -> str:
             return f"/media/productos/{filename}"
 
     return ""
+
+
+def guardar_estado_sync(ok: bool, mensaje: str, total_productos: int = 0, archivo: str = ""):
+    data = {
+        "ok": ok,
+        "mensaje": mensaje,
+        "total_productos": total_productos,
+        "archivo": archivo,
+        "ultima_actualizacion": datetime.now().isoformat(),
+    }
+    SYNC_STATUS_FILE.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+
+
+def leer_estado_sync():
+    if not SYNC_STATUS_FILE.exists():
+        return None
+
+    data = json.loads(SYNC_STATUS_FILE.read_text(encoding="utf-8"))
+    iso = data.get("ultima_actualizacion")
+    if iso:
+        dt = datetime.fromisoformat(iso)
+        data["ultima_actualizacion_legible"] = dt.strftime("%d/%m/%Y %I:%M %p")
+    return data
+
 
 # ======================
 # HEALTHCHECK
@@ -363,15 +403,9 @@ def tienda(
 
     familias: List[str] = []
     if col_familia is not None:
-        fam_rows = (
-            db.query(col_familia)
-            .filter(Producto.cantidad > 0)
-            .distinct()
-            .all()
-        )
+        fam_rows = db.query(col_familia).filter(Producto.cantidad > 0).distinct().all()
         for (f,) in fam_rows:
-            ftxt = (str(f).strip() if f else "").strip() or "Sin categoría"
-            familias.append(ftxt)
+            familias.append((str(f).strip() if f else "").strip() or "Sin categoría")
         familias = sorted(set(familias))
     else:
         familias = ["Sin categoría"]
@@ -382,7 +416,6 @@ def tienda(
 
     if q and q.strip():
         q_clean = q.strip()
-
         query = query.filter(
             or_(
                 Producto.nombre.ilike(f"%{q_clean}%"),
@@ -410,6 +443,8 @@ def tienda(
     for p in productos_page:
         fam_txt = (getattr(p, "familia", "") or "").strip() or "Sin categoría"
         sku_txt = (p.sku or "").strip()
+        unidad_medida = (getattr(p, "unidad_medida", "UND") or "UND").upper()
+        cantidad = float(getattr(p, "cantidad", 0) or 0)
 
         productos_list.append(
             {
@@ -417,15 +452,12 @@ def tienda(
                 "nombre": p.nombre,
                 "precio": int(p.precio),
                 "familia": fam_txt,
-                "cantidad": float(getattr(p, "cantidad", 0) or 0),
+                "cantidad": cantidad,
+                "cantidad_display": format_qty_display(cantidad, unidad_medida),
                 "imagen_url": get_producto_image_url(sku_txt),
-                "unidad_medida": (getattr(p, "unidad_medida", "UND") or "UND").upper(),
+                "unidad_medida": unidad_medida,
             }
         )
-
-    print("productos_page =", len(productos_page))
-    print("productos_list =", len(productos_list))
-    print("request url =", request.url)
 
     qs_parts = []
     if q and q.strip():
@@ -453,6 +485,7 @@ def tienda(
     }
 
     return templates.TemplateResponse("index.html", ctx)
+
 
 # ======================
 # PEDIDO
@@ -493,7 +526,6 @@ def crear_pedido(
     if delivery_mode == "delivery" and not direccion_clean and not ((lat is not None) and (lng is not None)):
         return HTMLResponse("Falta la dirección de envío o la ubicación GPS.", status_code=400)
 
-    # Shipping / distancia
     shipping = 0
     dist: Optional[float] = None
 
@@ -526,10 +558,7 @@ def crear_pedido(
                 )
         else:
             shipping = 500
-    else:
-        shipping = 0
 
-    # Leer carrito
     try:
         cart = json.loads(cart_json)
         if not isinstance(cart, list):
@@ -544,19 +573,17 @@ def crear_pedido(
     try:
         for item in cart:
             sku = (item.get("sku") or "").strip()
+
             try:
                 qty = float(item.get("qty", 0) or 0)
             except Exception:
-                qty = 0
-
-            unidad_medida = str(item.get("unidad_medida") or "UND").strip().upper()
+                qty = 0.0
 
             if not sku or qty <= 0:
                 continue
 
-            sku_norm = sku.strip().upper()
+            sku_norm = sku.upper()
 
-            # PROMOS
             if sku_norm.startswith("PROMO:") or sku_norm.startswith("PROMO-"):
                 promo_nombre = (
                     (item.get("nombre") or item.get("name") or item.get("titulo") or item.get("producto") or "")
@@ -567,48 +594,44 @@ def crear_pedido(
                     raw_price = item.get("precio")
 
                 promo_precio = parse_precio_cr(raw_price)
-
                 if promo_precio <= 0:
                     promo_precio = parse_precio_cr(item.get("precio_unit"))
 
                 if not promo_nombre or promo_precio <= 0:
                     continue
 
-                subtotal = promo_precio * qty
+                subtotal = int(round(promo_precio * qty))
                 total += subtotal
+
                 detalle.append(
                     {
                         "producto": promo_nombre,
                         "precio_unit": promo_precio,
                         "qty": qty,
                         "unidad_medida": "UND",
-                        "subtotal": int(round(subtotal)),
+                        "subtotal": subtotal,
                     }
                 )
                 continue
 
-            # PRODUCTOS BD
             p = dbs.query(Producto).filter(Producto.sku == sku).first()
             if not p:
                 continue
 
-            # ✅ No permitir si no hay stock
-            stock_actual = int(getattr(p, "cantidad", 0) or 0)
+            stock_actual = float(getattr(p, "cantidad", 0) or 0)
             unidad_real = (getattr(p, "unidad_medida", "UND") or "UND").upper()
+            precio_unit = int(p.precio)
 
             if stock_actual <= 0:
                 continue
 
-            precio_unit = int(p.precio)
-
             if unidad_real == "KG":
-                # qty viene en kilos: 0.25, 0.50, etc.
                 if qty <= 0:
                     continue
                 subtotal = int(round(precio_unit * qty))
             else:
                 qty = int(round(qty))
-                if qty <= 0 or qty > stock_actual:
+                if qty <= 0 or qty > int(stock_actual):
                     continue
                 subtotal = int(round(precio_unit * qty))
 
@@ -685,7 +708,6 @@ def crear_pedido(
     conn.commit()
     conn.close()
 
-    # Construir mensaje WhatsApp
     mensaje = f"🛒 Pedido de: {nombre}\n"
 
     if delivery_mode == "delivery":
@@ -707,7 +729,10 @@ def crear_pedido(
     for d in detalle:
         unidad = d.get("unidad_medida", "UND")
         if unidad == "KG":
-            mensaje += f"- {d['producto']} — {format_qty_display(d['qty'], unidad)} (₡{d['precio_unit']} por kilo aprox.): ₡{d['subtotal']} aprox.\n"
+            mensaje += (
+                f"- {d['producto']} — {format_qty_display(d['qty'], unidad)} "
+                f"(₡{d['precio_unit']} por kilo aprox.): ₡{d['subtotal']} aprox.\n"
+            )
         else:
             mensaje += f"- {d['producto']} x{int(round(d['qty']))} (₡{d['precio_unit']}): ₡{d['subtotal']}\n"
 
@@ -741,6 +766,7 @@ def crear_pedido(
             "shipping_verified": dist is not None,
         },
     )
+
 
 @app.get("/login", response_class=HTMLResponse)
 def cliente_login_view(request: Request):
@@ -833,6 +859,7 @@ def cliente_registro(
             },
             status_code=400,
         )
+
     if len(password.encode("utf-8")) > 72:
         return templates.TemplateResponse(
             "registro.html",
@@ -843,7 +870,7 @@ def cliente_registro(
             },
             status_code=400,
         )
-    
+
     nuevo = UsuarioCliente(
         nombre=nombre,
         correo=correo,
@@ -900,23 +927,10 @@ def cliente_perfil(request: Request):
         },
     )
 
+
 # ======================
 # ADMIN
 # ======================
-
-def leer_estado_sync():
-    if not SYNC_STATUS_FILE.exists():
-        return None
-
-    data = json.loads(SYNC_STATUS_FILE.read_text(encoding="utf-8"))
-
-    iso = data.get("ultima_actualizacion")
-    if iso:
-        dt = datetime.fromisoformat(iso)
-        data["ultima_actualizacion_legible"] = dt.strftime("%d/%m/%Y %I:%M %p")
-
-    return data
-
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_panel(request: Request, db: Session = Depends(get_db)):
@@ -956,143 +970,144 @@ def admin_logout(request: Request):
     request.session.pop("is_admin", None)
     return RedirectResponse("/admin", status_code=303)
 
+
 def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
     wb = openpyxl.load_workbook(file_path, read_only=True, data_only=True)
     ws = wb.active
 
-    header_row_idx = 4
-    headers = next(
-        ws.iter_rows(
-            min_row=header_row_idx,
-            max_row=header_row_idx,
-            values_only=True,
-        )
-    )
-
-    def norm_header(h):
-        return re.sub(r"\s+", " ", str(h or "").strip().lower())
-
-    idx = {norm_header(h): i for i, h in enumerate(headers) if h is not None}
-
-    print("HEADERS XLSX NORMALIZADOS:", list(idx.keys()))
-
-    col_sku = idx.get("código")
-    col_nombre = idx.get("descripción")
-    col_precio = idx.get("precio de venta")
-    col_familia = idx.get("familia")
-    col_cantidad = idx.get("inventario")
-
-    col_unidad = idx.get("unidades")
-    if col_unidad is None:
-        col_unidad = idx.get("unidad")
-    if col_unidad is None:
-        col_unidad = idx.get("unidad de medida")
-
-    print("COL_UNIDAD =", col_unidad)
-
-    if col_sku is None or col_nombre is None or col_precio is None:
-        wb.close()
-        raise ValueError("No encuentro columnas: 'Código', 'Descripción', 'Precio de venta'.")
-
-    existentes = db.query(Producto).all()
-    by_sku = {(p.sku or "").strip(): p for p in existentes if (p.sku or "").strip()}
-
-    creados = 0
-    actualizados = 0
-    saltados = 0
-
-    for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
-        sku = row[col_sku] if col_sku is not None and col_sku < len(row) else None
-        nombre = row[col_nombre] if col_nombre is not None and col_nombre < len(row) else None
-        precio = row[col_precio] if col_precio is not None and col_precio < len(row) else None
-
-        familia = None
-        if col_familia is not None and col_familia < len(row):
-            familia = row[col_familia]
-
-        cantidad = 0.0
-        if col_cantidad is not None and col_cantidad < len(row):
-            cantidad = parse_float_safe(row[col_cantidad])
-
-        raw_unidad = None
-        if col_unidad is not None and col_unidad < len(row):
-            raw_unidad = row[col_unidad]
-
-        unidad_medida = parse_unidad_medida(raw_unidad)
-
-        if not sku:
-            saltados += 1
-            continue
-
-        sku_txt = str(sku).strip()
-        if not sku_txt:
-            saltados += 1
-            continue
-
-        nombre_txt = str(nombre).strip() if nombre else ""
-        if not nombre_txt:
-            saltados += 1
-            continue
-
-        if sku_txt == "013608":
-            print("SKU 013608 | RAW UNIDAD =", raw_unidad, "| FINAL =", unidad_medida)
-
-        precio_int = parse_precio_cr(precio)
-        if precio_int <= 0:
-            saltados += 1
-            continue
-
-        familia_txt = str(familia).strip() if familia else ""
-
-        p = by_sku.get(sku_txt)
-        if p:
-            changed = False
-
-            if (p.nombre or "") != nombre_txt:
-                p.nombre = nombre_txt
-                changed = True
-
-            if int(p.precio) != precio_int:
-                p.precio = precio_int
-                changed = True
-
-            if (p.familia or "") != familia_txt:
-                p.familia = familia_txt
-                changed = True
-
-            cantidad_actual = float(getattr(p, "cantidad", 0) or 0)
-            if abs(cantidad_actual - float(cantidad)) > 0.0001:
-                p.cantidad = float(cantidad)
-            changed = True
-
-            if (getattr(p, "unidad_medida", "UND") or "UND") != unidad_medida:
-                p.unidad_medida = unidad_medida
-                changed = True
-
-            if changed:
-                actualizados += 1
-        else:
-            nuevo = Producto(
-                sku=sku_txt,
-                nombre=nombre_txt,
-                precio=precio_int,
-                familia=familia_txt,
-                cantidad=int(cantidad),
-                unidad_medida=unidad_medida,
+    try:
+        header_row_idx = 4
+        headers = next(
+            ws.iter_rows(
+                min_row=header_row_idx,
+                max_row=header_row_idx,
+                values_only=True,
             )
-            db.add(nuevo)
-            by_sku[sku_txt] = nuevo
-            creados += 1
+        )
 
-    db.commit()
-    wb.close()
+        def norm_header(h):
+            return re.sub(r"\s+", " ", str(h or "").strip().lower())
 
-    return {
-        "creados": creados,
-        "actualizados": actualizados,
-        "saltados": saltados,
-        "total": creados + actualizados,
-    }
+        idx = {norm_header(h): i for i, h in enumerate(headers) if h is not None}
+
+        print("HEADERS XLSX NORMALIZADOS:", list(idx.keys()))
+
+        col_sku = idx.get("código")
+        col_nombre = idx.get("descripción")
+        col_precio = idx.get("precio de venta")
+        col_familia = idx.get("familia")
+        col_cantidad = idx.get("inventario")
+
+        col_unidad = idx.get("unidades")
+        if col_unidad is None:
+            col_unidad = idx.get("unidad")
+        if col_unidad is None:
+            col_unidad = idx.get("unidad de medida")
+
+        print("COL_UNIDAD =", col_unidad)
+
+        if col_sku is None or col_nombre is None or col_precio is None:
+            raise ValueError("No encuentro columnas: 'Código', 'Descripción', 'Precio de venta'.")
+
+        existentes = db.query(Producto).all()
+        by_sku = {(p.sku or "").strip(): p for p in existentes if (p.sku or "").strip()}
+
+        creados = 0
+        actualizados = 0
+        saltados = 0
+
+        for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
+            sku = row[col_sku] if col_sku is not None and col_sku < len(row) else None
+            nombre = row[col_nombre] if col_nombre is not None and col_nombre < len(row) else None
+            precio = row[col_precio] if col_precio is not None and col_precio < len(row) else None
+
+            familia = None
+            if col_familia is not None and col_familia < len(row):
+                familia = row[col_familia]
+
+            cantidad = 0.0
+            if col_cantidad is not None and col_cantidad < len(row):
+                cantidad = parse_float_safe(row[col_cantidad])
+
+            raw_unidad = None
+            if col_unidad is not None and col_unidad < len(row):
+                raw_unidad = row[col_unidad]
+
+            unidad_medida = parse_unidad_medida(raw_unidad)
+
+            if not sku:
+                saltados += 1
+                continue
+
+            sku_txt = str(sku).strip()
+            if not sku_txt:
+                saltados += 1
+                continue
+
+            nombre_txt = str(nombre).strip() if nombre else ""
+            if not nombre_txt:
+                saltados += 1
+                continue
+
+            precio_int = parse_precio_cr(precio)
+            if precio_int <= 0:
+                saltados += 1
+                continue
+
+            familia_txt = str(familia).strip() if familia else ""
+
+            p = by_sku.get(sku_txt)
+            if p:
+                changed = False
+
+                if (p.nombre or "") != nombre_txt:
+                    p.nombre = nombre_txt
+                    changed = True
+
+                if int(p.precio) != precio_int:
+                    p.precio = precio_int
+                    changed = True
+
+                if (p.familia or "") != familia_txt:
+                    p.familia = familia_txt
+                    changed = True
+
+                cantidad_actual = float(getattr(p, "cantidad", 0) or 0)
+                if abs(cantidad_actual - float(cantidad)) > 0.0001:
+                    p.cantidad = float(cantidad)
+                    changed = True
+
+                unidad_actual = (getattr(p, "unidad_medida", "UND") or "UND").upper()
+                if unidad_actual != unidad_medida:
+                    p.unidad_medida = unidad_medida
+                    changed = True
+
+                if changed:
+                    actualizados += 1
+            else:
+                nuevo = Producto(
+                    sku=sku_txt,
+                    nombre=nombre_txt,
+                    precio=precio_int,
+                    familia=familia_txt,
+                    cantidad=float(cantidad),
+                    unidad_medida=unidad_medida,
+                )
+                db.add(nuevo)
+                by_sku[sku_txt] = nuevo
+                creados += 1
+
+        db.commit()
+
+        return {
+            "creados": creados,
+            "actualizados": actualizados,
+            "saltados": saltados,
+            "total": creados + actualizados,
+        }
+    finally:
+        wb.close()
+
 
 # ======================
 # ADMIN: SYNC XLSX por SKU
@@ -1104,7 +1119,6 @@ async def sync_xlsx(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    print("=== ENTRO A /admin/sync-xlsx ===")
     denied = require_admin(request)
     if denied:
         return denied
@@ -1278,6 +1292,7 @@ def admin_promos_delete(promo_id: int, request: Request):
 
     return RedirectResponse("/admin/promos", status_code=303)
 
+
 # ======================
 # ADMIN: PEDIDOS
 # ======================
@@ -1290,11 +1305,13 @@ def admin_pedidos(request: Request):
 
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("""
-      SELECT * FROM pedidos
-      WHERE status='pendiente'
-      ORDER BY id DESC
-    """)
+    cur.execute(
+        """
+        SELECT * FROM pedidos
+        WHERE status='pendiente'
+        ORDER BY id DESC
+        """
+    )
     pedidos = cur.fetchall()
     conn.close()
 
@@ -1312,11 +1329,13 @@ def admin_pedidos_archivados(request: Request):
 
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("""
-      SELECT * FROM pedidos
-      WHERE status='entregado'
-      ORDER BY entregado_en DESC, id DESC
-    """)
+    cur.execute(
+        """
+        SELECT * FROM pedidos
+        WHERE status='entregado'
+        ORDER BY entregado_en DESC, id DESC
+        """
+    )
     pedidos = cur.fetchall()
     conn.close()
 
@@ -1340,7 +1359,6 @@ def admin_pedido_detalle(pedido_id: int, request: Request):
 
     cur.execute("SELECT * FROM pedido_items WHERE pedido_id=? ORDER BY id ASC", (pedido_id,))
     items = cur.fetchall()
-
     conn.close()
 
     if not pedido:
@@ -1360,42 +1378,32 @@ def admin_pedido_entregado(pedido_id: int, request: Request):
 
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("""
-      UPDATE pedidos
-      SET status='entregado', entregado_en=datetime('now')
-      WHERE id=?
-    """, (pedido_id,))
+    cur.execute(
+        """
+        UPDATE pedidos
+        SET status='entregado', entregado_en=datetime('now')
+        WHERE id=?
+        """,
+        (pedido_id,),
+    )
     conn.commit()
     conn.close()
 
     return RedirectResponse("/admin/pedidos", status_code=303)
 
 
-
 # ======================
-# Atajo opcional a tienda
+# Atajos
 # ======================
 
 @app.get("/go-tienda")
 def go_tienda():
     return RedirectResponse("/tienda", status_code=302)
 
+
 @app.get("/test-login-route")
 def test_login_route():
     return {"ok": True}
-
-def guardar_estado_sync(ok: bool, mensaje: str, total_productos: int = 0, archivo: str = ""):
-    data = {
-        "ok": ok,
-        "mensaje": mensaje,
-        "total_productos": total_productos,
-        "archivo": archivo,
-        "ultima_actualizacion": datetime.now().isoformat(),
-    }
-    SYNC_STATUS_FILE.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2),
-        encoding="utf-8"
-    )
 
 
 @app.post("/admin/sync-upload")
@@ -1404,8 +1412,6 @@ async def admin_sync_upload(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
-    print("=== ENTRO A /admin/sync-upload ===")
-
     if token != ADMIN_SYNC_TOKEN:
         raise HTTPException(status_code=403, detail="Token inválido")
 
@@ -1454,6 +1460,7 @@ async def admin_sync_upload(
         if tmp_file.exists():
             tmp_file.unlink()
 
+
 @app.get("/admin/productos-imagenes", response_class=HTMLResponse)
 def admin_productos_imagenes(request: Request):
     denied = require_admin(request)
@@ -1467,6 +1474,7 @@ def admin_productos_imagenes(request: Request):
             "resultado": None,
         },
     )
+
 
 @app.post("/admin/productos-imagenes", response_class=HTMLResponse)
 async def admin_productos_imagenes_upload(
@@ -1506,7 +1514,6 @@ async def admin_productos_imagenes_upload(
                 no_encontrados.append(filename)
                 continue
 
-            # borrar archivos viejos del mismo SKU con otras extensiones
             for old_ext in (".jpg", ".jpeg", ".png", ".webp"):
                 old_path = PRODUCTS_DISK_DIR / f"{sku}{old_ext}"
                 if old_path.exists():
@@ -1546,9 +1553,7 @@ async def admin_productos_imagenes_upload(
 
 @app.get("/debug-xlsx")
 def debug_xlsx():
-    import tempfile
     import requests
-    import openpyxl
 
     url = os.getenv("SHEET_XLSX_URL", "").strip()
     if not url:
@@ -1563,31 +1568,43 @@ def debug_xlsx():
     wb = openpyxl.load_workbook(tmp_path, read_only=True, data_only=True)
     ws = wb.active
 
-    header_row_idx = 4
-    headers = next(ws.iter_rows(min_row=header_row_idx, max_row=header_row_idx, values_only=True))
-    idx = {str(h).strip(): i for i, h in enumerate(headers) if h is not None}
+    try:
+        header_row_idx = 4
+        headers = next(ws.iter_rows(min_row=header_row_idx, max_row=header_row_idx, values_only=True))
 
-    col_sku = idx.get("Código")
-    col_unidad = idx.get("Unidades")
+        def norm_header(h):
+            return re.sub(r"\s+", " ", str(h or "").strip().lower())
 
-    resultado = {
-        "headers": list(idx.keys()),
-        "col_unidad": col_unidad,
-        "muestra": []
-    }
+        idx = {norm_header(h): i for i, h in enumerate(headers) if h is not None}
 
-    for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
-        sku = row[col_sku] if col_sku is not None and col_sku < len(row) else None
-        unidad = row[col_unidad] if col_unidad is not None and col_unidad < len(row) else None
+        col_sku = idx.get("código")
+        col_unidad = idx.get("unidades")
+        if col_unidad is None:
+            col_unidad = idx.get("unidad")
+        if col_unidad is None:
+            col_unidad = idx.get("unidad de medida")
 
-        sku_txt = str(sku).strip() if sku else ""
-        if sku_txt in ("013608", "013609", "013610"):
-            resultado["muestra"].append({
-                "sku": sku_txt,
-                "raw_unidad": unidad,
-                "final_unidad": parse_unidad_medida(unidad),
-            })
+        resultado = {
+            "headers": list(idx.keys()),
+            "col_unidad": col_unidad,
+            "muestra": [],
+        }
 
-    wb.close()
-    os.remove(tmp_path)
-    return resultado
+        for row in ws.iter_rows(min_row=header_row_idx + 1, values_only=True):
+            sku = row[col_sku] if col_sku is not None and col_sku < len(row) else None
+            unidad = row[col_unidad] if col_unidad is not None and col_unidad < len(row) else None
+
+            sku_txt = str(sku).strip() if sku else ""
+            if sku_txt in ("013608", "013609", "013610"):
+                resultado["muestra"].append(
+                    {
+                        "sku": sku_txt,
+                        "raw_unidad": unidad,
+                        "final_unidad": parse_unidad_medida(unidad),
+                    }
+                )
+
+        return resultado
+    finally:
+        wb.close()
+        os.remove(tmp_path)
