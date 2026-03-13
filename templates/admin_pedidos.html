@@ -12,7 +12,7 @@
       <h2 style="margin:0;">Pedidos pendientes</h2>
       <div style="display:flex;gap:10px;align-items:center;">
         <a class="btn" href="/admin/pedidos/archivados">Archivados</a>
-        <a class="btn" href="/admin">Volver</a>
+        <a class="btn" href="/admin">Panel</a>
       </div>
     </div>
 
@@ -47,7 +47,12 @@
               <div style="display:flex;gap:10px;align-items:center;">
                 <a class="btn" href="/admin/pedidos/{{ p['id'] }}">Ver</a>
 
-                <form method="post" action="/admin/pedidos/{{ p['id'] }}/entregado" style="margin:0;">
+                <form
+                  method="post"
+                  action="/admin/pedidos/{{ p['id'] }}/entregado"
+                  style="margin:0;"
+                  onsubmit="return confirm('¿Marcar este pedido como entregado?');"
+                >
                   <button class="btn" type="submit">Entregado</button>
                 </form>
               </div>

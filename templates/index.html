@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Super Web</title>
 
   <link rel="stylesheet" href="/static/styles.css">
-<link rel="stylesheet" href="/static/mobile.css">
+  <link rel="stylesheet" href="/static/mobile.css">
 </head>
 
 <style>
@@ -192,17 +192,17 @@
               data-stock="{{ p.cantidad }}"
             >
               <div class="img-box">
-  {% if p.imagen_url %}
-    <img
-      src="{{ p.imagen_url }}"
-      alt="{{ p.nombre }}"
-      loading="lazy"
-      onerror="this.outerHTML='<div class=&quot;img-ph&quot;>Sin imagen</div>';"
-    >
-  {% else %}
-    <div class="img-ph">Sin imagen</div>
-  {% endif %}
-</div>
+                {% if p.imagen_url %}
+                  <img
+                    src="{{ p.imagen_url }}"
+                    alt="{{ p.nombre }}"
+                    loading="lazy"
+                    onerror="this.outerHTML='<div class=&quot;img-ph&quot;>Sin imagen</div>';"
+                  >
+                {% else %}
+                  <div class="img-ph">Sin imagen</div>
+                {% endif %}
+              </div>
 
               <div class="card-body">
                 <div class="product-title">{{ p.nombre }}</div>
@@ -231,12 +231,12 @@
         </div>
 
         <div
-  id="noResults"
-  class="no-results"
-  {% if productos|length == 0 %}style="display:block"{% endif %}
->
-  No se encontraron productos con esos filtros/búsqueda.
-</div>
+          id="noResults"
+          class="no-results"
+          {% if productos|length == 0 %}style="display:block"{% endif %}
+        >
+          No se encontraron productos con esos filtros/búsqueda.
+        </div>
       </section>
     </div>
   </main>
@@ -249,6 +249,7 @@
     // ============================
     (function(){
       const PAGE_SIZE = Number(document.body.dataset.pageSize || 25);
+
       const famChecks = Array.from(document.querySelectorAll(".fam-check"));
       const clearFamiliesBtn = document.getElementById("clearFamilies");
 
@@ -371,21 +372,21 @@
       // Construir URL filtros PC
       // ============================
       function buildUrl(page){
-  const params = new URLSearchParams();
-  const q = qInput ? qInput.value.trim() : "";
+        const params = new URLSearchParams();
+        const q = qInput ? qInput.value.trim() : "";
 
-  if (q) params.set("q", q);
-  params.set("page_size", String(PAGE_SIZE));
-  params.set("page", String(page || 1));
+        if (q) params.set("q", q);
+        params.set("page_size", String(PAGE_SIZE));
+        params.set("page", String(page || 1));
 
-  famChecks
-    .filter(function(c){ return c.checked; })
-    .forEach(function(c){
-      params.append("fam", c.value);
-    });
+        famChecks
+          .filter(function(c){ return c.checked; })
+          .forEach(function(c){
+            params.append("fam", c.value);
+          });
 
-  return "/tienda?" + params.toString();
-}
+        return "/tienda?" + params.toString();
+      }
 
       function goFilters(){
         window.location.href = buildUrl(1);
@@ -406,21 +407,21 @@
       // Filtros móvil
       // ============================
       function goFiltersFromMobile(){
-  const params = new URLSearchParams();
-  const q = qInput ? qInput.value.trim() : "";
+        const params = new URLSearchParams();
+        const q = qInput ? qInput.value.trim() : "";
 
-  if (q) params.set("q", q);
-  params.set("page_size", String(PAGE_SIZE));
-  params.set("page", "1");
+        if (q) params.set("q", q);
+        params.set("page_size", String(PAGE_SIZE));
+        params.set("page", "1");
 
-  famChecksMobile
-    .filter(function(c){ return c.checked; })
-    .forEach(function(c){
-      params.append("fam", c.value);
-    });
+        famChecksMobile
+          .filter(function(c){ return c.checked; })
+          .forEach(function(c){
+            params.append("fam", c.value);
+          });
 
-  window.location.href = "/tienda?" + params.toString();
-}
+        window.location.href = "/tienda?" + params.toString();
+      }
 
       famChecksMobile.forEach(function(c){
         c.addEventListener("change", goFiltersFromMobile);
@@ -439,104 +440,143 @@
     // ============================
     // CARRITO (localStorage)
     // ============================
-  (function(){
-    const CART_KEY = "superweb_cart_v2";
+    (function(){
+      const CART_KEY = "superweb_cart_v2";
+      const LEGACY_CART_KEY = "superweb_cart";
 
-    function loadCart(){
-      try {
-        return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-      } catch (e){
-        return [];
-      }
-    }
+      function loadCart(){
+        try {
+          const raw = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || "[]";
+          const data = JSON.parse(raw);
 
-    function saveCart(cart){
-      localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    }
+          if (Array.isArray(data)) return data;
 
-    function updateBadge(){
-      const bottomBadge = document.getElementById("bottomCartBadge");
+          if (data && typeof data === "object"){
+            const maybe = data.items || data.cart || data.products || data.data;
+            if (Array.isArray(maybe)) return maybe;
+          }
 
-      const cart = loadCart();
-      const qty = cart.reduce(function(acc, x){
-        return acc + (Number(x.qty) || 0);
-      }, 0);
-
-      if (bottomBadge){
-        bottomBadge.textContent = String(qty);
-        bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
-      }
-    }
-
-    let toastTimer = null;
-    function showToast(msg){
-      const el = document.getElementById("toast");
-      if (!el) return;
-
-      el.textContent = msg || "Agregado ✅";
-      el.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function(){
-        el.classList.remove("show");
-      }, 900);
-    }
-
-    function addToCart(sku, nombre, price, stock){
-      stock = Number(stock || 0);
-
-      const cart = loadCart();
-      const found = cart.find(function(x){ return x.sku === sku; });
-      const currentQty = found ? (Number(found.qty) || 0) : 0;
-
-      if (stock <= 0){
-        showToast("Sin stock ❌");
-        return;
+          return [];
+        } catch (e){
+          return [];
+        }
       }
 
-      if (currentQty + 1 > stock){
-        showToast("Solo hay " + stock + " unidades disponibles ⚠️");
-        return;
+      function saveCart(cart){
+        const raw = JSON.stringify(cart);
+        localStorage.setItem(CART_KEY, raw);
+        localStorage.setItem(LEGACY_CART_KEY, raw);
+        window.dispatchEvent(new Event("cart:changed"));
       }
 
-      if (found){
-        found.qty = currentQty + 1;
-        found.stock = stock;
-      } else {
-        cart.push({
-          sku: sku,
-          nombre: nombre,
-          qty: 1,
-          price: Number(price) || 0,
-          stock: stock
-        });
+      function updateBadge(){
+        const topBadge = document.getElementById("cartBadgeTop");
+        const bottomBadge = document.getElementById("bottomCartBadge");
+
+        const cart = loadCart();
+        const qty = cart.reduce(function(acc, x){
+          return acc + (Number(x.qty) || 0);
+        }, 0);
+
+        if (topBadge){
+          topBadge.textContent = String(qty);
+          topBadge.style.display = qty > 0 ? "inline-flex" : "none";
+        }
+
+        if (bottomBadge){
+          bottomBadge.textContent = String(qty);
+          bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
+        }
       }
 
-      saveCart(cart);
-      updateBadge();
-      showToast("Agregado ✅");
-    }
+      let toastTimer = null;
+      function showToast(msg){
+        const el = document.getElementById("toast");
+        if (!el) return;
 
-    document.querySelectorAll(".product-item").forEach(function(card){
-      const sku = card.dataset.sku;
-      const name = card.dataset.name;
-      const price = card.dataset.price;
-      const stock = card.dataset.stock;
+        el.textContent = msg || "Agregado ✅";
+        el.classList.add("show");
 
-      card.addEventListener("click", function(e){
-        const btn = e.target.closest(".btn-add");
-        if (btn){
-          e.preventDefault();
-          e.stopPropagation();
-          addToCart(sku, name, price, stock);
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){
+          el.classList.remove("show");
+        }, 900);
+      }
+
+      function addToCart(sku, nombre, price, stock){
+        stock = Number(stock || 0);
+        price = Number(price) || 0;
+
+        if (!sku || !nombre){
           return;
         }
 
-        addToCart(sku, name, price, stock);
-      });
-    });
+        const cart = loadCart();
+        const found = cart.find(function(x){ return x.sku === sku; });
+        const currentQty = found ? (Number(found.qty) || 0) : 0;
 
-    updateBadge();
-  })();
-</script>
+        if (stock <= 0){
+          showToast("Sin stock ❌");
+          return;
+        }
+
+        if (currentQty + 1 > stock){
+          showToast("Solo hay " + stock + " unidades disponibles ⚠️");
+          return;
+        }
+
+        if (found){
+          found.qty = currentQty + 1;
+          found.stock = stock;
+          found.price = price;
+          found.nombre = nombre;
+        } else {
+          cart.push({
+            sku: sku,
+            nombre: nombre,
+            qty: 1,
+            price: price,
+            stock: stock
+          });
+        }
+
+        saveCart(cart);
+        updateBadge();
+        showToast("Agregado ✅");
+      }
+
+      document.querySelectorAll(".product-item").forEach(function(card){
+        const sku = card.dataset.sku || "";
+        const name = card.dataset.name || "";
+        const price = card.dataset.price || "0";
+        const stock = card.dataset.stock || "0";
+
+        const btn = card.querySelector(".btn-add");
+
+        if (btn){
+          btn.addEventListener("click", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            addToCart(sku, name, price, stock);
+          });
+        }
+
+        card.addEventListener("click", function(e){
+          if (e.target.closest(".btn-add")) return;
+          addToCart(sku, name, price, stock);
+        });
+      });
+
+      window.addEventListener("storage", function(e){
+        if (e.key === CART_KEY || e.key === LEGACY_CART_KEY){
+          updateBadge();
+        }
+      });
+
+      window.addEventListener("cart:changed", updateBadge);
+
+      updateBadge();
+    })();
+  </script>
 </body>
 </html>

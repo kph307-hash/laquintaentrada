@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Imágenes productos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Imágenes de productos</title>
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
@@ -30,7 +31,8 @@
       </div>
 
       <form method="post" action="/admin/productos-imagenes" enctype="multipart/form-data">
-        <input type="file" name="files" accept=".jpg,.jpeg,.png,.webp,image/*" multiple required />
+        <label for="files">Seleccionar imágenes</label>
+        <input id="files" type="file" name="files" accept=".jpg,.jpeg,.png,.webp,image/*" multiple required />
         <button type="submit">Subir imágenes</button>
       </form>
     </div>

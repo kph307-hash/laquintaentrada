@@ -33,7 +33,7 @@
     </nav>
 
     <div class="main-center">
-  <a class="main-brand main-brand--mobile" href="/">
+  <a class="main-brand main-brand--desktop" href="/">
     <img src="/static/logo-5ta.png" alt="La quinta entrada" class="main-brand__logo">
     <span class="main-brand__text">La quinta entrada</span>
   </a>
@@ -157,6 +157,8 @@
     drawer?.classList.add("is-open");
     backdrop?.classList.add("is-open");
     document.body.classList.add("drawer-open");
+    drawer?.setAttribute("aria-hidden", "false");
+    closeBtn?.focus();
     showBars();
   }
 
@@ -164,6 +166,8 @@
     drawer?.classList.remove("is-open");
     backdrop?.classList.remove("is-open");
     document.body.classList.remove("drawer-open");
+    drawer?.setAttribute("aria-hidden", "true");
+    openBtn?.focus();
     showBars();
   }
 
@@ -212,9 +216,11 @@
     for (const k of KEYS) {
       const raw = localStorage.getItem(k);
       if (!raw) continue;
+
       const parsed = safeParse(raw);
-      const arr = extractArray(parsed);
-      if (arr.length || Array.isArray(parsed)) return arr;
+      if (parsed == null) continue;
+
+      return extractArray(parsed);
     }
     return [];
   }
@@ -236,7 +242,7 @@
 
     if (topCartBadge) {
       topCartBadge.textContent = String(totalItems);
-      topCartBadge.style.display = totalItems > 0 ? "inline-flex" : "inline-flex";
+      topCartBadge.style.display = totalItems > 0 ? "inline-flex" : "none";
     }
   }
 
@@ -254,21 +260,6 @@
       showBars();
     }
   });
-
-  let lastCartRaw = "";
-  setInterval(() => {
-    const raw =
-      localStorage.getItem("superweb_cart_v2") ||
-      localStorage.getItem("superweb_cart") ||
-      localStorage.getItem("cart") ||
-      localStorage.getItem("CART") ||
-      "";
-
-    if (raw !== lastCartRaw) {
-      lastCartRaw = raw;
-      paintCartBadges();
-    }
-  }, 1000);
 
   const scrollContainer = document.querySelector(".snap-container") || window;
   let lastScroll = 0;
@@ -301,6 +292,7 @@
     ticking = false;
   }
 
+  if (scrollContainer) {
   scrollContainer.addEventListener(
     "scroll",
     function () {
@@ -311,6 +303,7 @@
     },
     { passive: true }
   );
+}
 
   window.addEventListener("resize", showBars);
 

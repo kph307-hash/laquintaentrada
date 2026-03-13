@@ -21,30 +21,6 @@
   }
 }
 
-.meta-search{
-  width: 100%;
-  min-width: 0;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  justify-content: stretch;
-}
-
-.meta-search input[type="search"]{
-  min-width: 0;
-  max-width: none;
-  width: 100%;
-  flex: 1 1 auto;
-}
-
-.meta-search button,
-.meta-search .btn-clear{
-  flex: 0 0 auto;
-  white-space: nowrap;
-}
-
-
-
 /* =========================
    MOBILE DRAWER MEJORADO
    ========================= */
@@ -342,6 +318,7 @@ body.drawer-open{
 /* =========================================
    TIENDA MOBILE — FILTROS EN DRAWER
    ========================================= */
+
 .filters-backdrop{
   position: fixed;
   inset: 0;
@@ -496,34 +473,10 @@ body.filters-open{
   box-shadow: 0 8px 16px rgba(0,0,0,.18);
 }
 
-.main-brand--mobile{
-  gap: 8px;
-}
-
-.main-brand__logo{
-  width: 44px;
-  height: 44px;
-  flex: 0 0 44px;
-}
-
-.main-brand__text{
-  color: #fff;
-  font-size: 21px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.main-brand--with-logo{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  max-width: 100%;
-}
-
 /* =========================================
    MOBILE FIX REAL — tienda + carrito
    ========================================= */
+
 @media (max-width: 768px){
   html, body{
     overflow-x: hidden;
@@ -555,10 +508,32 @@ body.filters-open{
     min-height: 62px;
   }
 
-  .main-brand{
+  .main-header .main-brand{
     color: #fff !important;
     font-size: 17px !important;
     max-width: 100%;
+  }
+
+  .main-header .main-brand--mobile,
+  .main-header .main-brand--with-logo{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .main-header .main-brand__logo{
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+  }
+
+  .main-header .main-brand__text{
+    color: #fff;
+    font-size: 21px;
+    font-weight: 900;
+    line-height: 1;
   }
 
   .menu-toggle,
@@ -727,8 +702,8 @@ body.filters-open{
     min-width: 0;
   }
 
-  .cart-item-media{ 
-    grid-area: img; 
+  .cart-item-media{
+    grid-area: img;
   }
 
   .cart-item-info{

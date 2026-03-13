@@ -4,14 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Admin — Promos</title>
-  <link rel="stylesheet" href="/static/styles.css">
-<link rel="stylesheet" href="/static/mobile.css">
+  <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
   <div class="container">
     <div class="topbar">
-      <a href="/admin">Volver</a>
-      <a href="/">Ver home</a>
+      <a href="/admin">Panel</a>
+      <a href="/">Ver sitio</a>
     </div>
 
     <h1>Promociones / Publicidades / Rifas</h1>
@@ -25,9 +24,9 @@
         <input name="precio" placeholder="Precio / premio / texto corto (opcional)">
 
         <select name="tipo">
-          <option value="publicidad">publicidad</option>
-          <option value="promo">promo</option>
-          <option value="rifa">rifa</option>
+          <option value="publicidad">Publicidad</option>
+          <option value="promo">Promo</option>
+          <option value="rifa">Rifa</option>
         </select>
 
         <input name="orden" type="number" value="0" placeholder="Orden (0 = primero)">
@@ -61,9 +60,9 @@
               <input name="precio" value="{{p['precio']}}" placeholder="Precio / premio (opcional)">
 
               <select name="tipo">
-                <option value="publicidad" {% if p['tipo']=='publicidad' %}selected{% endif %}>publicidad</option>
-                <option value="promo" {% if p['tipo']=='promo' %}selected{% endif %}>promo</option>
-                <option value="rifa" {% if p['tipo']=='rifa' %}selected{% endif %}>rifa</option>
+                <option value="publicidad" {% if p['tipo']=='publicidad' %}selected{% endif %}>Publicidad</option>
+                <option value="promo" {% if p['tipo']=='promo' %}selected{% endif %}>Promo</option>
+                <option value="rifa" {% if p['tipo']=='rifa' %}selected{% endif %}>Rifa</option>
               </select>
 
               <input name="orden" type="number" value="{{p['orden']}}">
@@ -87,7 +86,12 @@
               <button type="submit">Actualizar</button>
             </form>
 
-            <form action="/admin/promos/{{p['id']}}/delete" method="post" style="margin-top:10px;">
+            <form
+              action="/admin/promos/{{p['id']}}/delete"
+              method="post"
+              style="margin-top:10px;"
+              onsubmit="return confirm('¿Eliminar esta promo?');"
+            >
               <button type="submit" class="danger">Eliminar</button>
             </form>
           </div>

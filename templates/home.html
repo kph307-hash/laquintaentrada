@@ -1,30 +1,34 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Inicio — Super Web</title>
 
-  <link rel="stylesheet" href="/static/styles.css">
-<link rel="stylesheet" href="/static/mobile.css">
-
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="stylesheet" href="/static/mobile.css" />
 
   <style>
+    .promo-section.alt{
+      background: rgba(0,0,0,.03);
+    }
 
-    /* más coherente con fondo claro */
-    .promo-section.alt{ background: rgba(0,0,0,.03); }
+    .promo-section:first-child{
+      padding-top: 16px;
+    }
 
-    /* que la primera hoja no se sienta “pegada” al header */
-    .promo-section:first-child{ padding-top: 16px; }
+    .page-title h1{
+      margin: 8px 0 6px;
+    }
 
-    .page-title h1{ margin: 8px 0 6px; }
-    .muted{ opacity: .75; }
+    .muted{
+      opacity: .75;
+    }
 
-    /* CTA propio para HOME (no usar .chip porque es del header oscuro) */
     .home-cta{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       padding: 10px 14px;
       border-radius: 999px;
       background: #16a34a;
@@ -32,21 +36,29 @@
       font-weight: 900;
       text-decoration: none;
     }
-    .home-cta:hover{ background:#15803d; }
+
+    .home-cta:hover{
+      background: #15803d;
+    }
 
     /* ===== Carrusel promos ===== */
-    .promo-carousel{ position:relative; }
+    .promo-carousel{
+      position: relative;
+    }
 
     .promo-track{
-      display:flex;
-      overflow-x:auto;
+      display: flex;
+      overflow-x: auto;
       scroll-snap-type: x mandatory;
-      gap:14px;
+      gap: 14px;
       padding: 10px 6px 14px;
       scrollbar-width: none;
       scroll-behavior: smooth;
     }
-    .promo-track::-webkit-scrollbar{ display:none; }
+
+    .promo-track::-webkit-scrollbar{
+      display: none;
+    }
 
     .promo-slide{
       flex: 0 0 100%;
@@ -54,106 +66,160 @@
     }
 
     .promo-card{
-      border:1px solid rgba(0,0,0,.12);
+      border: 1px solid rgba(0,0,0,.12);
       border-radius: 16px;
-      background:#fff;
-      overflow:hidden;
+      background: #fff;
+      overflow: hidden;
       box-shadow: 0 18px 40px rgba(0,0,0,.12);
     }
 
     .promo-media{
       width: 100%;
-      display:block;
-      background:#f3f3f3;
+      display: block;
+      background: #f3f3f3;
     }
+
     .promo-media img{
-      width:100%;
-      height:auto;
-      display:block;
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     .promo-body{
       padding: 14px;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:flex-start;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
     }
 
-    .promo-title{ font-weight:900; }
+    .promo-title{
+      font-weight: 900;
+    }
 
     .pill{
-      font-size:12px;
-      padding:6px 10px;
-      border-radius:999px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
       background: rgba(0,0,0,.06);
-      font-weight:800;
+      font-weight: 800;
       text-transform: lowercase;
       white-space: nowrap;
     }
 
-    .promo-desc{ margin-top:6px; opacity:.8; }
-    .promo-price{ margin-top:10px; font-weight:900; }
+    .promo-desc{
+      margin-top: 6px;
+      opacity: .8;
+    }
+
+    .promo-price{
+      margin-top: 10px;
+      font-weight: 900;
+    }
 
     .promo-nav{
-      position:absolute;
+      position: absolute;
       top: 42%;
       transform: translateY(-50%);
-      width:42px; height:42px;
-      border-radius:999px;
-      border:1px solid rgba(0,0,0,.12);
-      background:#fff;
-      display:flex; align-items:center; justify-content:center;
-      font-size:22px;
-      cursor:pointer;
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.12);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
       box-shadow: 0 10px 24px rgba(0,0,0,.12);
     }
-    .promo-nav.prev{ left: -10px; }
-    .promo-nav.next{ right: -10px; }
+
+    .promo-nav.prev{
+      left: -10px;
+    }
+
+    .promo-nav.next{
+      right: -10px;
+    }
 
     .promo-dots{
-      display:flex;
-      justify-content:center;
-      gap:8px;
-      margin-top:10px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
     }
-    .promo-dot{
-      width:10px; height:10px;
-      border-radius:999px;
-      border:none;
-      background: rgba(0,0,0,.25);
-      cursor:pointer;
-    }
-    .promo-dot[aria-current="true"]{ background: rgba(0,0,0,.75); }
 
-    .grid-3{ display:grid; gap:12px; grid-template-columns: repeat(3, minmax(0,1fr)); }
-    .grid-2{ display:grid; gap:12px; grid-template-columns: repeat(2, minmax(0,1fr)); }
-    .card{ border:1px solid rgba(0,0,0,.12); border-radius:16px; background:#fff; }
-    .pad{ padding:14px; }
+    .promo-dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(0,0,0,.25);
+      cursor: pointer;
+    }
+
+    .promo-dot[aria-current="true"]{
+      background: rgba(0,0,0,.75);
+    }
+
+    .grid-3{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-2{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card{
+      border: 1px solid rgba(0,0,0,.12);
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .pad{
+      padding: 14px;
+    }
 
     @media (max-width: 900px){
-  .grid-3{ grid-template-columns: 1fr; }
-  .grid-2{ grid-template-columns: 1fr; }
-  .promo-nav.prev{ left: 8px; }
-  .promo-nav.next{ right: 8px; }
-  .promo-section{ display: block; }
-}
+      .grid-3{
+        grid-template-columns: 1fr;
+      }
+
+      .grid-2{
+        grid-template-columns: 1fr;
+      }
+
+      .promo-nav.prev{
+        left: 8px;
+      }
+
+      .promo-nav.next{
+        right: 8px;
+      }
+
+      .promo-section{
+        display: block;
+      }
+    }
 
     body{
-  margin: 0;
-}
+      margin: 0;
+    }
 
-.promo-scroll{
-  overflow-y: visible;
-  padding-bottom: 96px;
-}
+    .promo-scroll{
+      overflow-y: visible;
+      padding-bottom: 96px;
+    }
 
-.promo-section{
-  min-height: auto;
-  padding: 22px 0;
-  display: block;
-}
-
+    .promo-section{
+      min-height: auto;
+      padding: 22px 0;
+      display: block;
+    }
   </style>
 </head>
 
@@ -161,7 +227,6 @@
   {% include "_header.html" %}
 
   <main class="promo-scroll">
-
     <!-- HOJA 1: HERO + Carrusel -->
     <section class="promo-section">
       <div class="container">
@@ -173,46 +238,41 @@
         {% if not promos %}
           <div class="card pad">No hay promociones activas todavía.</div>
         {% else %}
-          <section class="promo-carousel" data-autoplay="false" data-interval="4500">
+          <section class="promo-carousel" data-autoplay="false" data-interval="4500" aria-label="Carrusel de promociones">
             <div class="promo-track" id="promoTrack">
-           {% for p in promos %}
-  <article class="promo-slide">
-    <div class="promo-card">
+              {% for p in promos %}
+                <article class="promo-slide">
+                  <div class="promo-card">
+                    {% if p.imagen_url %}
+                      <div class="promo-media">
+                        <img src="{{ p.imagen_url }}" alt="{{ p.titulo }}">
+                      </div>
+                    {% endif %}
 
-      {% if p.imagen_url %}
-        <div class="promo-media">
-          <img src="{{ p.imagen_url }}" alt="{{ p.titulo }}">
-        </div>
-      {% endif %}
+                    <div class="promo-body">
+                      <div>
+                        <div class="promo-title">{{ p.titulo }}</div>
 
-      <div class="promo-body">
-        <div>
-          <div class="promo-title">{{ p.titulo }}</div>
+                        {% if p.descripcion %}
+                          <div class="promo-desc">{{ p.descripcion }}</div>
+                        {% endif %}
 
-          {% if p.descripcion %}
-            <div class="promo-desc">{{ p.descripcion }}</div>
-          {% endif %}
-
-          {% if p.precio %}
-  <button
-    type="button"
-    class="btn-add-promo"
-    data-sku="PROMO:{{ p.id }}"
-    data-name="{{ p.titulo }}"
-    data-price="{{ p.precio }}"
-  >
-    + Agregar al carrito
-  </button>
-{% endif %}
-
-        </div>
-      </div>
-
-    </div>
-  </article>
-{% endfor %}
-
-
+                        {% if p.precio %}
+                          <button
+                            type="button"
+                            class="btn-add-promo"
+                            data-sku="PROMO:{{ p.id }}"
+                            data-name="{{ p.titulo | e }}"
+                            data-price="{{ p.precio | e }}"
+                          >
+                            + Agregar al carrito
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              {% endfor %}
             </div>
 
             <button class="promo-nav prev" type="button" aria-label="Anterior" id="promoPrev">‹</button>
@@ -220,7 +280,7 @@
             <div class="promo-dots" id="promoDots" aria-label="Indicadores del carrusel"></div>
           </section>
 
-          <div class="card pad" style="margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+          <div class="card pad" style="margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
             <div>
               <div style="font-weight:900;">¿Listo para comprar?</div>
               <div class="muted">Entrá a la tienda y armá tu pedido.</div>
@@ -277,147 +337,247 @@
         </div>
       </div>
     </section>
-
   </main>
 
-    <script>
-    (function(){
+  <script>
+    (function () {
+      const section = document.querySelector(".promo-carousel");
       const track = document.getElementById("promoTrack");
-      if (!track) return;
-
-      const slides = Array.from(track.querySelectorAll(".promo-slide"));
       const prevBtn = document.getElementById("promoPrev");
       const nextBtn = document.getElementById("promoNext");
-      const dotsEl  = document.getElementById("promoDots");
+      const dotsEl = document.getElementById("promoDots");
+
+      if (!section || !track) return;
+
+      const slides = Array.from(track.querySelectorAll(".promo-slide"));
       if (!slides.length) return;
 
       let index = 0;
       let timer = null;
 
-      function clamp(i){
+      function clamp(i) {
         const n = slides.length;
         return (i % n + n) % n;
       }
 
-      function goTo(i, opts={scroll:true}){
-        index = clamp(i);
-        if (opts.scroll){
-          slides[index].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
-        }
-        const dots = Array.from(dotsEl.querySelectorAll("button"));
-        dots.forEach((d, k) => d.setAttribute("aria-current", k === index ? "true" : "false"));
-      }
-
-      function buildDots(){
-        dotsEl.innerHTML = "";
-        slides.forEach((_, i) => {
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "promo-dot";
-          b.addEventListener("click", () => { stop(); goTo(i); start(); });
-          dotsEl.appendChild(b);
+      function updateDots() {
+        const dots = Array.from(dotsEl.querySelectorAll(".promo-dot"));
+        dots.forEach((dot, i) => {
+          dot.setAttribute("aria-current", i === index ? "true" : "false");
         });
       }
 
-      function next(){ goTo(index + 1); }
-      function prev(){ goTo(index - 1); }
+      function goTo(i, opts = { scroll: true }) {
+        index = clamp(i);
 
-      function start(){
-        const section = document.querySelector(".promo-carousel");
-        const autoplay = section?.dataset.autoplay === "true";
-        const interval = Number(section?.dataset.interval || "4500");
-        if (!autoplay) return;
+        if (opts.scroll) {
+          slides[index].scrollIntoView({
+            behavior: "smooth",
+            inline: "start",
+            block: "nearest"
+          });
+        }
+
+        updateDots();
+      }
+
+      function buildDots() {
+        dotsEl.innerHTML = "";
+
+        slides.forEach((_, i) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "promo-dot";
+          btn.setAttribute("aria-label", `Ir a promo ${i + 1}`);
+          btn.addEventListener("click", () => {
+            stop();
+            goTo(i);
+            start();
+          });
+          dotsEl.appendChild(btn);
+        });
+
+        updateDots();
+      }
+
+      function next() {
+        goTo(index + 1);
+      }
+
+      function prev() {
+        goTo(index - 1);
+      }
+
+      function stop() {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      }
+
+      function start() {
+        const autoplay = section.dataset.autoplay === "true";
+        const interval = Number(section.dataset.interval || "4500");
+
+        if (!autoplay || slides.length <= 1) return;
+
         stop();
         timer = setInterval(next, Math.max(2000, interval));
       }
 
-      function stop(){
-        if (timer) clearInterval(timer);
-        timer = null;
+      if (slides.length <= 1) {
+        if (prevBtn) prevBtn.style.display = "none";
+        if (nextBtn) nextBtn.style.display = "none";
+        if (dotsEl) dotsEl.style.display = "none";
       }
 
-      prevBtn?.addEventListener("click", () => { stop(); prev(); start(); });
-      nextBtn?.addEventListener("click", () => { stop(); next(); start(); });
+      prevBtn?.addEventListener("click", () => {
+        stop();
+        prev();
+        start();
+      });
 
-      const section = document.querySelector(".promo-carousel");
-      section?.addEventListener("mouseenter", stop);
-      section?.addEventListener("mouseleave", start);
+      nextBtn?.addEventListener("click", () => {
+        stop();
+        next();
+        start();
+      });
+
+      section.addEventListener("mouseenter", stop);
+      section.addEventListener("mouseleave", start);
 
       track.addEventListener("scroll", () => {
         const trackRect = track.getBoundingClientRect();
         let bestIdx = 0;
         let bestDist = Infinity;
-        slides.forEach((s, i) => {
-          const r = s.getBoundingClientRect();
-          const dist = Math.abs(r.left - trackRect.left);
-          if (dist < bestDist) { bestDist = dist; bestIdx = i; }
+
+        slides.forEach((slide, i) => {
+          const rect = slide.getBoundingClientRect();
+          const dist = Math.abs(rect.left - trackRect.left);
+
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestIdx = i;
+          }
         });
-        if (bestIdx !== index) goTo(bestIdx, {scroll:false});
-      }, { passive:true });
+
+        if (bestIdx !== index) {
+          index = bestIdx;
+          updateDots();
+        }
+      }, { passive: true });
 
       buildDots();
-      goTo(0, {scroll:false});
+      goTo(0, { scroll: false });
       start();
     })();
   </script>
 
   <script>
-    // ===== Carrito desde promos =====
-    document.addEventListener("click", function(e){
-      const btn = e.target.closest(".btn-add-promo");
-      if (!btn) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      const nombre = btn.dataset.name;
-      const priceRaw = btn.dataset.price;
-
+    (function () {
       const CART_KEY = "superweb_cart_v2";
+      const LEGACY_CART_KEY = "superweb_cart";
 
-      function loadCart(){
-        try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
-        catch(e){ return []; }
-      }
-
-      function saveCart(cart){
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
-      }
-
-      function parsePriceToNumber(v){
+      function parsePriceToNumber(v) {
         const s = String(v || "")
-          .replace(/\s/g,"")
-          .replace("₡","")
-          .replace(/\./g,"")
-          .replace(/,/g,".");
+          .replace(/\s/g, "")
+          .replace("₡", "")
+          .replace(/\./g, "")
+          .replace(/,/g, ".");
         const n = Number(s);
         return Number.isFinite(n) ? Math.round(n) : 0;
       }
 
-      const price = parsePriceToNumber(priceRaw);
-      if (!nombre || price <= 0) return;
+      function loadCart() {
+        try {
+          const raw = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || "[]";
+          const data = JSON.parse(raw);
 
-      const sku = btn.dataset.sku || ("PROMO:" + nombre.trim().slice(0,60));
+          if (Array.isArray(data)) return data;
 
+          if (data && typeof data === "object") {
+            const maybe = data.items || data.cart || data.products || data.data;
+            if (Array.isArray(maybe)) return maybe;
+          }
 
-      const cart = loadCart();
-      const found = cart.find(x => x.sku === sku);
-      if (found) found.qty += 1;
-      else cart.push({ sku, nombre, qty: 1, price });
+          return [];
+        } catch {
+          return [];
+        }
+      }
 
+      function saveCart(cart) {
+        const raw = JSON.stringify(cart);
+        localStorage.setItem(CART_KEY, raw);
+        localStorage.setItem(LEGACY_CART_KEY, raw);
+        window.dispatchEvent(new Event("cart:changed"));
+      }
 
-      saveCart(cart);
+      function updateCartBadges(cart) {
+        const qty = cart.reduce((acc, item) => acc + Number(item.qty || 0), 0);
 
-      // actualizar badge del header si existe
-      const bottomBadge = document.getElementById("bottomCartBadge");
-if (bottomBadge){
-  const qty = cart.reduce((acc, x) => acc + (x.qty || 0), 0);
-  bottomBadge.textContent = qty;
-  bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
-}
+        const topBadge = document.getElementById("cartBadgeTop");
+        const bottomBadge = document.getElementById("bottomCartBadge");
 
-      alert("Agregado ✅");
-    });
+        if (topBadge) {
+          topBadge.textContent = String(qty);
+          topBadge.style.display = qty > 0 ? "inline-flex" : "none";
+        }
+
+        if (bottomBadge) {
+          bottomBadge.textContent = String(qty);
+          bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
+        }
+      }
+
+      function addPromoToCart(btn) {
+        const nombre = (btn.dataset.name || "").trim();
+        const priceRaw = btn.dataset.price || "";
+        const sku = (btn.dataset.sku || ("PROMO:" + nombre.slice(0, 60))).trim();
+
+        const price = parsePriceToNumber(priceRaw);
+        if (!nombre || !sku || price <= 0) return;
+
+        const cart = loadCart();
+        const found = cart.find(item => item.sku === sku);
+
+        if (found) {
+          found.qty = Number(found.qty || 0) + 1;
+        } else {
+          cart.push({
+            sku,
+            nombre,
+            qty: 1,
+            price
+          });
+        }
+
+        saveCart(cart);
+        updateCartBadges(cart);
+        alert("Agregado ✅");
+      }
+
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest(".btn-add-promo");
+        if (!btn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+        addPromoToCart(btn);
+      });
+
+      updateCartBadges(loadCart());
+
+      window.addEventListener("storage", (e) => {
+        if (e.key === CART_KEY || e.key === LEGACY_CART_KEY) {
+          updateCartBadges(loadCart());
+        }
+      });
+
+      window.addEventListener("cart:changed", () => {
+        updateCartBadges(loadCart());
+      });
+    })();
   </script>
 </body>
 </html>

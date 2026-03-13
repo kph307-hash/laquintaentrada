@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mi perfil</title>
+  <title>Mi perfil — La Quinta Entrada</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
@@ -45,17 +45,17 @@
                 <div class="order-item__top">
                   <div>
                     <div class="order-title">Pedido #{{ p.id }}</div>
-                    <div class="order-date">{{ p.creado_en or "" }}</div>
+                    <div class="order-date">{{ p.creado_en or "-" }}</div>
                   </div>
 
-                  <div class="order-status order-status--{{ p.status }}">
-                    {{ p.status }}
+                  <div class="order-status order-status--{{ (p.status or 'pendiente')|lower }}">
+                    {{ p.status or "pendiente" }}
                   </div>
                 </div>
 
                 <div class="order-meta">
-                  <div><strong>Total:</strong> ₡{{ p.total }}</div>
-                  <div><strong>Entrega:</strong> {{ p.delivery_mode }}</div>
+                  <div><strong>Total:</strong> ₡{{ p.total or 0 }}</div>
+                  <div><strong>Entrega:</strong> {{ p.delivery_mode or "-" }}</div>
                 </div>
 
                 {% if p.direccion %}

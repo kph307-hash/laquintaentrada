@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pedido recibido — La quinta entrada</title>
-  <link rel="stylesheet" href="/static/styles.css">
-<link rel="stylesheet" href="/static/mobile.css">
+  <title>Pedido recibido — La Quinta Entrada</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+  <link rel="stylesheet" href="/static/mobile.css" />
 
   <style>
     .result-page{
@@ -224,6 +224,8 @@
       color: #111827;
       font-weight: 900;
       cursor: pointer;
+      text-align: center;
+      text-decoration: none;
     }
 
     .ghost-btn:hover{
@@ -231,22 +233,9 @@
     }
 
     .result-link-btn{
-  display: block;
-  text-align: center;
-  text-decoration: none;
-}
-
-    .result-back-link{
       display: block;
       text-align: center;
-      margin-top: 12px;
-      font-weight: 900;
       text-decoration: none;
-      color: #111827;
-    }
-
-    .result-back-link:hover{
-      text-decoration: underline;
     }
 
     .shipping-ok{
@@ -333,37 +322,39 @@
             </div>
 
             {% if direccion %}
-            <div class="result-meta-item">
-              <div class="result-meta-label">Dirección</div>
-              <div class="result-meta-value">{{ direccion }}</div>
+              <div class="result-meta-item">
+                <div class="result-meta-label">Dirección</div>
+                <div class="result-meta-value">{{ direccion }}</div>
 
-              {% if maps_url %}
-                <a href="{{ maps_url }}" target="_blank" class="gps-link">📍 Ver ubicación en Google Maps</a>
-              {% endif %}
-            </div>
+                {% if maps_url %}
+                  <a href="{{ maps_url }}" target="_blank" rel="noopener noreferrer" class="gps-link">
+                    📍 Ver ubicación en Google Maps
+                  </a>
+                {% endif %}
+              </div>
             {% endif %}
 
             {% if delivery_mode == "delivery" %}
-            <div class="result-meta-item">
-              <div class="result-meta-label">Detalle del envío</div>
-              <div class="result-meta-value">
-                {% if shipping_verified %}
-                  <div class="shipping-ok">
-                    📏 Distancia verificada: {{ "%.2f"|format(distance_km) }} km
-                  </div>
-                  <div class="shipping-ok" style="margin-top:6px;">
-                    🚚 Envío: ₡{{ shipping }} (₡{{ shipping_per_km }}/km)
-                  </div>
-                {% else %}
-                  <div class="shipping-warn">
-                    📏 Distancia no verificada (sin GPS)
-                  </div>
-                  <div class="shipping-warn" style="margin-top:6px;">
-                    🚚 Envío: ₡{{ shipping }} mínimo (₡{{ shipping_per_km }}/km)
-                  </div>
-                {% endif %}
+              <div class="result-meta-item">
+                <div class="result-meta-label">Detalle del envío</div>
+                <div class="result-meta-value">
+                  {% if shipping_verified %}
+                    <div class="shipping-ok">
+                      📏 Distancia verificada: {{ "%.2f"|format(distance_km) }} km
+                    </div>
+                    <div class="shipping-ok" style="margin-top:6px;">
+                      🚚 Envío: ₡{{ shipping }} (₡{{ shipping_per_km }}/km)
+                    </div>
+                  {% else %}
+                    <div class="shipping-warn">
+                      📏 Distancia no verificada (sin GPS)
+                    </div>
+                    <div class="shipping-warn" style="margin-top:6px;">
+                      🚚 Envío: ₡{{ shipping }} mínimo (₡{{ shipping_per_km }}/km)
+                    </div>
+                  {% endif %}
+                </div>
               </div>
-            </div>
             {% endif %}
           </div>
         </article>
@@ -425,56 +416,66 @@
             <span>₡{{ grand_total }}</span>
           </div>
 
-          <a href="{{ whatsapp_url }}" target="_blank" class="wa-btn" id="waBtn">
+          <a
+            href="{{ whatsapp_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="wa-btn"
+            id="waBtn"
+          >
             📲 Enviar pedido por WhatsApp
           </a>
 
           <button id="clearCartBtn" type="button" class="ghost-btn">
-  Vaciar carrito
-</button>
+            Vaciar carrito
+          </button>
 
-<a href="/tienda" class="ghost-btn result-link-btn">
-  Volver a la tienda
-</a>
+          <a href="/tienda" class="ghost-btn result-link-btn">
+            Volver a la tienda
+          </a>
         </article>
       </aside>
     </div>
   </main>
 
   <script>
-  const CART_KEY = "superweb_cart_v2";
-  const CHECKOUT_DRAFT_KEY = "superweb_checkout_draft_v1";
-  const waBtn = document.getElementById("waBtn");
-  const clearCartBtn = document.getElementById("clearCartBtn");
+    (function () {
+      const CART_KEYS = ["superweb_cart_v2", "superweb_cart"];
+      const CHECKOUT_DRAFT_KEY = "superweb_checkout_draft_v1";
+      const waBtn = document.getElementById("waBtn");
+      const clearCartBtn = document.getElementById("clearCartBtn");
 
-  function clearCart(){
-    try {
-      localStorage.removeItem(CART_KEY);
-      localStorage.removeItem("superweb_cart");
-    } catch(e) {}
-    window.dispatchEvent(new Event("cart:changed"));
-  }
+      function clearCart() {
+        try {
+          CART_KEYS.forEach((key) => localStorage.removeItem(key));
+        } catch (e) {}
+        window.dispatchEvent(new Event("cart:changed"));
+      }
 
-  function clearCheckoutDraft(){
-    try {
-      localStorage.removeItem(CHECKOUT_DRAFT_KEY);
-    } catch(e) {}
-  }
+      function clearCheckoutDraft() {
+        try {
+          localStorage.removeItem(CHECKOUT_DRAFT_KEY);
+        } catch (e) {}
+      }
 
-  if (waBtn){
-    waBtn.addEventListener("click", () => {
-      clearCart();
-      clearCheckoutDraft();
-    });
-  }
+      function clearAllCheckoutData() {
+        clearCart();
+        clearCheckoutDraft();
+      }
 
-  if (clearCartBtn){
-  clearCartBtn.addEventListener("click", () => {
-    clearCart();
-    clearCheckoutDraft();
-    window.location.href = "/carrito";
-  });
-}
-</script>
+      if (waBtn) {
+        waBtn.addEventListener("click", function () {
+          clearAllCheckoutData();
+        });
+      }
+
+      if (clearCartBtn) {
+        clearCartBtn.addEventListener("click", function () {
+          clearAllCheckoutData();
+          window.location.href = "/carrito";
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

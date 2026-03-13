@@ -18,29 +18,34 @@
 
     <div class="card" style="padding:14px;margin-top:12px;">
       <div style="display:grid;gap:6px;">
-        <div><b>Status:</b> {{ pedido["status"] }}</div>
-        <div><b>Creado:</b> {{ pedido["creado_en"] }}</div>
-        <div><b>Entregado:</b> {{ pedido["entregado_en"] or "-" }}</div>
-        <div><b>Modo:</b> {{ pedido["delivery_mode"] }}</div>
-        <div><b>Cliente:</b> {{ pedido["nombre"] }}</div>
+        <div><strong>Estado:</strong> {{ pedido["status"] }}</div>
+        <div><strong>Creado:</strong> {{ pedido["creado_en"] }}</div>
+        <div><strong>Entregado:</strong> {{ pedido["entregado_en"] or "-" }}</div>
+        <div><strong>Modo:</strong> {{ pedido["delivery_mode"] }}</div>
+        <div><strong>Cliente:</strong> {{ pedido["nombre"] }}</div>
         {% if pedido["direccion"] %}
-          <div><b>Dirección:</b> {{ pedido["direccion"] }}</div>
+          <div><strong>Dirección:</strong> {{ pedido["direccion"] }}</div>
         {% endif %}
         {% if pedido["maps_url"] %}
-          <div><b>Ubicación:</b> <a href="{{ pedido['maps_url'] }}" target="_blank" rel="noopener">Abrir mapa</a></div>
+          <div><strong>Ubicación:</strong> <a href="{{ pedido['maps_url'] }}" target="_blank" rel="noopener">Abrir mapa</a></div>
         {% endif %}
       </div>
 
       <hr style="margin:12px 0;"/>
 
       <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-        <div><b>Subtotal:</b> ₡{{ pedido["subtotal"] }}</div>
-        <div><b>Envío:</b> ₡{{ pedido["shipping"] }}</div>
-        <div><b>Total:</b> ₡{{ pedido["total"] }}</div>
+        <div><strong>Subtotal:</strong> ₡{{ pedido["subtotal"] }}</div>
+        <div><strong>Envío:</strong> ₡{{ pedido["shipping"] }}</div>
+        <div><strong>Total:</strong> ₡{{ pedido["total"] }}</div>
       </div>
 
       {% if pedido["status"] != "entregado" %}
-        <form method="post" action="/admin/pedidos/{{ pedido['id'] }}/entregado" style="margin-top:14px;">
+        <form
+          method="post"
+          action="/admin/pedidos/{{ pedido['id'] }}/entregado"
+          style="margin-top:14px;"
+          onsubmit="return confirm('¿Marcar este pedido como entregado?');"
+        >
           <button class="btn" type="submit">Marcar como entregado</button>
         </form>
       {% endif %}
@@ -52,33 +57,35 @@
       <div class="card" style="padding:14px;">Sin items.</div>
     {% else %}
       <div class="card" style="padding:14px;">
-        <table style="width:100%;border-collapse:collapse;">
-          <thead>
-            <tr style="text-align:left;border-bottom:1px solid rgba(0,0,0,.12);">
-              <th style="padding:8px 6px;">Producto</th>
-              <th style="padding:8px 6px;">SKU</th>
-              <th style="padding:8px 6px;">Precio</th>
-              <th style="padding:8px 6px;">Qty</th>
-              <th style="padding:8px 6px;">Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for it in items %}
-              <tr style="border-bottom:1px solid rgba(0,0,0,.08);">
-                <td style="padding:8px 6px;">
-                  {{ it["producto"] }}
-                  {% if it["es_promo"] == 1 %}
-                    <span style="margin-left:8px;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.06);">PROMO</span>
-                  {% endif %}
-                </td>
-                <td style="padding:8px 6px;opacity:.8;">{{ it["sku"] }}</td>
-                <td style="padding:8px 6px;">₡{{ it["precio_unit"] }}</td>
-                <td style="padding:8px 6px;">{{ it["qty"] }}</td>
-                <td style="padding:8px 6px;">₡{{ it["subtotal"] }}</td>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left;border-bottom:1px solid rgba(0,0,0,.12);">
+                <th style="padding:8px 6px;">Producto</th>
+                <th style="padding:8px 6px;">SKU</th>
+                <th style="padding:8px 6px;">Precio</th>
+                <th style="padding:8px 6px;">Cantidad</th>
+                <th style="padding:8px 6px;">Subtotal</th>
               </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {% for it in items %}
+                <tr style="border-bottom:1px solid rgba(0,0,0,.08);">
+                  <td style="padding:8px 6px;">
+                    {{ it["producto"] }}
+                    {% if it["es_promo"] == 1 %}
+                      <span style="margin-left:8px;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,.06);">PROMO</span>
+                    {% endif %}
+                  </td>
+                  <td style="padding:8px 6px;opacity:.8;">{{ it["sku"] }}</td>
+                  <td style="padding:8px 6px;">₡{{ it["precio_unit"] }}</td>
+                  <td style="padding:8px 6px;">{{ it["qty"] }}</td>
+                  <td style="padding:8px 6px;">₡{{ it["subtotal"] }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     {% endif %}
   </div>

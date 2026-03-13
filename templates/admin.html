@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <title>Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Panel</title>
   <link rel="stylesheet" href="/static/admin.css">
 </head>
 <body>
@@ -10,84 +11,85 @@
   <div class="container">
 
     <div class="topbar">
-  <h2>Panel Admin</h2>
-  <div style="display:flex; gap:10px; align-items:center;">
-    <a class="btn" href="/admin/pedidos">Pedidos</a>
-    <a class="btn" href="/admin/promos">Promos / Rifas</a>
-    <a class="btn" href="/admin/productos-imagenes">Imágenes productos</a>
-    <a class="btn" href="/admin/logout">Salir</a>
-  </div>
-</div>
-
+      <h2>Panel Admin</h2>
+      <div style="display:flex; gap:10px; align-items:center;">
+        <a class="btn" href="/admin/pedidos">Pedidos</a>
+        <a class="btn" href="/admin/promos">Promos / Rifas</a>
+        <a class="btn" href="/admin/productos-imagenes">Imágenes productos</a>
+        <a class="btn" href="/admin/logout">Salir</a>
+      </div>
+    </div>
 
     <div class="card">
-  <h3>Sync XLSX por SKU</h3>
+      <h3>Sync XLSX por SKU</h3>
 
-  <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
-    <form method="post" action="/admin/sync-xlsx" enctype="multipart/form-data">
-      <input type="file" name="file" accept=".xlsx" required />
-      <button type="submit">Subir y sincronizar</button>
-    </form>
+      <div style="display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;">
+        <form method="post" action="/admin/sync-xlsx" enctype="multipart/form-data">
+          <label for="file">Archivo XLSX</label>
+          <input id="file" type="file" name="file" accept=".xlsx" required />
+          <button type="submit">Subir y sincronizar</button>
+        </form>
 
-    {% if estado_sync %}
-    <div style="padding:12px 16px; border:1px solid #ddd; border-radius:12px; min-width:320px;">
-      <div><strong>Última actualización:</strong> {{ estado_sync.ultima_actualizacion_legible }}</div>
-      <div><strong>Archivo:</strong> {{ estado_sync.archivo }}</div>
-      <div><strong>Productos sincronizados:</strong> {{ estado_sync.total_productos }}</div>
-      <div><strong>Estado:</strong> {{ estado_sync.mensaje }}</div>
+        {% if estado_sync %}
+        <div style="padding:12px 16px; border:1px solid #ddd; border-radius:12px; min-width:320px;">
+          <div><strong>Última actualización:</strong> {{ estado_sync.ultima_actualizacion_legible }}</div>
+          <div><strong>Archivo:</strong> {{ estado_sync.archivo }}</div>
+          <div><strong>Productos sincronizados:</strong> {{ estado_sync.total_productos }}</div>
+          <div><strong>Estado:</strong> {{ estado_sync.mensaje }}</div>
+        </div>
+        {% else %}
+        <div style="padding:12px 16px; border:1px solid #ddd; border-radius:12px; min-width:320px;">
+          Aún no se ha realizado ninguna sincronización.
+        </div>
+        {% endif %}
+      </div>
     </div>
-    {% else %}
-    <div style="padding:12px 16px; border:1px solid #ddd; border-radius:12px; min-width:320px;">
-      Aún no se ha realizado ninguna sincronización.
-    </div>
-    {% endif %}
-  </div>
-</div>
 
     <hr />
 
-<h3>Productos ({{ productos|length }})</h3>
+    <h3>Productos ({{ productos|length }})</h3>
 
-<div style="display:grid; gap:14px;">
-  {% for p in productos %}
-    <div style="border:1px solid #ddd; border-radius:14px; padding:14px; background:#fff;">
-      <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="display:grid; gap:14px;">
+      {% for p in productos %}
+        <div style="border:1px solid #ddd; border-radius:14px; padding:14px; background:#fff;">
+          <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
 
-        <div style="width:90px;">
-          {% if p.imagen_url %}
-            <img
-              src="{{ p.imagen_url }}"
-              alt="{{ p.nombre }}"
-              style="width:90px; height:90px; object-fit:cover; border-radius:12px; border:1px solid #ddd;"
-            >
-          {% else %}
-            <div style="width:90px; height:90px; border-radius:12px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; color:#777; font-size:12px;">
-              Sin imagen
+            <div style="width:90px;">
+              {% if p.imagen_url %}
+                <img
+                  src="{{ p.imagen_url }}"
+                  alt="{{ p.nombre }}"
+                  style="width:90px; height:90px; object-fit:cover; border-radius:12px; border:1px solid #ddd;"
+                >
+              {% else %}
+                <div style="width:90px; height:90px; border-radius:12px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; color:#777; font-size:12px;">
+                  Sin imagen
+                </div>
+              {% endif %}
             </div>
-          {% endif %}
+
+            <div style="flex:1; min-width:260px;">
+              <div><strong>{{ p.sku }}</strong></div>
+              <div style="margin-top:4px;">{{ p.nombre }}</div>
+              <div style="margin-top:4px;">₡{{ p.precio }}</div>
+              <div style="margin-top:4px;">Stock: {{ p.cantidad }}</div>
+
+              <form
+                method="post"
+                action="/admin/productos/{{ p.sku }}/upload-image"
+                enctype="multipart/form-data"
+                style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;"
+              >
+                <label for="img-{{ p.sku }}">Imagen</label>
+                <input id="img-{{ p.sku }}" type="file" name="imagen" accept="image/*" required>
+                <button type="submit">Subir imagen</button>
+              </form>
+            </div>
+
+          </div>
         </div>
-
-        <div style="flex:1; min-width:260px;">
-          <div><strong>{{ p.sku }}</strong></div>
-          <div style="margin-top:4px;">{{ p.nombre }}</div>
-          <div style="margin-top:4px;">₡{{ p.precio }}</div>
-          <div style="margin-top:4px;">Stock: {{ p.cantidad }}</div>
-
-          <form
-            method="post"
-            action="/admin/productos/{{ p.sku }}/upload-image"
-            enctype="multipart/form-data"
-            style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;"
-          >
-            <input type="file" name="imagen" accept="image/*" required>
-            <button type="submit">Subir imagen</button>
-          </form>
-        </div>
-
-      </div>
+      {% endfor %}
     </div>
-  {% endfor %}
-</div>
 
   </div>
 

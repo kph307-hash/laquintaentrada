@@ -1,37 +1,32 @@
-# app.py
 import os
 import re
 import json
-import urllib.parse
-import tempfile
-import logging
 import math
 import time
+import shutil
+import logging
+import tempfile
+import urllib.parse
+from datetime import datetime
+from pathlib import Path
 from typing import Optional, List
 
 import openpyxl
 from dotenv import load_dotenv
-
-from fastapi import FastAPI, Form, Request, UploadFile, File, Query, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Form, Request, UploadFile, File, Query, Depends, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
-
 from sqlalchemy import case, or_
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 
 from db import SessionLocal, init_db, Producto, UsuarioCliente, get_db, get_conn, DB_PATH
-from fastapi.responses import FileResponse
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
-from pathlib import Path
-from datetime import datetime
-import shutil
 
+load_dotenv()
 
-app = FastAPI()
-
+app = FastAPI(title="Super Web")
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # ======================
@@ -554,7 +549,8 @@ def crear_pedido(
                 continue
 
             # ✅ No permitir si no hay stock
-            if int(getattr(p, "cantidad", 0) or 0) <= 0:
+            stock_actual = int(getattr(p, "cantidad", 0) or 0)
+            if stock_actual <= 0 or qty > stock_actual:
                 continue
 
             precio_unit = int(p.precio)
@@ -1093,18 +1089,18 @@ async def admin_promos_create(
         return denied
 
     activo_int = 1 if activo else 0
-
     imagen_url = ""
-    ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
-    safe_name = f"promo_{int(time.time())}{ext}"
-    path = PROMOS_DISK_DIR / safe_name
 
-    content = await imagen.read()
-    with open(path, "wb") as f:
-        f.write(content)
+    if imagen and imagen.filename:
+        ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
+        safe_name = f"promo_{int(time.time())}{ext}"
+        path = PROMOS_DISK_DIR / safe_name
 
-    imagen_url = f"/media/promos/{safe_name}"
+        content = await imagen.read()
+        with open(path, "wb") as f:
+            f.write(content)
 
+        imagen_url = f"/media/promos/{safe_name}"
 
     conn = get_conn()
     cur = conn.cursor()
@@ -1146,14 +1142,14 @@ async def admin_promos_update(
 
     if imagen and imagen.filename:
         ext = os.path.splitext(imagen.filename)[1].lower() or ".jpg"
-    safe_name = f"promo_{promo_id}_{int(time.time())}{ext}"
-    path = PROMOS_DISK_DIR / safe_name
+        safe_name = f"promo_{promo_id}_{int(time.time())}{ext}"
+        path = PROMOS_DISK_DIR / safe_name
 
-    content = await imagen.read()
-    with open(path, "wb") as f:
-        f.write(content)
+        content = await imagen.read()
+        with open(path, "wb") as f:
+            f.write(content)
 
-    imagen_url = f"/media/promos/{safe_name}"
+        imagen_url = f"/media/promos/{safe_name}"
 
     conn = get_conn()
     cur = conn.cursor()
