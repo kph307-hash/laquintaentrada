@@ -1575,10 +1575,11 @@ body.kg-modal-open{
 @media (min-width: 769px){
 
   .category-strip-wrap{
-    display: flex;
+    display: flex !important;
     align-items: center;
     gap: 10px;
     margin: 10px 0 16px;
+    width: 100%;
   }
 
   .category-strip-btn{
@@ -1592,26 +1593,93 @@ body.kg-modal-open{
     font-size: 22px;
     font-weight: 900;
     cursor: pointer;
-    display: inline-flex;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
     box-shadow: 0 4px 10px rgba(0,0,0,.06);
     transition: .15s ease;
   }
 
+  .category-strip-btn:hover{
+    background: #f9fafb;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(0,0,0,.08);
+  }
+
   .category-strip{
     flex: 1 1 auto;
-    display: flex;
+    display: flex !important;
     gap: 12px;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 4px 2px 10px;
     scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,.25) transparent;
+    width: auto !important;
   }
 
-  .cat-chip{
-    flex: 0 0 auto;
-    width: 92px;
-    min-height: 92px;
+  .category-strip::-webkit-scrollbar{
+    height: 8px;
+  }
+
+  .category-strip::-webkit-scrollbar-track{
+    background: transparent;
+  }
+
+  .category-strip::-webkit-scrollbar-thumb{
+    background: rgba(0,0,0,.20);
+    border-radius: 999px;
+  }
+
+  .category-strip .cat-chip{
+    flex: 0 0 auto !important;
+    width: 92px !important;
+    min-width: 92px !important;
+    max-width: 92px !important;
+    min-height: 92px !important;
+    height: 92px !important;
+    border: 1px solid rgba(0,0,0,.10);
+    border-radius: 16px;
+    background: #ffffff;
+    padding: 10px 8px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+
+  .category-strip .cat-chip:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0,0,0,.08);
+  }
+
+  .category-strip .cat-chip img{
+    width: 54px !important;
+    height: 54px !important;
+    max-width: 54px !important;
+    max-height: 54px !important;
+    object-fit: contain;
+    display: block;
+  }
+
+  .category-strip .cat-chip span{
+    display: block;
+    width: 100%;
+    font-size: 12px !important;
+    font-weight: 700;
+    line-height: 1.15;
+    text-align: center;
+    color: #1f2937;
+    word-break: break-word;
+  }
+
+  .category-strip .cat-chip.active{
+    border: 2px solid #1d2d74;
+    box-shadow: 0 6px 16px rgba(0,0,0,.10);
   }
 }
