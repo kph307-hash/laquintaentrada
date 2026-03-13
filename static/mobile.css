@@ -959,51 +959,72 @@ body.filters-open{
 }
 
 @media (max-width: 768px){
-  .price-note{
-    font-size: 9px !important;
+
+  .category-strip-wrap{
+    display: block !important;
+    margin: 8px 0 12px;
   }
 
-  .kg-modal{
-    max-width: 100%;
-    border-radius: 18px;
-    padding: 16px;
+  .category-strip-btn{
+    display: none !important;
   }
 
-  .kg-modal__head h3{
-    font-size: 20px;
+  .category-strip{
+    display: flex !important;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 4px 2px 8px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
   }
 
-  .kg-modal__sub{
-    font-size: 13px;
+  .category-strip::-webkit-scrollbar{
+    display: none;
   }
 
-  .kg-stepper{
-    grid-template-columns: 44px 1fr 44px;
+  .cat-chip{
+    flex: 0 0 auto;
+    width: 76px;
+    min-width: 76px;
+    min-height: 76px;
+    border: 1px solid rgba(0,0,0,.10);
+    border-radius: 16px;
+    background: #ffffff;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
   }
 
-  .kg-stepper__btn{
-    height: 42px;
-    border-radius: 12px;
-    font-size: 22px;
+  .cat-chip:active{
+    transform: scale(.97);
   }
 
-  .kg-stepper__value{
-    height: 42px;
-    font-size: 16px;
+  .cat-chip img{
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    display: block;
   }
 
-  .kg-quick-grid{
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+  .cat-chip span{
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.1;
+    text-align: center;
+    color: #1f2937;
+    word-break: break-word;
   }
 
-  .kg-quick-btn{
-    height: 40px;
-    font-size: 13px;
-  }
-
-  .cart-item-qty .qty-num{
-    min-width: 52px;
+  .cat-chip.active{
+    border: 2px solid #1d2d74;
+    box-shadow: 0 6px 16px rgba(0,0,0,.10);
   }
 }
-

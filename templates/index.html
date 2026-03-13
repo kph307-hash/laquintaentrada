@@ -35,8 +35,8 @@
   }
 
   body.tienda #productList.product-grid-mobile-2 .img-box{
-    height: 180px !important;
-    flex: 0 0 180px !important;
+    height: 110px !important;
+    flex: 0 0 110px !important;
   }
 
   body.tienda #productList.product-grid-mobile-2 .card-body{
@@ -72,6 +72,36 @@
     padding: 3px 6px !important;
     line-height: 1.15 !important;
   }
+
+  .category-strip-wrap{
+    display: block !important;
+    margin: 8px 0 12px;
+  }
+
+  .category-strip-btn{
+    display: none !important;
+  }
+
+  .category-strip{
+    display: flex !important;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    padding: 4px 2px 8px;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .category-strip::-webkit-scrollbar{
+    display: none;
+  }
+
+  .cat-chip{
+    flex: 0 0 auto;
+    min-width: 76px;
+  }
 }
 </style>
 
@@ -80,7 +110,6 @@
   
   <main class="container">
     <div class="meta-row">
-
       <form class="meta-search" method="get" action="/tienda" id="metaSearchForm">
         <input type="hidden" name="page" value="1">
         <input type="hidden" name="page_size" value="{{ page_size }}">
@@ -107,98 +136,98 @@
     </div>
 
     <div class="category-strip-wrap">
-  <button
-    type="button"
-    class="category-strip-btn"
-    id="catScrollLeft"
-    aria-label="Mover categorías a la izquierda"
-  >
-    ‹
-  </button>
+      <button
+        type="button"
+        class="category-strip-btn"
+        id="catScrollLeft"
+        aria-label="Mover categorías a la izquierda"
+      >
+        ‹
+      </button>
 
-  <div class="category-strip" id="categoryStrip">
+      <div class="category-strip" id="categoryStrip">
 
-    <button class="cat-chip {% if 'Verduleria' in selected_familias %}active{% endif %}" type="button" data-cat="Verduleria">
-      <img src="/static/uploads/Verduleria.png" alt="Verduleria">
-      <span>Verduras</span>
-    </button>
+        <button class="cat-chip {% if 'Verduleria' in selected_familias %}active{% endif %}" type="button" data-cat="Verduleria">
+          <img src="/static/uploads/Verduleria.png" alt="Verduleria">
+          <span>Verduras</span>
+        </button>
 
-    <button class="cat-chip {% if 'Snacks' in selected_familias %}active{% endif %}" type="button" data-cat="Snacks">
-      <img src="/static/uploads/Snacks.png" alt="Snacks">
-      <span>Snacks</span>
-    </button>
+        <button class="cat-chip {% if 'Snacks' in selected_familias %}active{% endif %}" type="button" data-cat="Snacks">
+          <img src="/static/uploads/Snacks.png" alt="Snacks">
+          <span>Snacks</span>
+        </button>
 
-    <button class="cat-chip {% if 'Panaderia' in selected_familias %}active{% endif %}" type="button" data-cat="Panaderia">
-      <img src="/static/uploads/Panaderia.png" alt="Panaderia">
-      <span>Panadería</span>
-    </button>
+        <button class="cat-chip {% if 'Panaderia' in selected_familias %}active{% endif %}" type="button" data-cat="Panaderia">
+          <img src="/static/uploads/Panaderia.png" alt="Panaderia">
+          <span>Panadería</span>
+        </button>
 
-    <button class="cat-chip {% if 'Mascotas' in selected_familias %}active{% endif %}" type="button" data-cat="Mascotas">
-      <img src="/static/uploads/Mascotas.png" alt="Mascotas">
-      <span>Mascotas</span>
-    </button>
+        <button class="cat-chip {% if 'Mascotas' in selected_familias %}active{% endif %}" type="button" data-cat="Mascotas">
+          <img src="/static/uploads/Mascotas.png" alt="Mascotas">
+          <span>Mascotas</span>
+        </button>
 
-    <button class="cat-chip {% if 'Licor' in selected_familias %}active{% endif %}" type="button" data-cat="Licor">
-      <img src="/static/uploads/Licor.png" alt="Licor">
-      <span>Licor</span>
-    </button>
+        <button class="cat-chip {% if 'Licor' in selected_familias %}active{% endif %}" type="button" data-cat="Licor">
+          <img src="/static/uploads/Licor.png" alt="Licor">
+          <span>Licor</span>
+        </button>
 
-    <button class="cat-chip {% if 'Lacteos' in selected_familias %}active{% endif %}" type="button" data-cat="Lacteos">
-      <img src="/static/uploads/Lacteos.png" alt="Lacteos">
-      <span>Lacteos</span>
-    </button>
+        <button class="cat-chip {% if 'Lacteos' in selected_familias %}active{% endif %}" type="button" data-cat="Lacteos">
+          <img src="/static/uploads/Lacteos.png" alt="Lacteos">
+          <span>Lacteos</span>
+        </button>
 
-    <button class="cat-chip {% if 'Hogar' in selected_familias %}active{% endif %}" type="button" data-cat="Hogar">
-      <img src="/static/uploads/Hogar.png" alt="Hogar">
-      <span>Hogar</span>
-    </button>
+        <button class="cat-chip {% if 'Hogar' in selected_familias %}active{% endif %}" type="button" data-cat="Hogar">
+          <img src="/static/uploads/Hogar.png" alt="Hogar">
+          <span>Hogar</span>
+        </button>
 
-    <button class="cat-chip {% if 'Granos' in selected_familias %}active{% endif %}" type="button" data-cat="Granos">
-      <img src="/static/uploads/Granos.png" alt="Granos">
-      <span>Granos</span>
-    </button>
+        <button class="cat-chip {% if 'Granos' in selected_familias %}active{% endif %}" type="button" data-cat="Granos">
+          <img src="/static/uploads/Granos.png" alt="Granos">
+          <span>Granos</span>
+        </button>
 
-    <button class="cat-chip {% if 'Enlatados' in selected_familias %}active{% endif %}" type="button" data-cat="Enlatados">
-      <img src="/static/uploads/Enlatados.png" alt="Enlatados">
-      <span>Enlatados</span>
-    </button>
+        <button class="cat-chip {% if 'Enlatados' in selected_familias %}active{% endif %}" type="button" data-cat="Enlatados">
+          <img src="/static/uploads/Enlatados.png" alt="Enlatados">
+          <span>Enlatados</span>
+        </button>
 
-    <button class="cat-chip {% if 'Embutidos' in selected_familias %}active{% endif %}" type="button" data-cat="Embutidos">
-      <img src="/static/uploads/Embutidos.png" alt="Embutidos">
-      <span>Embutidos</span>
-    </button>
+        <button class="cat-chip {% if 'Embutidos' in selected_familias %}active{% endif %}" type="button" data-cat="Embutidos">
+          <img src="/static/uploads/Embutidos.png" alt="Embutidos">
+          <span>Embutidos</span>
+        </button>
 
-    <button class="cat-chip {% if 'Cuidado Personal' in selected_familias %}active{% endif %}" type="button" data-cat="Cuidado Personal">
-      <img src="/static/uploads/Cuidado Personal.png" alt="Cuidado Personal">
-      <span>Personal</span>
-    </button>
+        <button class="cat-chip {% if 'Cuidado Personal' in selected_familias %}active{% endif %}" type="button" data-cat="Cuidado Personal">
+          <img src="/static/uploads/Cuidado Personal.png" alt="Cuidado Personal">
+          <span>Personal</span>
+        </button>
 
-    <button class="cat-chip {% if 'Congelados' in selected_familias %}active{% endif %}" type="button" data-cat="Congelados">
-      <img src="/static/uploads/Congelados.png" alt="Congelados">
-      <span>Fríos</span>
-    </button>
+        <button class="cat-chip {% if 'Congelados' in selected_familias %}active{% endif %}" type="button" data-cat="Congelados">
+          <img src="/static/uploads/Congelados.png" alt="Congelados">
+          <span>Fríos</span>
+        </button>
 
-    <button class="cat-chip {% if 'Bebidas' in selected_familias %}active{% endif %}" type="button" data-cat="Bebidas">
-      <img src="/static/uploads/Bebidas.png" alt="Bebidas">
-      <span>Bebidas</span>
-    </button>
+        <button class="cat-chip {% if 'Bebidas' in selected_familias %}active{% endif %}" type="button" data-cat="Bebidas">
+          <img src="/static/uploads/Bebidas.png" alt="Bebidas">
+          <span>Bebidas</span>
+        </button>
 
-    <button class="cat-chip {% if 'Limpieza' in selected_familias %}active{% endif %}" type="button" data-cat="Limpieza">
-      <img src="/static/uploads/Limpieza.png" alt="Limpieza">
-      <span>Limpieza</span>
-    </button>
+        <button class="cat-chip {% if 'Limpieza' in selected_familias %}active{% endif %}" type="button" data-cat="Limpieza">
+          <img src="/static/uploads/Limpieza.png" alt="Limpieza">
+          <span>Limpieza</span>
+        </button>
 
-  </div>
+      </div>
 
-  <button
-    type="button"
-    class="category-strip-btn"
-    id="catScrollRight"
-    aria-label="Mover categorías a la derecha"
-  >
-    ›
-  </button>
-</div>
+      <button
+        type="button"
+        class="category-strip-btn"
+        id="catScrollRight"
+        aria-label="Mover categorías a la derecha"
+      >
+        ›
+      </button>
+    </div>
 
     <div class="filters-backdrop" id="filtersBackdrop"></div>
 
@@ -222,33 +251,33 @@
         </div>
 
         <div class="panel-body">
-  <input
-    id="catSearchMobile"
-    class="cat-search"
-    type="text"
-    placeholder="Buscar categoría..."
-  >
+          <input
+            id="catSearchMobile"
+            class="cat-search"
+            type="text"
+            placeholder="Buscar categoría..."
+          >
 
-  <div id="catsListMobile" class="cats-list">
-    {% for f in familias %}
-      <label class="cat-item">
-        <input
-          type="checkbox"
-          class="fam-check-mobile"
-          value="{{ f }}"
-          {% if f in selected_familias %}checked{% endif %}
-        >
-        <span>{{ f }}</span>
-      </label>
-    {% endfor %}
-  </div>
+          <div id="catsListMobile" class="cats-list">
+            {% for f in familias %}
+              <label class="cat-item">
+                <input
+                  type="checkbox"
+                  class="fam-check-mobile"
+                  value="{{ f }}"
+                  {% if f in selected_familias %}checked{% endif %}
+                >
+                <span>{{ f }}</span>
+              </label>
+            {% endfor %}
+          </div>
 
-  <div style="margin-top:12px; display:flex; gap:10px;">
-    <button type="button" id="applyFamiliesMobile" class="btn-small" style="flex:1;">
-      Aplicar filtros
-    </button>
-  </div>
-</div>
+          <div style="margin-top:12px; display:flex; gap:10px;">
+            <button type="button" id="applyFamiliesMobile" class="btn-small" style="flex:1;">
+              Aplicar filtros
+            </button>
+          </div>
+        </div>
       </div>
     </aside>
 
@@ -284,14 +313,14 @@
         <div id="productList" class="product-grid product-grid-mobile-2">
           {% for p in productos %}
             <article
-  class="product-card product-item product-click"
-  data-sku="{{ p.sku }}"
-  data-name="{{ p.nombre }}"
-  data-price="{{ p.precio }}"
-  data-familia="{{ p.familia }}"
-  data-stock="{{ p.cantidad }}"
-  data-unidad-medida="{{ p.unidad_medida }}"
->
+              class="product-card product-item product-click"
+              data-sku="{{ p.sku }}"
+              data-name="{{ p.nombre }}"
+              data-price="{{ p.precio }}"
+              data-familia="{{ p.familia }}"
+              data-stock="{{ p.cantidad }}"
+              data-unidad-medida="{{ p.unidad_medida }}"
+            >
               <div class="img-box">
                 {% if p.imagen_url %}
                   <img
@@ -322,15 +351,15 @@
                 {% endif %}
 
                 <div class="price-row">
-  {% if p.unidad_medida == "KG" %}
-    <div class="product-price product-price--kg">
-      ₡{{ "{:,}".format(p.precio).replace(",", ".") }}
-      <span class="price-note">por kilo aprox.</span>
-    </div>
-  {% else %}
-    <div class="product-price">₡{{ "{:,}".format(p.precio).replace(",", ".") }}</div>
-  {% endif %}
-</div>
+                  {% if p.unidad_medida == "KG" %}
+                    <div class="product-price product-price--kg">
+                      ₡{{ "{:,}".format(p.precio).replace(",", ".") }}
+                      <span class="price-note">por kilo aprox.</span>
+                    </div>
+                  {% else %}
+                    <div class="product-price">₡{{ "{:,}".format(p.precio).replace(",", ".") }}</div>
+                  {% endif %}
+                </div>
 
                 <button type="button" class="btn-add">+ Agregar</button>
               </div>
@@ -350,35 +379,35 @@
   </main>
 
   <div id="kgModal" class="kg-modal-backdrop" style="display:none;">
-  <div class="kg-modal" role="dialog" aria-modal="true" aria-labelledby="kgModalTitle">
-    <div class="kg-modal__head">
-      <div>
-        <h3 id="kgModalTitle">Seleccionar cantidad</h3>
-        <p id="kgModalProduct" class="kg-modal__sub"></p>
-      </div>
-      <button type="button" id="kgModalClose" class="kg-modal__close" aria-label="Cerrar">✕</button>
-    </div>
-
-    <div class="kg-modal__body">
-      <div class="kg-stepper">
-        <button type="button" id="kgMinus" class="kg-stepper__btn">−</button>
-        <div class="kg-stepper__value" id="kgValue">0.25 kg</div>
-        <button type="button" id="kgPlus" class="kg-stepper__btn">+</button>
+    <div class="kg-modal" role="dialog" aria-modal="true" aria-labelledby="kgModalTitle">
+      <div class="kg-modal__head">
+        <div>
+          <h3 id="kgModalTitle">Seleccionar cantidad</h3>
+          <p id="kgModalProduct" class="kg-modal__sub"></p>
+        </div>
+        <button type="button" id="kgModalClose" class="kg-modal__close" aria-label="Cerrar">✕</button>
       </div>
 
-      <div class="kg-hint" id="kgPricePreview">Total aprox.: ₡0</div>
+      <div class="kg-modal__body">
+        <div class="kg-stepper">
+          <button type="button" id="kgMinus" class="kg-stepper__btn">−</button>
+          <div class="kg-stepper__value" id="kgValue">0.25 kg</div>
+          <button type="button" id="kgPlus" class="kg-stepper__btn">+</button>
+        </div>
 
-      <div class="kg-quick-grid">
-        <button type="button" class="kg-quick-btn" data-kg="0.25">0.25 kg</button>
-        <button type="button" class="kg-quick-btn" data-kg="0.50">0.50 kg</button>
-        <button type="button" class="kg-quick-btn" data-kg="0.75">0.75 kg</button>
-        <button type="button" class="kg-quick-btn" data-kg="1.00">1.00 kg</button>
+        <div class="kg-hint" id="kgPricePreview">Total aprox.: ₡0</div>
+
+        <div class="kg-quick-grid">
+          <button type="button" class="kg-quick-btn" data-kg="0.25">0.25 kg</button>
+          <button type="button" class="kg-quick-btn" data-kg="0.50">0.50 kg</button>
+          <button type="button" class="kg-quick-btn" data-kg="0.75">0.75 kg</button>
+          <button type="button" class="kg-quick-btn" data-kg="1.00">1.00 kg</button>
+        </div>
+
+        <button type="button" id="kgAddBtn" class="btn-add">Agregar al carrito</button>
       </div>
-
-      <button type="button" id="kgAddBtn" class="btn-add">Agregar al carrito</button>
     </div>
   </div>
-</div>
 
   <div id="toast" class="toast" role="status" aria-live="polite">Agregado ✅</div>
 
@@ -418,9 +447,6 @@
           .trim();
       }
 
-      // ============================
-      // Buscar categorías PC
-      // ============================
       if (catSearch) {
         catSearch.addEventListener("input", function(){
           const q = norm(catSearch.value);
@@ -431,9 +457,6 @@
         });
       }
 
-      // ============================
-      // Buscar categorías móvil
-      // ============================
       if (catSearchMobile) {
         catSearchMobile.addEventListener("input", function(){
           const q = norm(catSearchMobile.value);
@@ -444,9 +467,6 @@
         });
       }
 
-      // ============================
-      // Drawer filtros móvil
-      // ============================
       function openFiltersDrawer(){
         if (filtersDrawer) filtersDrawer.classList.add("is-open");
         if (filtersBackdrop) filtersBackdrop.classList.add("is-open");
@@ -463,9 +483,6 @@
       if (filtersCloseBtn) filtersCloseBtn.addEventListener("click", closeFiltersDrawer);
       if (filtersBackdrop) filtersBackdrop.addEventListener("click", closeFiltersDrawer);
 
-      // ============================
-      // Búsqueda en vivo
-      // ============================
       function liveFilter(){
         if (!productList) return;
 
@@ -507,9 +524,6 @@
 
       window.addEventListener("load", liveFilter);
 
-      // ============================
-      // Construir URL filtros PC
-      // ============================
       function buildUrl(page){
         const params = new URLSearchParams();
         const q = qInput ? qInput.value.trim() : "";
@@ -542,9 +556,6 @@
         });
       }
 
-      // ============================
-      // Filtros móvil
-      // ============================
       function goFiltersFromMobile(){
         const params = new URLSearchParams();
         const q = qInput ? qInput.value.trim() : "";
@@ -564,571 +575,545 @@
 
       const applyFamiliesMobileBtn = document.getElementById("applyFamiliesMobile");
 
-// En móvil: NO aplicar automáticamente al marcar
-famChecksMobile.forEach(function(c){
-  c.addEventListener("change", function(){
-    // no hacer redirect aquí
-  });
-});
+      famChecksMobile.forEach(function(c){
+        c.addEventListener("change", function(){
+          // no redirigir automáticamente en móvil
+        });
+      });
 
-if (applyFamiliesMobileBtn){
-  applyFamiliesMobileBtn.addEventListener("click", function(){
-    goFiltersFromMobile();
-  });
-}
+      if (applyFamiliesMobileBtn){
+        applyFamiliesMobileBtn.addEventListener("click", function(){
+          goFiltersFromMobile();
+        });
+      }
 
-if (clearFamiliesMobileBtn){
-  clearFamiliesMobileBtn.addEventListener("click", function(){
-    famChecksMobile.forEach(function(c){ c.checked = false; });
-  });
-}
+      if (clearFamiliesMobileBtn){
+        clearFamiliesMobileBtn.addEventListener("click", function(){
+          famChecksMobile.forEach(function(c){ c.checked = false; });
+        });
+      }
     })();
   </script>
 
   <script>
-  (function(){
-    const CART_KEY = "superweb_cart_v2";
-    const LEGACY_CART_KEY = "superweb_cart";
+    (function(){
+      const CART_KEY = "superweb_cart_v2";
+      const LEGACY_CART_KEY = "superweb_cart";
 
-    const kgModal = document.getElementById("kgModal");
-    const kgModalClose = document.getElementById("kgModalClose");
-    const kgModalProduct = document.getElementById("kgModalProduct");
-    const kgValueEl = document.getElementById("kgValue");
-    const kgPricePreview = document.getElementById("kgPricePreview");
-    const kgMinus = document.getElementById("kgMinus");
-    const kgPlus = document.getElementById("kgPlus");
-    const kgAddBtn = document.getElementById("kgAddBtn");
-    const kgQuickBtns = Array.from(document.querySelectorAll(".kg-quick-btn"));
+      const kgModal = document.getElementById("kgModal");
+      const kgModalClose = document.getElementById("kgModalClose");
+      const kgModalProduct = document.getElementById("kgModalProduct");
+      const kgValueEl = document.getElementById("kgValue");
+      const kgPricePreview = document.getElementById("kgPricePreview");
+      const kgMinus = document.getElementById("kgMinus");
+      const kgPlus = document.getElementById("kgPlus");
+      const kgAddBtn = document.getElementById("kgAddBtn");
+      const kgQuickBtns = Array.from(document.querySelectorAll(".kg-quick-btn"));
 
-    let kgState = {
-      sku: "",
-      nombre: "",
-      price: 0,
-      stock: 0,
-      unidad_medida: "KG",
-      qty: 0.25
-    };
-
-    function money(n){
-      return "₡" + Number(n || 0).toLocaleString("es-CR");
-    }
-
-    function loadCart(){
-      try {
-        const raw = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || "[]";
-        const data = JSON.parse(raw);
-
-        if (Array.isArray(data)) return data;
-
-        if (data && typeof data === "object"){
-          const maybe = data.items || data.cart || data.products || data.data;
-          if (Array.isArray(maybe)) return maybe;
-        }
-
-        return [];
-      } catch (e){
-        return [];
-      }
-    }
-
-    function saveCart(cart){
-      const raw = JSON.stringify(cart);
-      localStorage.setItem(CART_KEY, raw);
-      localStorage.setItem(LEGACY_CART_KEY, raw);
-      window.dispatchEvent(new Event("cart:changed"));
-    }
-
-    function updateBadge(){
-      const topBadge = document.getElementById("cartBadgeTop");
-      const bottomBadge = document.getElementById("bottomCartBadge");
-
-      const cart = loadCart();
-      const qty = cart.reduce(function(acc, x){
-        return acc + (Number(x.qty) || 0);
-      }, 0);
-
-      const shownQty = Number.isInteger(qty) ? String(qty) : qty.toFixed(2);
-
-      if (topBadge){
-        topBadge.textContent = shownQty;
-        topBadge.style.display = qty > 0 ? "inline-flex" : "none";
-      }
-
-      if (bottomBadge){
-        bottomBadge.textContent = shownQty;
-        bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
-      }
-    }
-
-    let toastTimer = null;
-    function showToast(msg){
-      const el = document.getElementById("toast");
-      if (!el) return;
-
-      el.textContent = msg || "Agregado ✅";
-      el.classList.add("show");
-
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(function(){
-        el.classList.remove("show");
-      }, 1000);
-    }
-
-    function renderKgModal(){
-      if (!kgValueEl || !kgPricePreview) return;
-      kgValueEl.textContent = kgState.qty.toFixed(2) + " kg";
-      kgPricePreview.textContent = "Total aprox.: " + money(Math.round(kgState.price * kgState.qty));
-    }
-
-    function openKgModal(product){
-      kgState = {
-        sku: product.sku,
-        nombre: product.nombre,
-        price: Number(product.price) || 0,
-        stock: Number(product.stock) || 0,
+      let kgState = {
+        sku: "",
+        nombre: "",
+        price: 0,
+        stock: 0,
         unidad_medida: "KG",
         qty: 0.25
       };
 
-      if (kgModalProduct){
-        kgModalProduct.textContent = product.nombre + " — " + money(product.price) + " por kilo aprox.";
+      function money(n){
+        return "₡" + Number(n || 0).toLocaleString("es-CR");
       }
 
-      renderKgModal();
+      function loadCart(){
+        try {
+          const raw = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || "[]";
+          const data = JSON.parse(raw);
 
-      if (kgModal){
-        kgModal.style.display = "flex";
-        document.body.classList.add("kg-modal-open");
-      }
-    }
+          if (Array.isArray(data)) return data;
 
-    function closeKgModal(){
-      if (kgModal){
-        kgModal.style.display = "none";
-        document.body.classList.remove("kg-modal-open");
-      }
-    }
+          if (data && typeof data === "object"){
+            const maybe = data.items || data.cart || data.products || data.data;
+            if (Array.isArray(maybe)) return maybe;
+          }
 
-    function addUnidadToCart(sku, nombre, price, stock){
-      stock = Number(stock || 0);
-      price = Number(price) || 0;
-
-      if (!sku || !nombre) return;
-
-      const cart = loadCart();
-      const found = cart.find(function(x){
-        return x.sku === sku && (x.unidad_medida || "UND") === "UND";
-      });
-
-      const currentQty = found ? (Number(found.qty) || 0) : 0;
-
-      if (stock <= 0){
-        showToast("Sin stock ❌");
-        return;
+          return [];
+        } catch (e){
+          return [];
+        }
       }
 
-      if (currentQty + 1 > stock){
-        showToast("Solo hay " + stock + " unidades disponibles ⚠️");
-        return;
+      function saveCart(cart){
+        const raw = JSON.stringify(cart);
+        localStorage.setItem(CART_KEY, raw);
+        localStorage.setItem(LEGACY_CART_KEY, raw);
+        window.dispatchEvent(new Event("cart:changed"));
       }
 
-      if (found){
-        found.qty = currentQty + 1;
-        found.stock = stock;
-        found.price = price;
-        found.nombre = nombre;
-        found.unidad_medida = "UND";
-      } else {
-        cart.push({
-          sku: sku,
-          nombre: nombre,
-          qty: 1,
-          price: price,
-          stock: stock,
-          unidad_medida: "UND"
+      function updateBadge(){
+        const topBadge = document.getElementById("cartBadgeTop");
+        const bottomBadge = document.getElementById("bottomCartBadge");
+
+        const cart = loadCart();
+        const qty = cart.reduce(function(acc, x){
+          return acc + (Number(x.qty) || 0);
+        }, 0);
+
+        const shownQty = Number.isInteger(qty) ? String(qty) : qty.toFixed(2);
+
+        if (topBadge){
+          topBadge.textContent = shownQty;
+          topBadge.style.display = qty > 0 ? "inline-flex" : "none";
+        }
+
+        if (bottomBadge){
+          bottomBadge.textContent = shownQty;
+          bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
+        }
+      }
+
+      let toastTimer = null;
+      function showToast(msg){
+        const el = document.getElementById("toast");
+        if (!el) return;
+
+        el.textContent = msg || "Agregado ✅";
+        el.classList.add("show");
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){
+          el.classList.remove("show");
+        }, 1000);
+      }
+
+      function renderKgModal(){
+        if (!kgValueEl || !kgPricePreview) return;
+        kgValueEl.textContent = kgState.qty.toFixed(2) + " kg";
+        kgPricePreview.textContent = "Total aprox.: " + money(Math.round(kgState.price * kgState.qty));
+      }
+
+      function openKgModal(product){
+        kgState = {
+          sku: product.sku,
+          nombre: product.nombre,
+          price: Number(product.price) || 0,
+          stock: Number(product.stock) || 0,
+          unidad_medida: "KG",
+          qty: 0.25
+        };
+
+        if (kgModalProduct){
+          kgModalProduct.textContent = product.nombre + " — " + money(product.price) + " por kilo aprox.";
+        }
+
+        renderKgModal();
+
+        if (kgModal){
+          kgModal.style.display = "flex";
+          document.body.classList.add("kg-modal-open");
+        }
+      }
+
+      function closeKgModal(){
+        if (kgModal){
+          kgModal.style.display = "none";
+          document.body.classList.remove("kg-modal-open");
+        }
+      }
+
+      function addUnidadToCart(sku, nombre, price, stock){
+        stock = Number(stock || 0);
+        price = Number(price) || 0;
+
+        if (!sku || !nombre) return;
+
+        const cart = loadCart();
+        const found = cart.find(function(x){
+          return x.sku === sku && (x.unidad_medida || "UND") === "UND";
         });
-      }
 
-      saveCart(cart);
-      updateBadge();
-      showToast("Agregado ✅");
-    }
+        const currentQty = found ? (Number(found.qty) || 0) : 0;
 
-    function addKgToCart(){
-      const sku = kgState.sku;
-      const nombre = kgState.nombre;
-      const price = Number(kgState.price) || 0;
-      const stock = Number(kgState.stock) || 0;
-      const qty = Number(kgState.qty) || 0.25;
+        if (stock <= 0){
+          showToast("Sin stock ❌");
+          return;
+        }
 
-      if (!sku || !nombre) return;
+        if (currentQty + 1 > stock){
+          showToast("Solo hay " + stock + " unidades disponibles ⚠️");
+          return;
+        }
 
-      if (stock <= 0){
-        showToast("Sin stock ❌");
-        return;
-      }
-
-      const cart = loadCart();
-      const found = cart.find(function(x){
-        return x.sku === sku && (x.unidad_medida || "UND") === "KG";
-      });
-
-      if (found){
-        found.qty = Number((Number(found.qty || 0) + qty).toFixed(2));
-        found.price = price;
-        found.stock = stock;
-        found.nombre = nombre;
-        found.unidad_medida = "KG";
-      } else {
-        cart.push({
-          sku: sku,
-          nombre: nombre,
-          qty: qty,
-          price: price,
-          stock: stock,
-          unidad_medida: "KG"
-        });
-      }
-
-      saveCart(cart);
-      updateBadge();
-      closeKgModal();
-      showToast("Agregado ✅");
-    }
-
-    if (kgMinus){
-      kgMinus.addEventListener("click", function(){
-        kgState.qty = Math.max(0.25, Number((kgState.qty - 0.25).toFixed(2)));
-        renderKgModal();
-      });
-    }
-
-    if (kgPlus){
-      kgPlus.addEventListener("click", function(){
-        kgState.qty = Number((kgState.qty + 0.25).toFixed(2));
-        renderKgModal();
-      });
-    }
-
-    kgQuickBtns.forEach(function(btn){
-      btn.addEventListener("click", function(){
-        kgState.qty = Number(btn.dataset.kg || "0.25");
-        renderKgModal();
-      });
-    });
-
-    if (kgAddBtn){
-      kgAddBtn.addEventListener("click", addKgToCart);
-    }
-
-    if (kgModalClose){
-      kgModalClose.addEventListener("click", closeKgModal);
-    }
-
-    if (kgModal){
-      kgModal.addEventListener("click", function(e){
-        if (e.target === kgModal) closeKgModal();
-      });
-    }
-
-    document.querySelectorAll(".product-item").forEach(function(card){
-      const sku = card.dataset.sku || "";
-      const name = card.dataset.name || "";
-      const price = card.dataset.price || "0";
-      const stock = card.dataset.stock || "0";
-      const unidadMedida = (card.dataset.unidadMedida || "UND").toUpperCase();
-
-      const btn = card.querySelector(".btn-add");
-
-      function handleAdd(){
-        if (unidadMedida === "KG"){
-          openKgModal({
+        if (found){
+          found.qty = currentQty + 1;
+          found.stock = stock;
+          found.price = price;
+          found.nombre = nombre;
+          found.unidad_medida = "UND";
+        } else {
+          cart.push({
             sku: sku,
-            nombre: name,
+            nombre: nombre,
+            qty: 1,
             price: price,
             stock: stock,
-            unidad_medida: unidadMedida
+            unidad_medida: "UND"
           });
-        } else {
-          addUnidadToCart(sku, name, price, stock);
         }
+
+        saveCart(cart);
+        updateBadge();
+        showToast("Agregado ✅");
       }
 
-      if (btn){
-        btn.addEventListener("click", function(e){
-          e.preventDefault();
-          e.stopPropagation();
-          handleAdd();
+      function addKgToCart(){
+        const sku = kgState.sku;
+        const nombre = kgState.nombre;
+        const price = Number(kgState.price) || 0;
+        const stock = Number(kgState.stock) || 0;
+        const qty = Number(kgState.qty) || 0.25;
+
+        if (!sku || !nombre) return;
+
+        if (stock <= 0){
+          showToast("Sin stock ❌");
+          return;
+        }
+
+        const cart = loadCart();
+        const found = cart.find(function(x){
+          return x.sku === sku && (x.unidad_medida || "UND") === "KG";
+        });
+
+        if (found){
+          found.qty = Number((Number(found.qty || 0) + qty).toFixed(2));
+          found.price = price;
+          found.stock = stock;
+          found.nombre = nombre;
+          found.unidad_medida = "KG";
+        } else {
+          cart.push({
+            sku: sku,
+            nombre: nombre,
+            qty: qty,
+            price: price,
+            stock: stock,
+            unidad_medida: "KG"
+          });
+        }
+
+        saveCart(cart);
+        updateBadge();
+        closeKgModal();
+        showToast("Agregado ✅");
+      }
+
+      function bindProductCards(scope){
+        const root = scope || document;
+
+        root.querySelectorAll(".product-item").forEach(function(card){
+          if (card.dataset.boundAdd === "1") return;
+          card.dataset.boundAdd = "1";
+
+          const sku = card.dataset.sku || "";
+          const name = card.dataset.name || "";
+          const price = card.dataset.price || "0";
+          const stock = card.dataset.stock || "0";
+          const unidadMedida = (card.dataset.unidadMedida || "UND").toUpperCase();
+          const btn = card.querySelector(".btn-add");
+
+          function handleAdd(){
+            if (unidadMedida === "KG"){
+              openKgModal({
+                sku: sku,
+                nombre: name,
+                price: price,
+                stock: stock,
+                unidad_medida: unidadMedida
+              });
+            } else {
+              addUnidadToCart(sku, name, price, stock);
+            }
+          }
+
+          if (btn){
+            btn.addEventListener("click", function(e){
+              e.preventDefault();
+              e.stopPropagation();
+              handleAdd();
+            });
+          }
+
+          card.addEventListener("click", function(e){
+            if (e.target.closest(".btn-add")) return;
+            handleAdd();
+          });
         });
       }
 
-      card.addEventListener("click", function(e){
-        if (e.target.closest(".btn-add")) return;
-        handleAdd();
-      });
-    });
-
-    window.addEventListener("storage", function(e){
-      if (e.key === CART_KEY || e.key === LEGACY_CART_KEY){
-        updateBadge();
+      if (kgMinus){
+        kgMinus.addEventListener("click", function(){
+          kgState.qty = Math.max(0.25, Number((kgState.qty - 0.25).toFixed(2)));
+          renderKgModal();
+        });
       }
-    });
 
-    window.addEventListener("cart:changed", updateBadge);
+      if (kgPlus){
+        kgPlus.addEventListener("click", function(){
+          kgState.qty = Number((kgState.qty + 0.25).toFixed(2));
+          renderKgModal();
+        });
+      }
 
-    updateBadge();
-  })();
-</script>
-
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const strip = document.getElementById("categoryStrip");
-  const leftBtn = document.getElementById("catScrollLeft");
-  const rightBtn = document.getElementById("catScrollRight");
-
-  const chips = document.querySelectorAll(".cat-chip");
-  const productList = document.getElementById("productList");
-  const noResults = document.getElementById("noResults");
-  const searchForm = document.getElementById("metaSearchForm");
-  const searchInput = document.getElementById("productSearchBar");
-  const clearBtn = document.getElementById("clearSearchBtn");
-
-  let currentFam = new URLSearchParams(window.location.search).get("fam") || "";
-  let currentQ = new URLSearchParams(window.location.search).get("q") || "";
-  let currentPageSize = new URLSearchParams(window.location.search).get("page_size") || "25";
-
-  function escapeHtml(text) {
-    return String(text || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function formatPrice(n) {
-    return "₡" + Number(n || 0).toLocaleString("es-CR");
-  }
-
-  function stockHtml(p) {
-    const stock = Number(p.cantidad || 0);
-
-    if (p.unidad_medida === "KG") return "";
-
-    if (stock === 1) {
-      return `<div class="stock-warning stock-danger">🔴 ¡Última unidad disponible!</div>`;
-    }
-
-    if (stock < 5) {
-      return `<div class="stock-warning">⚠️ Solo quedan ${Math.floor(stock)} unidades</div>`;
-    }
-
-    return "";
-  }
-
-  function imageHtml(p) {
-    if (p.imagen_url) {
-      return `
-        <img
-          src="${p.imagen_url}"
-          alt="${escapeHtml(p.nombre)}"
-          loading="lazy"
-          onerror="this.outerHTML='&lt;div class=&quot;img-ph&quot;&gt;Sin imagen&lt;/div&gt;';"
-        >
-      `;
-    }
-    return `<div class="img-ph">Sin imagen</div>`;
-  }
-
-  function priceHtml(p) {
-    if (p.unidad_medida === "KG") {
-      return `
-        <div class="product-price product-price--kg">
-          ${formatPrice(p.precio)}
-          <span class="price-note">por kilo aprox.</span>
-        </div>
-      `;
-    }
-    return `<div class="product-price">${formatPrice(p.precio)}</div>`;
-  }
-
-  function renderProducts(productos) {
-    if (!productList) return;
-
-    if (!productos.length) {
-      productList.innerHTML = "";
-      if (noResults) noResults.style.display = "block";
-      return;
-    }
-
-    if (noResults) noResults.style.display = "none";
-
-    productList.innerHTML = productos.map((p) => `
-      <article
-        class="product-card product-item product-click"
-        data-sku="${escapeHtml(p.sku)}"
-        data-name="${escapeHtml(p.nombre)}"
-        data-price="${Number(p.precio || 0)}"
-        data-familia="${escapeHtml(p.familia)}"
-        data-stock="${Number(p.cantidad || 0)}"
-        data-unidad-medida="${escapeHtml(p.unidad_medida)}"
-      >
-        <div class="img-box">
-          ${imageHtml(p)}
-        </div>
-
-        <div class="card-body">
-          <div class="product-title">${escapeHtml(p.nombre)}</div>
-          <div class="product-family">${escapeHtml(p.familia)}</div>
-
-          ${stockHtml(p)}
-
-          <div class="price-row">
-            ${priceHtml(p)}
-          </div>
-
-          <button type="button" class="btn-add">+ Agregar</button>
-        </div>
-      </article>
-    `).join("");
-
-    document.querySelectorAll(".product-item").forEach(function(card){
-  const sku = card.dataset.sku || "";
-  const name = card.dataset.name || "";
-  const price = card.dataset.price || "0";
-  const stock = card.dataset.stock || "0";
-  const unidadMedida = (card.dataset.unidadMedida || "UND").toUpperCase();
-
-  const btn = card.querySelector(".btn-add");
-
-  function handleAdd(){
-    if (unidadMedida === "KG"){
-      openKgModal({
-        sku: sku,
-        nombre: name,
-        price: price,
-        stock: stock,
-        unidad_medida: unidadMedida
+      kgQuickBtns.forEach(function(btn){
+        btn.addEventListener("click", function(){
+          kgState.qty = Number(btn.dataset.kg || "0.25");
+          renderKgModal();
+        });
       });
-    } else {
-      addUnidadToCart(sku, name, price, stock);
-    }
-  }
 
-  if (btn){
-    btn.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      handleAdd();
-    });
-  }
+      if (kgAddBtn){
+        kgAddBtn.addEventListener("click", addKgToCart);
+      }
 
-  card.addEventListener("click", function(e){
-    if (e.target.closest(".btn-add")) return;
-    handleAdd();
-  });
-});
-  }
+      if (kgModalClose){
+        kgModalClose.addEventListener("click", closeKgModal);
+      }
 
-  function updateActiveChip() {
-    chips.forEach((chip) => {
-      const cat = chip.dataset.cat || "";
-      chip.classList.toggle("active", cat === currentFam || (!cat && !currentFam));
-    });
-  }
+      if (kgModal){
+        kgModal.addEventListener("click", function(e){
+          if (e.target === kgModal) closeKgModal();
+        });
+      }
 
-  async function loadProducts(pushUrl = true) {
-    try {
-      const params = new URLSearchParams();
-      params.set("page", "1");
-      params.set("page_size", currentPageSize);
-
-      if (currentQ) params.set("q", currentQ);
-      if (currentFam) params.set("fam", currentFam);
-
-      const res = await fetch(`/api/productos?${params.toString()}`, {
-        method: "GET",
-        headers: {
-          "Accept": "application/json",
-          "X-Requested-With": "fetch"
+      window.addEventListener("storage", function(e){
+        if (e.key === CART_KEY || e.key === LEGACY_CART_KEY){
+          updateBadge();
         }
       });
 
-      const data = await res.json();
-      if (!data.ok) return;
+      window.addEventListener("cart:changed", updateBadge);
 
-      renderProducts(data.productos);
-      updateActiveChip();
+      window.openKgModal = openKgModal;
+      window.addUnidadToCart = addUnidadToCart;
+      window.bindProductCards = bindProductCards;
 
-      if (pushUrl) {
-        const url = new URL(window.location.href);
-        url.searchParams.delete("page");
-        url.searchParams.delete("q");
-        url.searchParams.delete("fam");
-        url.searchParams.set("page_size", currentPageSize);
+      bindProductCards(document);
+      updateBadge();
+    })();
+  </script>
 
-        if (currentQ) url.searchParams.set("q", currentQ);
-        if (currentFam) url.searchParams.set("fam", currentFam);
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const strip = document.getElementById("categoryStrip");
+      const leftBtn = document.getElementById("catScrollLeft");
+      const rightBtn = document.getElementById("catScrollRight");
 
-        history.replaceState({}, "", url.toString());
+      const chips = document.querySelectorAll(".cat-chip");
+      const productList = document.getElementById("productList");
+      const noResults = document.getElementById("noResults");
+      const searchForm = document.getElementById("metaSearchForm");
+      const searchInput = document.getElementById("productSearchBar");
+      const clearBtn = document.getElementById("clearSearchBtn");
+
+      let currentFam = new URLSearchParams(window.location.search).get("fam") || "";
+      let currentQ = new URLSearchParams(window.location.search).get("q") || "";
+      let currentPageSize = new URLSearchParams(window.location.search).get("page_size") || "25";
+
+      function escapeHtml(text) {
+        return String(text || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
       }
-    } catch (err) {
-      console.error("Error cargando productos:", err);
-    }
-  }
 
-  chips.forEach((chip) => {
-    chip.addEventListener("click", function (e) {
-      e.preventDefault();
-      currentFam = this.dataset.cat || "";
-      loadProducts(true);
+      function formatPrice(n) {
+        return "₡" + Number(n || 0).toLocaleString("es-CR");
+      }
+
+      function stockHtml(p) {
+        const stock = Number(p.cantidad || 0);
+
+        if (p.unidad_medida === "KG") return "";
+
+        if (stock === 1) {
+          return `<div class="stock-warning stock-danger">🔴 ¡Última unidad disponible!</div>`;
+        }
+
+        if (stock < 5) {
+          return `<div class="stock-warning">⚠️ Solo quedan ${Math.floor(stock)} unidades</div>`;
+        }
+
+        return "";
+      }
+
+      function imageHtml(p) {
+        if (p.imagen_url) {
+          return `
+            <img
+              src="${p.imagen_url}"
+              alt="${escapeHtml(p.nombre)}"
+              loading="lazy"
+              onerror="this.outerHTML='&lt;div class=&quot;img-ph&quot;&gt;Sin imagen&lt;/div&gt;';"
+            >
+          `;
+        }
+        return `<div class="img-ph">Sin imagen</div>`;
+      }
+
+      function priceHtml(p) {
+        if (p.unidad_medida === "KG") {
+          return `
+            <div class="product-price product-price--kg">
+              ${formatPrice(p.precio)}
+              <span class="price-note">por kilo aprox.</span>
+            </div>
+          `;
+        }
+        return `<div class="product-price">${formatPrice(p.precio)}</div>`;
+      }
+
+      function renderProducts(productos) {
+        if (!productList) return;
+
+        if (!productos.length) {
+          productList.innerHTML = "";
+          if (noResults) noResults.style.display = "block";
+          return;
+        }
+
+        if (noResults) noResults.style.display = "none";
+
+        productList.innerHTML = productos.map((p) => `
+          <article
+            class="product-card product-item product-click"
+            data-sku="${escapeHtml(p.sku)}"
+            data-name="${escapeHtml(p.nombre)}"
+            data-price="${Number(p.precio || 0)}"
+            data-familia="${escapeHtml(p.familia)}"
+            data-stock="${Number(p.cantidad || 0)}"
+            data-unidad-medida="${escapeHtml(p.unidad_medida)}"
+          >
+            <div class="img-box">
+              ${imageHtml(p)}
+            </div>
+
+            <div class="card-body">
+              <div class="product-title">${escapeHtml(p.nombre)}</div>
+              <div class="product-family">${escapeHtml(p.familia)}</div>
+
+              ${stockHtml(p)}
+
+              <div class="price-row">
+                ${priceHtml(p)}
+              </div>
+
+              <button type="button" class="btn-add">+ Agregar</button>
+            </div>
+          </article>
+        `).join("");
+
+        if (window.bindProductCards) {
+          window.bindProductCards(productList);
+        }
+      }
+
+      function updateActiveChip() {
+        chips.forEach((chip) => {
+          const cat = chip.dataset.cat || "";
+          chip.classList.toggle("active", cat === currentFam || (!cat && !currentFam));
+        });
+      }
+
+      async function loadProducts(pushUrl = true) {
+        try {
+          const params = new URLSearchParams();
+          params.set("page", "1");
+          params.set("page_size", currentPageSize);
+
+          if (currentQ) params.set("q", currentQ);
+          if (currentFam) params.set("fam", currentFam);
+
+          const res = await fetch(`/api/productos?${params.toString()}`, {
+            method: "GET",
+            headers: {
+              "Accept": "application/json",
+              "X-Requested-With": "fetch"
+            }
+          });
+
+          const data = await res.json();
+          if (!data.ok) return;
+
+          renderProducts(data.productos);
+          updateActiveChip();
+
+          if (pushUrl) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("page");
+            url.searchParams.delete("q");
+            url.searchParams.delete("fam");
+            url.searchParams.set("page_size", currentPageSize);
+
+            if (currentQ) url.searchParams.set("q", currentQ);
+            if (currentFam) url.searchParams.set("fam", currentFam);
+
+            history.replaceState({}, "", url.toString());
+          }
+        } catch (err) {
+          console.error("Error cargando productos:", err);
+        }
+      }
+
+      chips.forEach((chip) => {
+        chip.addEventListener("click", function (e) {
+          e.preventDefault();
+          currentFam = this.dataset.cat || "";
+          loadProducts(true);
+        });
+      });
+
+      if (searchForm) {
+        searchForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          currentQ = (searchInput?.value || "").trim();
+          loadProducts(true);
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          currentQ = "";
+          currentFam = "";
+          if (searchInput) searchInput.value = "";
+          loadProducts(true);
+        });
+      }
+
+      window.addEventListener("popstate", function () {
+        const params = new URLSearchParams(window.location.search);
+        currentFam = params.get("fam") || "";
+        currentQ = params.get("q") || "";
+        if (searchInput) searchInput.value = currentQ;
+        loadProducts(false);
+      });
+
+      if (strip && leftBtn) {
+        leftBtn.addEventListener("click", function () {
+          strip.scrollBy({ left: -320, behavior: "smooth" });
+        });
+      }
+
+      if (strip && rightBtn) {
+        rightBtn.addEventListener("click", function () {
+          strip.scrollBy({ left: 320, behavior: "smooth" });
+        });
+      }
+
+      updateActiveChip();
     });
-  });
-
-  if (searchForm) {
-    searchForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-      currentQ = (searchInput?.value || "").trim();
-      loadProducts(true);
-    });
-  }
-
-  if (clearBtn) {
-    clearBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      currentQ = "";
-      currentFam = "";
-      if (searchInput) searchInput.value = "";
-      loadProducts(true);
-    });
-  }
-
-  window.addEventListener("popstate", function () {
-    const params = new URLSearchParams(window.location.search);
-    currentFam = params.get("fam") || "";
-    currentQ = params.get("q") || "";
-    if (searchInput) searchInput.value = currentQ;
-    loadProducts(false);
-  });
-
-  if (strip && leftBtn) {
-    leftBtn.addEventListener("click", function () {
-      strip.scrollBy({ left: -320, behavior: "smooth" });
-    });
-  }
-
-  if (strip && rightBtn) {
-    rightBtn.addEventListener("click", function () {
-      strip.scrollBy({ left: 320, behavior: "smooth" });
-    });
-  }
-
-  updateActiveChip();
-});
-</script>
+  </script>
 
 </body>
 </html>
-
