@@ -1056,7 +1056,7 @@ body.filters-open{
 .cat-chip{
   flex: 0 0 auto;
   width: 76px;
-  min-height: 86px;
+  min-height: 76px;
   border: 1px solid rgba(0,0,0,.10);
   border-radius: 16px;
   background: #ffffff;
