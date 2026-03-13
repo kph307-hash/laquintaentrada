@@ -1084,6 +1084,7 @@ async def sync_xlsx(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
+    print("=== ENTRO A /admin/sync-xlsx ===")
     denied = require_admin(request)
     if denied:
         return denied
@@ -1383,6 +1384,8 @@ async def admin_sync_upload(
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
 ):
+    print("=== ENTRO A /admin/sync-upload ===")
+
     if token != ADMIN_SYNC_TOKEN:
         raise HTTPException(status_code=403, detail="Token inválido")
 
