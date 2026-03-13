@@ -40,7 +40,6 @@ SHIPPING_PER_KM = 500  # ₡ por km
 SYNC_STATUS_FILE = Path("sync_status.json")
 ADMIN_SYNC_TOKEN = os.getenv("ADMIN_SYNC_TOKEN", "cambie-esto")
 
-load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("super_web")
 
@@ -73,8 +72,6 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 os.makedirs(STATIC_DIR, exist_ok=True)
 os.makedirs(TEMPLATES_DIR, exist_ok=True)
-
-app = FastAPI(title="Super Web")
 
 app.add_middleware(
     SessionMiddleware,
@@ -196,29 +193,43 @@ def distance_km(lat1, lon1, lat2, lon2):
     return R * c
 
 
-def parse_int_safe(v) -> int:
+def parse_float_safe(v) -> float:
     try:
         if v is None:
-            return 0
+            return 0.0
         if isinstance(v, (int, float)):
-            return int(v)
-        s = str(v).strip()
+            return float(v)
+        s = str(v).strip().replace(",", ".")
         if not s:
-            return 0
-        return int(float(s))
+            return 0.0
+        return float(s)
     except Exception:
-        return 0
+        return 0.0
+
 
 def parse_unidad_medida(value) -> str:
     s = str(value or "").strip().lower()
+    s = re.sub(r"\s+", " ", s)
 
     if not s:
         return "UND"
 
-    if any(x in s for x in (
-        "kg", "kgs", "kilo", "kilos", "kilogramo", "kilogramos", "kilogram", "kilograms"
-    )):
+    kg_tokens = (
+        "kg", "kg.", "kgs", "kgs.",
+        "kilo", "kilos",
+        "kilogramo", "kilogramos",
+        "kilogram", "kilograms",
+        "kgr", "kgrs"
+    )
+    if any(token in s for token in kg_tokens):
         return "KG"
+
+    und_tokens = (
+        "und", "unds", "unidad", "unidades",
+        "unit", "units", "pz", "pieza", "piezas"
+    )
+    if any(token in s for token in und_tokens):
+        return "UND"
 
     return "UND"
 
@@ -406,7 +417,7 @@ def tienda(
                 "nombre": p.nombre,
                 "precio": int(p.precio),
                 "familia": fam_txt,
-                "cantidad": int(getattr(p, "cantidad", 0) or 0),
+                "cantidad": float(getattr(p, "cantidad", 0) or 0),
                 "imagen_url": get_producto_image_url(sku_txt),
                 "unidad_medida": (getattr(p, "unidad_medida", "UND") or "UND").upper(),
             }
@@ -958,16 +969,24 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
         )
     )
 
-    idx = {str(h).strip(): i for i, h in enumerate(headers) if h is not None}
+    def norm_header(h):
+        return re.sub(r"\s+", " ", str(h or "").strip().lower())
 
-    print("HEADERS XLSX:", list(idx.keys()))
+    idx = {norm_header(h): i for i, h in enumerate(headers) if h is not None}
 
-    col_sku = idx.get("Código")
-    col_nombre = idx.get("Descripción")
-    col_precio = idx.get("Precio de venta")
-    col_familia = idx.get("Familia")
-    col_cantidad = idx.get("Inventario")
-    col_unidad = idx.get("Unidades")
+    print("HEADERS XLSX NORMALIZADOS:", list(idx.keys()))
+
+    col_sku = idx.get("código")
+    col_nombre = idx.get("descripción")
+    col_precio = idx.get("precio de venta")
+    col_familia = idx.get("familia")
+    col_cantidad = idx.get("inventario")
+
+    col_unidad = idx.get("unidades")
+    if col_unidad is None:
+        col_unidad = idx.get("unidad")
+    if col_unidad is None:
+        col_unidad = idx.get("unidad de medida")
 
     print("COL_UNIDAD =", col_unidad)
 
@@ -991,9 +1010,9 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
         if col_familia is not None and col_familia < len(row):
             familia = row[col_familia]
 
-        cantidad = 0
+        cantidad = 0.0
         if col_cantidad is not None and col_cantidad < len(row):
-            cantidad = parse_int_safe(row[col_cantidad])
+            cantidad = parse_float_safe(row[col_cantidad])
 
         raw_unidad = None
         if col_unidad is not None and col_unidad < len(row):
@@ -1041,9 +1060,10 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
                 p.familia = familia_txt
                 changed = True
 
-            if int(getattr(p, "cantidad", 0) or 0) != int(cantidad):
-                p.cantidad = int(cantidad)
-                changed = True
+            cantidad_actual = float(getattr(p, "cantidad", 0) or 0)
+            if abs(cantidad_actual - float(cantidad)) > 0.0001:
+                p.cantidad = float(cantidad)
+            changed = True
 
             if (getattr(p, "unidad_medida", "UND") or "UND") != unidad_medida:
                 p.unidad_medida = unidad_medida
