@@ -137,8 +137,8 @@
     <div class="category-strip-wrap">
   <div class="category-strip" id="categoryStrip">
 
-    <button class="cat-chip {% if 'Verduras' in selected_familias %}active{% endif %}" type="button" data-cat="Verduras">
-      <img src="/static/uploads/Verduras.png" alt="Verduras">
+    <button class="cat-chip {% if 'Verduleria' in selected_familias %}active{% endif %}" type="button" data-cat="Verduleria">
+      <img src="/static/uploads/Verduleria.png" alt="Verduleria">
       <span>Verduras</span>
     </button>
 
@@ -187,8 +187,8 @@
       <span>Embutidos</span>
     </button>
 
-    <button class="cat-chip {% if 'Cuidado personal' in selected_familias %}active{% endif %}" type="button" data-cat="Cuidado personal">
-      <img src="/static/uploads/Cuidado personal.png" alt="Cuidado personal">
+    <button class="cat-chip {% if 'Cuidado Personal' in selected_familias %}active{% endif %}" type="button" data-cat="Cuidado Personal">
+      <img src="/static/uploads/Cuidado Personal.png" alt="Cuidado Personal">
       <span>Personal</span>
     </button>
 
@@ -202,8 +202,8 @@
       <span>Bebidas</span>
     </button>
 
-    <button class="cat-chip {% if 'Articulos de limpieza' in selected_familias %}active{% endif %}" type="button" data-cat="Articulos de limpieza">
-      <img src="/static/uploads/Articulos de limpieza.png" alt="Articulos de limpieza">
+    <button class="cat-chip {% if 'Limpieza' in selected_familias %}active{% endif %}" type="button" data-cat="Limpieza">
+      <img src="/static/uploads/Limpieza.png" alt="Limpieza">
       <span>Limpieza</span>
     </button>
 
@@ -951,6 +951,63 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const strip = document.getElementById("categoryStrip");
+  const chips = document.querySelectorAll(".cat-chip");
+
+  if (!strip) return;
+
+  const savedScroll = sessionStorage.getItem("categoryStripScrollLeft");
+  if (savedScroll !== null) {
+    strip.scrollLeft = parseInt(savedScroll, 10) || 0;
+  }
+
+  const activeChip = document.querySelector(".cat-chip.active");
+  if (activeChip) {
+    setTimeout(() => {
+      activeChip.scrollIntoView({
+        behavior: "auto",
+        inline: "center",
+        block: "nearest"
+      });
+    }, 50);
+  }
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", function () {
+      sessionStorage.setItem("categoryStripScrollLeft", String(strip.scrollLeft));
+
+      const cat = this.dataset.cat || "";
+      const url = new URL(window.location.href);
+
+      url.searchParams.delete("page");
+      url.searchParams.delete("fam");
+
+      if (cat) {
+        url.searchParams.set("fam", cat);
+      }
+
+      window.location.href = url.toString();
+    });
+  });
+});
+</script>
 
 
 
