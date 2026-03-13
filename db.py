@@ -35,10 +35,11 @@ class Producto(Base):
     id = Column(Integer, primary_key=True, index=True)
     sku = Column(String(80), nullable=False, unique=True, index=True)
     nombre = Column(String(255), nullable=False, index=True)
-    precio = Column(Integer, nullable=False, default=0)
+    precio = Column(Integer, nullable=False, default=0)  # precio por unidad o por kilo
     familia = Column(String(120), nullable=True, index=True)
     cantidad = Column(Integer, nullable=False, default=0)
     imagen_url = Column(String(255), nullable=True, default="")
+    unidad_medida = Column(String(10), nullable=False, default="UND")  # UND | KG
 
     __table_args__ = (
         Index("ix_productos_familia_nombre", "familia", "nombre"),
@@ -91,6 +92,17 @@ def ensure_productos_has_imagen_url():
 
     conn.close()
 
+def ensure_productos_has_unidad_medida():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("PRAGMA table_info(productos);")
+    cols = [row["name"] for row in cur.fetchall()]
+
+    if "unidad_medida" not in cols:
+        cur.execute("ALTER TABLE productos ADD COLUMN unidad_medida TEXT NOT NULL DEFAULT 'UND';")
+        conn.commit()
+
+    conn.close()
 
 def ensure_pedidos_has_cliente_fields():
     conn = get_conn()
@@ -138,6 +150,17 @@ def ensure_pedido_items_has_es_promo():
 
     conn.close()
 
+def ensure_pedido_items_has_unidad_medida():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("PRAGMA table_info(pedido_items);")
+    cols = [row["name"] for row in cur.fetchall()]
+
+    if "unidad_medida" not in cols:
+        cur.execute("ALTER TABLE pedido_items ADD COLUMN unidad_medida TEXT NOT NULL DEFAULT 'UND';")
+        conn.commit()
+
+    conn.close()
 
 # ======================
 # Init DB
@@ -189,15 +212,16 @@ def init_db():
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS pedido_items (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      pedido_id INTEGER NOT NULL,
-      sku TEXT DEFAULT '',
-      producto TEXT NOT NULL,
-      precio_unit INTEGER NOT NULL DEFAULT 0,
-      qty INTEGER NOT NULL DEFAULT 0,
-      subtotal INTEGER NOT NULL DEFAULT 0,
-      es_promo INTEGER NOT NULL DEFAULT 0,
-      FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pedido_id INTEGER NOT NULL,
+    sku TEXT DEFAULT '',
+    producto TEXT NOT NULL,
+    precio_unit INTEGER NOT NULL DEFAULT 0,
+    qty REAL NOT NULL DEFAULT 0,
+    unidad_medida TEXT NOT NULL DEFAULT 'UND',
+    subtotal INTEGER NOT NULL DEFAULT 0,
+    es_promo INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
     );
     """)
 
@@ -213,6 +237,8 @@ def init_db():
     ensure_pedidos_has_cliente_fields()
     ensure_pedido_items_has_sku()
     ensure_pedido_items_has_es_promo()
+    ensure_productos_has_unidad_medida()
+    ensure_pedido_items_has_unidad_medida()
 
 
 # ======================

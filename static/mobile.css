@@ -957,3 +957,52 @@ body.filters-open{
     box-shadow: 0 3px 8px rgba(0,0,0,.05);
   }
 }
+
+@media (max-width: 768px){
+  .price-note{
+    font-size: 9px !important;
+  }
+
+  .kg-modal{
+    max-width: 100%;
+    border-radius: 18px;
+    padding: 16px;
+  }
+
+  .kg-modal__head h3{
+    font-size: 20px;
+  }
+
+  .kg-modal__sub{
+    font-size: 13px;
+  }
+
+  .kg-stepper{
+    grid-template-columns: 44px 1fr 44px;
+  }
+
+  .kg-stepper__btn{
+    height: 42px;
+    border-radius: 12px;
+    font-size: 22px;
+  }
+
+  .kg-stepper__value{
+    height: 42px;
+    font-size: 16px;
+  }
+
+  .kg-quick-grid{
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .kg-quick-btn{
+    height: 40px;
+    font-size: 13px;
+  }
+
+  .cart-item-qty .qty-num{
+    min-width: 52px;
+  }
+}

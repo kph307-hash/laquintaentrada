@@ -1438,3 +1438,136 @@ body.loc-guide-open{
     font-size: 13px;
   }
 }
+
+.product-price--kg{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.price-note{
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b7280;
+  line-height: 1.1;
+}
+
+body.kg-modal-open{
+  overflow: hidden;
+}
+
+.kg-modal-backdrop{
+  position: fixed;
+  inset: 0;
+  z-index: 12050;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15,23,42,.42);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.kg-modal{
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 20px;
+  box-shadow: 0 22px 60px rgba(0,0,0,.20);
+  padding: 18px;
+}
+
+.kg-modal__head{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+.kg-modal__head h3{
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #111827;
+}
+
+.kg-modal__sub{
+  margin: 8px 0 0;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.kg-modal__close{
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.kg-modal__body{
+  display: grid;
+  gap: 14px;
+}
+
+.kg-stepper{
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  gap: 10px;
+  align-items: center;
+}
+
+.kg-stepper__btn{
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: #fff;
+  font-size: 24px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.kg-stepper__value{
+  height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.kg-hint{
+  text-align: center;
+  font-size: 14px;
+  color: #4b5563;
+  font-weight: 800;
+}
+
+.kg-quick-grid{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.kg-quick-btn{
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.10);
+  background: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}

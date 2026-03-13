@@ -329,6 +329,21 @@
       return qty;
     }
 
+    function getUnidadMedida(item){
+  return String(item.unidad_medida || item.unidad || "UND").toUpperCase();
+}
+
+function formatQty(qty, unidad){
+  qty = Number(qty || 0);
+  unidad = String(unidad || "UND").toUpperCase();
+
+  if (unidad === "KG"){
+    return qty.toFixed(2) + " kg";
+  }
+
+  return String(Math.round(qty));
+}
+
     function getPrice(item){
       let price = Number(item.price ?? item.precio ?? item.unit_price ?? 0);
       if (!Number.isFinite(price) || price <= 0){
@@ -532,11 +547,17 @@
     }
 
     function updateQty(sku, qty){
-      const cart = loadCart();
-      const found = cart.find(x => getSku(x) === sku);
-      if (!found) return;
+  const cart = loadCart();
+  const found = cart.find(x => getSku(x) === sku);
+  if (!found) return;
 
-      found.qty = Number(qty || 0);
+  const unidad = getUnidadMedida(found);
+
+  if (unidad === "KG"){
+    found.qty = Number(Number(qty || 0).toFixed(2));
+  } else {
+    found.qty = Math.round(Number(qty || 0));
+  }
 
       if (found.qty <= 0){
         saveCart(cart.filter(x => getSku(x) !== sku));
@@ -561,11 +582,13 @@
        HEADER BADGE
     ========================= */
     function updateHeaderCartBadge(totalItems){
-      const el = document.getElementById("cartBadgeTop");
-      if (!el) return;
-      el.textContent = String(totalItems || 0);
-      el.style.display = totalItems > 0 ? "inline-flex" : "none";
-    }
+  const el = document.getElementById("cartBadgeTop");
+  if (!el) return;
+
+  const n = Number(totalItems || 0);
+  el.textContent = Number.isInteger(n) ? String(n) : n.toFixed(2);
+  el.style.display = n > 0 ? "inline-flex" : "none";
+}
 
     /* =========================
        RENDER
@@ -596,8 +619,9 @@
         if (!sku) continue;
 
         const qty = getQty(item);
+        const unidad = getUnidadMedida(item);
         const price = getPrice(item);
-        const sub = price * qty;
+        const sub = Math.round(price * qty);
 
         total += sub;
         totalItems += qty;
@@ -612,7 +636,7 @@
         const row = document.createElement("div");
         row.className = "cart-item";
 
-        row.innerHTML = `
+                row.innerHTML = `
           <div class="cart-item-media">
             ${safeImg ? `<img class="cart-thumb" src="${safeImg}" alt="">`
                       : `<div class="cart-thumb cart-thumb--ph">🧺</div>`}
@@ -621,7 +645,9 @@
           <div class="cart-item-info">
             <div class="cart-item-name">${safeName}</div>
             <div class="cart-item-meta">
-              <span class="muted">${money(price)} c/u</span>
+              <span class="muted">
+                ${unidad === "KG" ? `${money(price)} por kilo aprox.` : `${money(price)} c/u`}
+              </span>
               <span class="dot">•</span>
               <span class="muted">SKU: ${safeSku}</span>
             </div>
@@ -629,7 +655,7 @@
 
           <div class="cart-item-qty">
             <button type="button" class="qty-btn" data-act="dec">−</button>
-            <div class="qty-num">${qty}</div>
+            <div class="qty-num">${formatQty(qty, unidad)}</div>
             <button type="button" class="qty-btn" data-act="inc">+</button>
           </div>
 
@@ -639,8 +665,21 @@
           </div>
         `;
 
-        row.querySelector('[data-act="dec"]').onclick = () => updateQty(sku, qty - 1);
-        row.querySelector('[data-act="inc"]').onclick = () => updateQty(sku, qty + 1);
+        row.querySelector('[data-act="dec"]').onclick = () => {
+          if (unidad === "KG"){
+            updateQty(sku, qty - 0.25);
+          } else {
+            updateQty(sku, qty - 1);
+          }
+        };
+
+        row.querySelector('[data-act="inc"]').onclick = () => {
+          if (unidad === "KG"){
+            updateQty(sku, qty + 0.25);
+          } else {
+            updateQty(sku, qty + 1);
+          }
+        };
         row.querySelector('.btn-trash').onclick = () => removeItem(sku);
 
         cartItemsEl.appendChild(row);
@@ -653,6 +692,7 @@
       const payload = cart.map(x => ({
         sku: getSku(x),
         qty: getQty(x),
+        unidad_medida: getUnidadMedida(x),
         nombre: x.nombre ?? x.name ?? "",
         price: x.price ?? x.precio ?? x.unit_price ?? 0,
         img: getImage(x)

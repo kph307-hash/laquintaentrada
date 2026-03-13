@@ -190,13 +190,14 @@
         <div id="productList" class="product-grid product-grid-mobile-2">
           {% for p in productos %}
             <article
-              class="product-card product-item product-click"
-              data-sku="{{ p.sku }}"
-              data-name="{{ p.nombre }}"
-              data-price="{{ p.precio }}"
-              data-familia="{{ p.familia }}"
-              data-stock="{{ p.cantidad }}"
-            >
+  class="product-card product-item product-click"
+  data-sku="{{ p.sku }}"
+  data-name="{{ p.nombre }}"
+  data-price="{{ p.precio }}"
+  data-familia="{{ p.familia }}"
+  data-stock="{{ p.cantidad }}"
+  data-unidad-medida="{{ p.unidad_medida }}"
+>
               <div class="img-box">
                 {% if p.imagen_url %}
                   <img
@@ -227,8 +228,15 @@
                 {% endif %}
 
                 <div class="price-row">
-                  <div class="product-price">₡{{ "{:,}".format(p.precio).replace(",", ".") }}</div>
-                </div>
+  {% if p.unidad_medida == "KG" %}
+    <div class="product-price product-price--kg">
+      ₡{{ "{:,}".format(p.precio).replace(",", ".") }}
+      <span class="price-note">por kilo aprox.</span>
+    </div>
+  {% else %}
+    <div class="product-price">₡{{ "{:,}".format(p.precio).replace(",", ".") }}</div>
+  {% endif %}
+</div>
 
                 <button type="button" class="btn-add">+ Agregar</button>
               </div>
@@ -246,6 +254,37 @@
       </section>
     </div>
   </main>
+
+  <div id="kgModal" class="kg-modal-backdrop" style="display:none;">
+  <div class="kg-modal" role="dialog" aria-modal="true" aria-labelledby="kgModalTitle">
+    <div class="kg-modal__head">
+      <div>
+        <h3 id="kgModalTitle">Seleccionar cantidad</h3>
+        <p id="kgModalProduct" class="kg-modal__sub"></p>
+      </div>
+      <button type="button" id="kgModalClose" class="kg-modal__close" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="kg-modal__body">
+      <div class="kg-stepper">
+        <button type="button" id="kgMinus" class="kg-stepper__btn">−</button>
+        <div class="kg-stepper__value" id="kgValue">0.25 kg</div>
+        <button type="button" id="kgPlus" class="kg-stepper__btn">+</button>
+      </div>
+
+      <div class="kg-hint" id="kgPricePreview">Total aprox.: ₡0</div>
+
+      <div class="kg-quick-grid">
+        <button type="button" class="kg-quick-btn" data-kg="0.25">0.25 kg</button>
+        <button type="button" class="kg-quick-btn" data-kg="0.50">0.50 kg</button>
+        <button type="button" class="kg-quick-btn" data-kg="0.75">0.75 kg</button>
+        <button type="button" class="kg-quick-btn" data-kg="1.00">1.00 kg</button>
+      </div>
+
+      <button type="button" id="kgAddBtn" class="btn-add">Agregar al carrito</button>
+    </div>
+  </div>
+</div>
 
   <div id="toast" class="toast" role="status" aria-live="polite">Agregado ✅</div>
 
@@ -453,147 +492,299 @@ if (clearFamiliesMobileBtn){
   </script>
 
   <script>
-    // ============================
-    // CARRITO (localStorage)
-    // ============================
-    (function(){
-      const CART_KEY = "superweb_cart_v2";
-      const LEGACY_CART_KEY = "superweb_cart";
+  (function(){
+    const CART_KEY = "superweb_cart_v2";
+    const LEGACY_CART_KEY = "superweb_cart";
 
-      function loadCart(){
-        try {
-          const raw = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || "[]";
-          const data = JSON.parse(raw);
+    const kgModal = document.getElementById("kgModal");
+    const kgModalClose = document.getElementById("kgModalClose");
+    const kgModalProduct = document.getElementById("kgModalProduct");
+    const kgValueEl = document.getElementById("kgValue");
+    const kgPricePreview = document.getElementById("kgPricePreview");
+    const kgMinus = document.getElementById("kgMinus");
+    const kgPlus = document.getElementById("kgPlus");
+    const kgAddBtn = document.getElementById("kgAddBtn");
+    const kgQuickBtns = Array.from(document.querySelectorAll(".kg-quick-btn"));
 
-          if (Array.isArray(data)) return data;
+    let kgState = {
+      sku: "",
+      nombre: "",
+      price: 0,
+      stock: 0,
+      unidad_medida: "KG",
+      qty: 0.25
+    };
 
-          if (data && typeof data === "object"){
-            const maybe = data.items || data.cart || data.products || data.data;
-            if (Array.isArray(maybe)) return maybe;
-          }
+    function money(n){
+      return "₡" + Number(n || 0).toLocaleString("es-CR");
+    }
 
-          return [];
-        } catch (e){
-          return [];
+    function loadCart(){
+      try {
+        const raw = localStorage.getItem(CART_KEY) || localStorage.getItem(LEGACY_CART_KEY) || "[]";
+        const data = JSON.parse(raw);
+
+        if (Array.isArray(data)) return data;
+
+        if (data && typeof data === "object"){
+          const maybe = data.items || data.cart || data.products || data.data;
+          if (Array.isArray(maybe)) return maybe;
         }
+
+        return [];
+      } catch (e){
+        return [];
+      }
+    }
+
+    function saveCart(cart){
+      const raw = JSON.stringify(cart);
+      localStorage.setItem(CART_KEY, raw);
+      localStorage.setItem(LEGACY_CART_KEY, raw);
+      window.dispatchEvent(new Event("cart:changed"));
+    }
+
+    function updateBadge(){
+      const topBadge = document.getElementById("cartBadgeTop");
+      const bottomBadge = document.getElementById("bottomCartBadge");
+
+      const cart = loadCart();
+      const qty = cart.reduce(function(acc, x){
+        return acc + (Number(x.qty) || 0);
+      }, 0);
+
+      const shownQty = Number.isInteger(qty) ? String(qty) : qty.toFixed(2);
+
+      if (topBadge){
+        topBadge.textContent = shownQty;
+        topBadge.style.display = qty > 0 ? "inline-flex" : "none";
       }
 
-      function saveCart(cart){
-        const raw = JSON.stringify(cart);
-        localStorage.setItem(CART_KEY, raw);
-        localStorage.setItem(LEGACY_CART_KEY, raw);
-        window.dispatchEvent(new Event("cart:changed"));
+      if (bottomBadge){
+        bottomBadge.textContent = shownQty;
+        bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
+      }
+    }
+
+    let toastTimer = null;
+    function showToast(msg){
+      const el = document.getElementById("toast");
+      if (!el) return;
+
+      el.textContent = msg || "Agregado ✅";
+      el.classList.add("show");
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){
+        el.classList.remove("show");
+      }, 1000);
+    }
+
+    function renderKgModal(){
+      if (!kgValueEl || !kgPricePreview) return;
+      kgValueEl.textContent = kgState.qty.toFixed(2) + " kg";
+      kgPricePreview.textContent = "Total aprox.: " + money(Math.round(kgState.price * kgState.qty));
+    }
+
+    function openKgModal(product){
+      kgState = {
+        sku: product.sku,
+        nombre: product.nombre,
+        price: Number(product.price) || 0,
+        stock: Number(product.stock) || 0,
+        unidad_medida: "KG",
+        qty: 0.25
+      };
+
+      if (kgModalProduct){
+        kgModalProduct.textContent = product.nombre + " — " + money(product.price) + " por kilo aprox.";
       }
 
-      function updateBadge(){
-        const topBadge = document.getElementById("cartBadgeTop");
-        const bottomBadge = document.getElementById("bottomCartBadge");
+      renderKgModal();
 
-        const cart = loadCart();
-        const qty = cart.reduce(function(acc, x){
-          return acc + (Number(x.qty) || 0);
-        }, 0);
+      if (kgModal){
+        kgModal.style.display = "flex";
+        document.body.classList.add("kg-modal-open");
+      }
+    }
 
-        if (topBadge){
-          topBadge.textContent = String(qty);
-          topBadge.style.display = qty > 0 ? "inline-flex" : "none";
-        }
+    function closeKgModal(){
+      if (kgModal){
+        kgModal.style.display = "none";
+        document.body.classList.remove("kg-modal-open");
+      }
+    }
 
-        if (bottomBadge){
-          bottomBadge.textContent = String(qty);
-          bottomBadge.style.display = qty > 0 ? "inline-flex" : "none";
-        }
+    function addUnidadToCart(sku, nombre, price, stock){
+      stock = Number(stock || 0);
+      price = Number(price) || 0;
+
+      if (!sku || !nombre) return;
+
+      const cart = loadCart();
+      const found = cart.find(function(x){
+        return x.sku === sku && (x.unidad_medida || "UND") === "UND";
+      });
+
+      const currentQty = found ? (Number(found.qty) || 0) : 0;
+
+      if (stock <= 0){
+        showToast("Sin stock ❌");
+        return;
       }
 
-      let toastTimer = null;
-      function showToast(msg){
-        const el = document.getElementById("toast");
-        if (!el) return;
-
-        el.textContent = msg || "Agregado ✅";
-        el.classList.add("show");
-
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function(){
-          el.classList.remove("show");
-        }, 900);
+      if (currentQty + 1 > stock){
+        showToast("Solo hay " + stock + " unidades disponibles ⚠️");
+        return;
       }
 
-      function addToCart(sku, nombre, price, stock){
-        stock = Number(stock || 0);
-        price = Number(price) || 0;
-
-        if (!sku || !nombre){
-          return;
-        }
-
-        const cart = loadCart();
-        const found = cart.find(function(x){ return x.sku === sku; });
-        const currentQty = found ? (Number(found.qty) || 0) : 0;
-
-        if (stock <= 0){
-          showToast("Sin stock ❌");
-          return;
-        }
-
-        if (currentQty + 1 > stock){
-          showToast("Solo hay " + stock + " unidades disponibles ⚠️");
-          return;
-        }
-
-        if (found){
-          found.qty = currentQty + 1;
-          found.stock = stock;
-          found.price = price;
-          found.nombre = nombre;
-        } else {
-          cart.push({
-            sku: sku,
-            nombre: nombre,
-            qty: 1,
-            price: price,
-            stock: stock
-          });
-        }
-
-        saveCart(cart);
-        updateBadge();
-        showToast("Agregado ✅");
-      }
-
-      document.querySelectorAll(".product-item").forEach(function(card){
-        const sku = card.dataset.sku || "";
-        const name = card.dataset.name || "";
-        const price = card.dataset.price || "0";
-        const stock = card.dataset.stock || "0";
-
-        const btn = card.querySelector(".btn-add");
-
-        if (btn){
-          btn.addEventListener("click", function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            addToCart(sku, name, price, stock);
-          });
-        }
-
-        card.addEventListener("click", function(e){
-          if (e.target.closest(".btn-add")) return;
-          addToCart(sku, name, price, stock);
+      if (found){
+        found.qty = currentQty + 1;
+        found.stock = stock;
+        found.price = price;
+        found.nombre = nombre;
+        found.unidad_medida = "UND";
+      } else {
+        cart.push({
+          sku: sku,
+          nombre: nombre,
+          qty: 1,
+          price: price,
+          stock: stock,
+          unidad_medida: "UND"
         });
-      });
+      }
 
-      window.addEventListener("storage", function(e){
-        if (e.key === CART_KEY || e.key === LEGACY_CART_KEY){
-          updateBadge();
-        }
-      });
-
-      window.addEventListener("cart:changed", updateBadge);
-
+      saveCart(cart);
       updateBadge();
-    })();
-  </script>
+      showToast("Agregado ✅");
+    }
+
+    function addKgToCart(){
+      const sku = kgState.sku;
+      const nombre = kgState.nombre;
+      const price = Number(kgState.price) || 0;
+      const stock = Number(kgState.stock) || 0;
+      const qty = Number(kgState.qty) || 0.25;
+
+      if (!sku || !nombre) return;
+
+      if (stock <= 0){
+        showToast("Sin stock ❌");
+        return;
+      }
+
+      const cart = loadCart();
+      const found = cart.find(function(x){
+        return x.sku === sku && (x.unidad_medida || "UND") === "KG";
+      });
+
+      if (found){
+        found.qty = Number((Number(found.qty || 0) + qty).toFixed(2));
+        found.price = price;
+        found.stock = stock;
+        found.nombre = nombre;
+        found.unidad_medida = "KG";
+      } else {
+        cart.push({
+          sku: sku,
+          nombre: nombre,
+          qty: qty,
+          price: price,
+          stock: stock,
+          unidad_medida: "KG"
+        });
+      }
+
+      saveCart(cart);
+      updateBadge();
+      closeKgModal();
+      showToast("Agregado ✅");
+    }
+
+    if (kgMinus){
+      kgMinus.addEventListener("click", function(){
+        kgState.qty = Math.max(0.25, Number((kgState.qty - 0.25).toFixed(2)));
+        renderKgModal();
+      });
+    }
+
+    if (kgPlus){
+      kgPlus.addEventListener("click", function(){
+        kgState.qty = Number((kgState.qty + 0.25).toFixed(2));
+        renderKgModal();
+      });
+    }
+
+    kgQuickBtns.forEach(function(btn){
+      btn.addEventListener("click", function(){
+        kgState.qty = Number(btn.dataset.kg || "0.25");
+        renderKgModal();
+      });
+    });
+
+    if (kgAddBtn){
+      kgAddBtn.addEventListener("click", addKgToCart);
+    }
+
+    if (kgModalClose){
+      kgModalClose.addEventListener("click", closeKgModal);
+    }
+
+    if (kgModal){
+      kgModal.addEventListener("click", function(e){
+        if (e.target === kgModal) closeKgModal();
+      });
+    }
+
+    document.querySelectorAll(".product-item").forEach(function(card){
+      const sku = card.dataset.sku || "";
+      const name = card.dataset.name || "";
+      const price = card.dataset.price || "0";
+      const stock = card.dataset.stock || "0";
+      const unidadMedida = (card.dataset.unidadMedida || "UND").toUpperCase();
+
+      const btn = card.querySelector(".btn-add");
+
+      function handleAdd(){
+        if (unidadMedida === "KG"){
+          openKgModal({
+            sku: sku,
+            nombre: name,
+            price: price,
+            stock: stock,
+            unidad_medida: unidadMedida
+          });
+        } else {
+          addUnidadToCart(sku, name, price, stock);
+        }
+      }
+
+      if (btn){
+        btn.addEventListener("click", function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          handleAdd();
+        });
+      }
+
+      card.addEventListener("click", function(e){
+        if (e.target.closest(".btn-add")) return;
+        handleAdd();
+      });
+    });
+
+    window.addEventListener("storage", function(e){
+      if (e.key === CART_KEY || e.key === LEGACY_CART_KEY){
+        updateBadge();
+      }
+    });
+
+    window.addEventListener("cart:changed", updateBadge);
+
+    updateBadge();
+  })();
+</script>
 </body>
 </html>
 

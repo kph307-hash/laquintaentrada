@@ -209,6 +209,27 @@ def parse_int_safe(v) -> int:
     except Exception:
         return 0
 
+def parse_unidad_medida(value) -> str:
+    s = str(value or "").strip().lower()
+
+    if s in ("kg", "kgs", "kilo", "kilos", "kilogramo", "kilogramos", "kilogram", "kilograms"):
+        return "KG"
+
+    return "UND"
+
+def format_qty_display(qty: float, unidad_medida: str) -> str:
+    unidad_medida = (unidad_medida or "UND").upper()
+
+    if unidad_medida == "KG":
+        return f"{qty:.2f} kg"
+
+    try:
+        n = int(qty)
+    except Exception:
+        n = 0
+
+    return f"{n}"
+
 def get_producto_image_url(sku: str) -> str:
     sku = (sku or "").strip()
     if not sku:
@@ -382,6 +403,7 @@ def tienda(
                 "familia": fam_txt,
                 "cantidad": int(getattr(p, "cantidad", 0) or 0),
                 "imagen_url": get_producto_image_url(sku_txt),
+                "unidad_medida": (getattr(p, "unidad_medida", "UND") or "UND").upper(),
             }
         )
 
@@ -506,7 +528,12 @@ def crear_pedido(
     try:
         for item in cart:
             sku = (item.get("sku") or "").strip()
-            qty = int(item.get("qty", 0) or 0)
+            try:
+                qty = float(item.get("qty", 0) or 0)
+            except Exception:
+                qty = 0
+
+            unidad_medida = str(item.get("unidad_medida") or "UND").strip().upper()
 
             if not sku or qty <= 0:
                 continue
@@ -538,7 +565,8 @@ def crear_pedido(
                         "producto": promo_nombre,
                         "precio_unit": promo_precio,
                         "qty": qty,
-                        "subtotal": subtotal,
+                        "unidad_medida": "UND",
+                        "subtotal": int(round(subtotal)),
                     }
                 )
                 continue
@@ -550,18 +578,33 @@ def crear_pedido(
 
             # ✅ No permitir si no hay stock
             stock_actual = int(getattr(p, "cantidad", 0) or 0)
-            if stock_actual <= 0 or qty > stock_actual:
+            unidad_real = (getattr(p, "unidad_medida", "UND") or "UND").upper()
+
+            if stock_actual <= 0:
                 continue
 
             precio_unit = int(p.precio)
-            subtotal = precio_unit * qty
+
+            if unidad_real == "KG":
+                # qty viene en kilos: 0.25, 0.50, etc.
+                if qty <= 0:
+                    continue
+                subtotal = int(round(precio_unit * qty))
+            else:
+                qty = int(round(qty))
+                if qty <= 0 or qty > stock_actual:
+                    continue
+                subtotal = int(round(precio_unit * qty))
+
             total += subtotal
 
             detalle.append(
                 {
+                    "sku": p.sku,
                     "producto": p.nombre,
                     "precio_unit": precio_unit,
                     "qty": qty,
+                    "unidad_medida": unidad_real,
                     "subtotal": subtotal,
                 }
             )
@@ -606,17 +649,18 @@ def crear_pedido(
     pedido_id = cur.lastrowid
 
     for d in detalle:
-        cur.execute(
+                cur.execute(
             """
-            INSERT INTO pedido_items (pedido_id, sku, producto, precio_unit, qty, subtotal, es_promo)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO pedido_items (pedido_id, sku, producto, precio_unit, qty, unidad_medida, subtotal, es_promo)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 int(pedido_id),
-                "",
+                d.get("sku", "") or "",
                 d["producto"],
                 int(d["precio_unit"]),
-                int(d["qty"]),
+                float(d["qty"]),
+                d.get("unidad_medida", "UND"),
                 int(d["subtotal"]),
                 0,
             ),
@@ -645,8 +689,14 @@ def crear_pedido(
 
     mensaje += "\nProductos:\n"
     for d in detalle:
-        mensaje += f"- {d['producto']} x{d['qty']} (₡{d['precio_unit']}): ₡{d['subtotal']}\n"
+        unidad = d.get("unidad_medida", "UND")
+        if unidad == "KG":
+            mensaje += f"- {d['producto']} — {format_qty_display(d['qty'], unidad)} (₡{d['precio_unit']} por kilo aprox.): ₡{d['subtotal']} aprox.\n"
+        else:
+            mensaje += f"- {d['producto']} x{int(round(d['qty']))} (₡{d['precio_unit']}): ₡{d['subtotal']}\n"
 
+        if any((d.get("unidad_medida") == "KG") for d in detalle):
+            mensaje += "\nNota: Los productos por kilo son aproximados y el monto final puede variar según el peso real.\n"
     mensaje += f"\n💰 TOTAL A PAGAR: ₡{grand_total}"
 
     texto = urllib.parse.quote(mensaje)
@@ -908,6 +958,7 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
     col_precio = idx.get("Precio de venta")
     col_familia = idx.get("Familia")
     col_cantidad = idx.get("Inventario")
+    col_unidad = idx.get("Unidades")
 
     if col_sku is None or col_nombre is None or col_precio is None:
         wb.close()
@@ -932,6 +983,10 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
         cantidad = 0
         if col_cantidad is not None and col_cantidad < len(row):
             cantidad = parse_int_safe(row[col_cantidad])
+
+        unidad_medida = "UND"
+        if col_unidad is not None and col_unidad < len(row):
+            unidad_medida = parse_unidad_medida(row[col_unidad])
 
         if not sku:
             saltados += 1
@@ -974,6 +1029,10 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
                 p.cantidad = int(cantidad)
                 changed = True
 
+            if (getattr(p, "unidad_medida", "UND") or "UND") != unidad_medida:
+                p.unidad_medida = unidad_medida
+                changed = True
+
             if changed:
                 actualizados += 1
         else:
@@ -983,6 +1042,7 @@ def procesar_sync_xlsx_desde_archivo(file_path: str, db: Session):
                 precio=precio_int,
                 familia=familia_txt,
                 cantidad=int(cantidad),
+                unidad_medida=unidad_medida,
             )
             db.add(nuevo)
             by_sku[sku_txt] = nuevo
