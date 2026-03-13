@@ -83,7 +83,7 @@ body::after{
   right: 0;
   width: 100%;
   z-index: 9999;
-  background: rgba(255,255,255,.96);
+  background: #1d4ed8;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0,0,0,.10);
@@ -120,7 +120,7 @@ body::after{
 
 .main-link{
   text-decoration: none;
-  color: var(--text);
+  color: #fff;
   font-weight: 800;
   padding: 10px 12px;
   border-radius: 999px;
@@ -139,7 +139,7 @@ body::after{
 
 .main-brand{
   text-decoration: none;
-  color: var(--text);
+  color: #fff;
   font-weight: 900;
   font-size: 22px;
   letter-spacing: .2px;
@@ -148,7 +148,8 @@ body::after{
 }
 
 .main-brand--mobile,
-.main-brand--with-logo{
+.main-brand--with-logo,
+.main-brand--desktop{
   display: inline-flex;
   align-items: center;
   justify-content: center;
