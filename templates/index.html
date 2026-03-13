@@ -447,6 +447,11 @@
           .trim();
       }
 
+      function clearAllFamiliesUI(){
+  famChecks.forEach(function(c){ c.checked = false; });
+  famChecksMobile.forEach(function(c){ c.checked = false; });
+}
+
       if (catSearch) {
         catSearch.addEventListener("input", function(){
           const q = norm(catSearch.value);
@@ -468,9 +473,7 @@
       }
 
       function openFiltersDrawer(){
-  // limpiar filtros de categoría antes de abrir en móvil
-  famChecks.forEach(function(c){ c.checked = false; });
-  famChecksMobile.forEach(function(c){ c.checked = false; });
+  clearAllFamiliesUI();
 
   if (filtersDrawer) filtersDrawer.classList.add("is-open");
   if (filtersBackdrop) filtersBackdrop.classList.add("is-open");
@@ -529,25 +532,20 @@
       window.addEventListener("load", liveFilter);
 
       function buildUrl(page){
-        const params = new URLSearchParams();
-        const q = qInput ? qInput.value.trim() : "";
+  const params = new URLSearchParams();
+  const q = qInput ? qInput.value.trim() : "";
 
-        if (q) params.set("q", q);
-        params.set("page_size", String(PAGE_SIZE));
-        params.set("page", String(page || 1));
+  if (q) params.set("q", q);
+  params.set("page_size", String(PAGE_SIZE));
+  params.set("page", String(page || 1));
 
-        famChecks
-          .filter(function(c){ return c.checked; })
-          .forEach(function(c){
-            params.append("fam", c.value);
-          });
-
-        return "/tienda?" + params.toString();
-      }
+  return "/tienda?" + params.toString();
+}
 
       function goFilters(){
-        window.location.href = buildUrl(1);
-      }
+  clearAllFamiliesUI();
+  window.location.href = buildUrl(1);
+}
 
       famChecks.forEach(function(c){
         c.addEventListener("change", goFilters);
@@ -561,21 +559,16 @@
       }
 
       function goFiltersFromMobile(){
-        const params = new URLSearchParams();
-        const q = qInput ? qInput.value.trim() : "";
+  const params = new URLSearchParams();
 
-        if (q) params.set("q", q);
-        params.set("page_size", String(PAGE_SIZE));
-        params.set("page", "1");
+  params.set("page_size", String(PAGE_SIZE));
+  params.set("page", "1");
 
-        famChecksMobile
-          .filter(function(c){ return c.checked; })
-          .forEach(function(c){
-            params.append("fam", c.value);
-          });
+  const selected = famChecksMobile.find(function(c){ return c.checked; });
+  if (selected) params.set("fam", selected.value);
 
-        window.location.href = "/tienda?" + params.toString();
-      }
+  window.location.href = "/tienda?" + params.toString();
+}
 
       const applyFamiliesMobileBtn = document.getElementById("applyFamiliesMobile");
 
@@ -930,6 +923,19 @@
     let currentFam = new URLSearchParams(window.location.search).get("fam") || "";
     let currentQ = new URLSearchParams(window.location.search).get("q") || "";
     let currentPageSize = new URLSearchParams(window.location.search).get("page_size") || "25";
+    function clearAllFamilyFilters() {
+  currentFam = "";
+  famChecks.forEach((c) => { c.checked = false; });
+  famChecksMobile.forEach((c) => { c.checked = false; });
+}
+
+const filtersOpenBtn = document.getElementById("filtersOpenBtn");
+
+if (filtersOpenBtn) {
+  filtersOpenBtn.addEventListener("click", function () {
+    clearAllFamilyFilters();
+  });
+}
 
     function escapeHtml(text) {
       return String(text || "")
@@ -1105,32 +1111,31 @@
     // CHIPS: limpia búsqueda + filtros, y luego filtra por esa categoría
     // =========================
     chips.forEach((chip) => {
-      chip.addEventListener("click", function (e) {
-        e.preventDefault();
+  chip.addEventListener("click", function (e) {
+    e.preventDefault();
 
-        clearAllCategoryFilters();
-        currentQ = "";
-        if (searchInput) searchInput.value = "";
+    clearAllFamilyFilters();
+    currentQ = "";
+    if (searchInput) searchInput.value = "";
 
-        currentFam = this.dataset.cat || "";
-        syncChecksWithCurrentFam();
-        loadProducts(true);
-      });
-    });
+    currentFam = this.dataset.cat || "";
+    loadProducts(true);
+  });
+});
 
     // =========================
     // BÚSQUEDA SUPERIOR: limpia categorías y luego busca
     // =========================
     if (searchForm) {
-      searchForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+  searchForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-        clearAllCategoryFilters();
-        currentQ = (searchInput?.value || "").trim();
+    clearAllFamilyFilters();
+    currentQ = (searchInput?.value || "").trim();
 
-        loadProducts(true);
-      });
-    }
+    loadProducts(true);
+  });
+}
 
     // =========================
     // LIMPIAR BÚSQUEDA: limpia todo
