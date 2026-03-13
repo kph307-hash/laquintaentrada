@@ -1075,8 +1075,8 @@ body.filters-open{
 }
 
 .cat-chip img{
-  width: 80px;
-  height: 80px;
+  width: 65px;
+  height: 65px;
   object-fit: contain;
   display: block;
 }
