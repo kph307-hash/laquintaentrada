@@ -35,8 +35,8 @@
   }
 
   body.tienda #productList.product-grid-mobile-2 .img-box{
-    height: 110px !important;
-    flex: 0 0 110px !important;
+    height: 150px !important;
+    flex: 0 0 150px !important;
   }
 
   body.tienda #productList.product-grid-mobile-2 .card-body{
@@ -374,6 +374,31 @@
         >
           No se encontraron productos con esos filtros/búsqueda.
         </div>
+
+        <div id="pagination" class="pagination">
+  {% if total_pages > 1 %}
+    {% if page > 1 %}
+      <button type="button" class="page-btn" data-page="{{ page - 1 }}">←</button>
+    {% else %}
+      <button type="button" class="page-btn disabled" disabled>←</button>
+    {% endif %}
+
+    {% for pnum in range(1, total_pages + 1) %}
+      {% if pnum == page %}
+        <button type="button" class="page-btn active" disabled>{{ pnum }}</button>
+      {% else %}
+        <button type="button" class="page-btn" data-page="{{ pnum }}">{{ pnum }}</button>
+      {% endif %}
+    {% endfor %}
+
+    {% if page < total_pages %}
+      <button type="button" class="page-btn" data-page="{{ page + 1 }}">→</button>
+    {% else %}
+      <button type="button" class="page-btn disabled" disabled>→</button>
+    {% endif %}
+  {% endif %}
+</div>
+
       </section>
     </div>
   </main>
@@ -920,6 +945,9 @@
     const filtersDrawer = document.getElementById("filtersDrawer");
     const filtersBackdrop = document.getElementById("filtersBackdrop");
 
+    let currentPage = Number(new URLSearchParams(window.location.search).get("page") || "1");
+const paginationEl = document.getElementById("pagination");
+
     let currentFam = new URLSearchParams(window.location.search).get("fam") || "";
     let currentQ = new URLSearchParams(window.location.search).get("q") || "";
     let currentPageSize = new URLSearchParams(window.location.search).get("page_size") || "25";
@@ -1037,6 +1065,47 @@ if (filtersOpenBtn) {
       }
     }
 
+    function renderPagination(page, totalPages) {
+  if (!paginationEl) return;
+
+  if (!totalPages || totalPages <= 1) {
+    paginationEl.innerHTML = "";
+    return;
+  }
+
+  let html = "";
+
+  if (page > 1) {
+    html += `<button type="button" class="page-btn" data-page="${page - 1}">←</button>`;
+  } else {
+    html += `<button type="button" class="page-btn disabled" disabled>←</button>`;
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === page) {
+      html += `<button type="button" class="page-btn active" disabled>${i}</button>`;
+    } else {
+      html += `<button type="button" class="page-btn" data-page="${i}">${i}</button>`;
+    }
+  }
+
+  if (page < totalPages) {
+    html += `<button type="button" class="page-btn" data-page="${page + 1}">→</button>`;
+  } else {
+    html += `<button type="button" class="page-btn disabled" disabled>→</button>`;
+  }
+
+  paginationEl.innerHTML = html;
+
+  paginationEl.querySelectorAll(".page-btn[data-page]").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      currentPage = Number(this.dataset.page || "1");
+      loadProducts(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+}
+
     function clearAllCategoryFilters() {
       currentFam = "";
       famChecks.forEach((c) => { c.checked = false; });
@@ -1069,7 +1138,7 @@ if (filtersOpenBtn) {
     async function loadProducts(pushUrl = true) {
       try {
         const params = new URLSearchParams();
-        params.set("page", "1");
+        params.set("page", String(currentPage));
         params.set("page_size", currentPageSize);
 
         if (currentQ) params.set("q", currentQ);
@@ -1087,12 +1156,13 @@ if (filtersOpenBtn) {
         if (!data.ok) return;
 
         renderProducts(data.productos);
-        syncChecksWithCurrentFam();
-        updateActiveChip();
+renderPagination(Number(data.page || 1), Number(data.total_pages || 1));
+syncChecksWithCurrentFam();
+updateActiveChip();
 
         if (pushUrl) {
           const url = new URL(window.location.href);
-          url.searchParams.delete("page");
+          url.searchParams.set("page", String(currentPage));
           url.searchParams.delete("q");
           url.searchParams.delete("fam");
           url.searchParams.set("page_size", currentPageSize);
@@ -1116,6 +1186,7 @@ if (filtersOpenBtn) {
 
     clearAllFamilyFilters();
     currentQ = "";
+    
     if (searchInput) searchInput.value = "";
 
     currentFam = this.dataset.cat || "";
@@ -1146,6 +1217,7 @@ if (filtersOpenBtn) {
 
         currentQ = "";
         currentFam = "";
+        currentPage = 1;
         if (searchInput) searchInput.value = "";
         clearAllCategoryFilters();
 
@@ -1159,6 +1231,7 @@ if (filtersOpenBtn) {
     famChecks.forEach((check) => {
       check.addEventListener("change", function () {
         currentQ = "";
+        currentPage = 1;
         if (searchInput) searchInput.value = "";
 
         famChecks.forEach((c) => {
@@ -1181,6 +1254,7 @@ if (filtersOpenBtn) {
         const checked = famChecksMobile.find((c) => c.checked);
 
         currentQ = "";
+        currentPage = 1;
         if (searchInput) searchInput.value = "";
 
         currentFam = checked ? checked.value : "";
@@ -1196,6 +1270,7 @@ if (filtersOpenBtn) {
     if (clearFamiliesBtn) {
       clearFamiliesBtn.addEventListener("click", function () {
         currentFam = "";
+        currentPage = 1;
         clearAllCategoryFilters();
         loadProducts(true);
       });
@@ -1215,13 +1290,14 @@ if (filtersOpenBtn) {
     // BACK/FORWARD DEL NAVEGADOR
     // =========================
     window.addEventListener("popstate", function () {
-      const params = new URLSearchParams(window.location.search);
-      currentFam = params.get("fam") || "";
-      currentQ = params.get("q") || "";
-      if (searchInput) searchInput.value = currentQ;
-      syncChecksWithCurrentFam();
-      loadProducts(false);
-    });
+  const params = new URLSearchParams(window.location.search);
+  currentFam = params.get("fam") || "";
+  currentQ = params.get("q") || "";
+  currentPage = Number(params.get("page") || "1");
+  if (searchInput) searchInput.value = currentQ;
+  syncChecksWithCurrentFam();
+  loadProducts(false);
+});
 
     // =========================
     // SCROLL DE CATEGORÍAS
