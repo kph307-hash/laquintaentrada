@@ -970,6 +970,13 @@ body.filters-open{
     align-items: stretch !important;
   }
 
+
+
+
+
+
+
+
   body.tienda #productList.product-grid-mobile-2 > .product-card{
     flex: 0 0 calc(50% - 4px) !important;
     width: calc(50% - 4px) !important;
@@ -978,13 +985,48 @@ body.filters-open{
     margin: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    min-height: 275px !important;
+    min-height: 200px !important;
     border-radius: 16px !important;
     overflow: hidden !important;
   }
 
+
+
+
+
+
+
+
+
+
+
+
   body.tienda #productList.product-grid-mobile-2 .img-box{
-    height: 118px !important;
+
+
+
+
+
+
+
+
+
+
+
+
+    height: 150px !important;
+
+
+
+
+
+
+
+
+
+
+
+
     min-height: 118px !important;
     flex: 0 0 118px !important;
     display: flex !important;

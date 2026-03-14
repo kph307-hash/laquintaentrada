@@ -1448,8 +1448,8 @@ body.loc-guide-open{
   }
 
   body.tienda #productList .img-box{
-    height: 210px;
-    flex: 0 0 210px;
+    height: 250px;
+    flex: 0 0 250px;
     padding: 12px;
     background: #f8fafc;
   }
