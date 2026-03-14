@@ -916,22 +916,26 @@ body.filters-open{
   }
 
   .cat-chip{
-    flex: 0 0 auto;
-    width: 76px;
-    min-width: 76px;
-    min-height: 76px;
-    border: 1px solid rgba(0,0,0,.10);
-    border-radius: 16px;
-    background: #ffffff;
-    padding: 8px 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    cursor: pointer;
-    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
-  }
+  flex: 0 0 auto;
+  width: 78px;
+  height: 78px;
+  min-width: 78px;
+  min-height: 78px;
+  max-width: 78px;
+  max-height: 78px;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 16px;
+  background: #ffffff;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  overflow: hidden;
+}
 
   .cat-chip:active{
     transform: scale(.97);
@@ -989,46 +993,11 @@ body.filters-open{
     border-radius: 16px !important;
     overflow: hidden !important;
   }
-
-
-
-
-
-
-
-
-
-
-
-
+  
   body.tienda #productList.product-grid-mobile-2 .img-box{
-
-
-
-
-
-
-
-
-
-
-
-
-    height: 150px !important;
-
-
-
-
-
-
-
-
-
-
-
-
-    min-height: 118px !important;
-    flex: 0 0 118px !important;
+    height: 180px !important;
+    min-height: 180px !important;
+    flex: 0 0 180px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
