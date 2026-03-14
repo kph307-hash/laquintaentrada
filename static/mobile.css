@@ -866,8 +866,8 @@ body.filters-open{
   }
 
   body.tienda #productList.product-grid-mobile-2 .img-box{
-    height: 150px !important;
-    flex: 0 0 150px !important;
+    height: 95px !important;
+    flex: 0 0 95px !important;
   }
 
   body.tienda #productList.product-grid-mobile-2 .card-body{
@@ -1026,5 +1026,30 @@ body.filters-open{
   .cat-chip.active{
     border: 2px solid #1d2d74;
     box-shadow: 0 6px 16px rgba(0,0,0,.10);
+  }
+}
+
+@media (max-width: 768px){
+  body.tienda #productList .product-card{
+    min-height: 290px !important;
+  }
+
+  body.tienda #productList .img-box{
+    height: 130px !important;
+    min-height: 130px !important;
+    flex: 0 0 130px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  body.tienda #productList .img-box img{
+    max-width: 100% !important;
+    max-height: 120px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
   }
 }
