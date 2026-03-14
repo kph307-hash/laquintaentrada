@@ -246,11 +246,11 @@
 
                 {% if stock == 1 %}
                   <div class="stock-warning stock-danger">
-                    🔴 ¡Última unidad disponible!
+                    🔴 ¡Última und!
                   </div>
                 {% elif stock < 5 %}
                   <div class="stock-warning">
-                    ⚠️ Solo quedan {{ stock }} unidades
+                    ⚠️ Quedan {{ stock }} Und
                   </div>
                 {% endif %}
 
@@ -750,11 +750,11 @@
       if (p.unidad_medida === "KG") return "";
 
       if (stock === 1) {
-        return `<div class="stock-warning stock-danger">🔴 ¡Última unidad disponible!</div>`;
+        return `<div class="stock-warning stock-danger">🔴 ¡Última Und!</div>`;
       }
 
       if (stock < 5) {
-        return `<div class="stock-warning">⚠️ Solo quedan ${Math.floor(stock)} unidades</div>`;
+        return `<div class="stock-warning">⚠️ Quedan ${Math.floor(stock)} Und</div>`;
       }
 
       return "";
