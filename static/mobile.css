@@ -866,8 +866,8 @@ body.filters-open{
   }
 
   body.tienda #productList.product-grid-mobile-2 .img-box{
-    height: 95px !important;
-    flex: 0 0 95px !important;
+    height: 150px !important;
+    flex: 0 0 150px !important;
   }
 
   body.tienda #productList.product-grid-mobile-2 .card-body{
