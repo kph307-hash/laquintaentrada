@@ -1448,9 +1448,9 @@ body.loc-guide-open{
   }
 
   body.tienda #productList .img-box{
-    height: 250px;
-    flex: 0 0 250px;
-    padding: 12px;
+    height: 220px;      /* antes 250px */
+    flex: 0 0 220px;    /* antes 250px */
+    padding: 10px;      /* antes 12px */
     background: #f8fafc;
   }
 
@@ -1469,31 +1469,33 @@ body.loc-guide-open{
   }
 
   body.tienda #productList .card-body{
-    padding: 14px;
-    gap: 8px;
-  }
+  padding: 10px 12px;
+  gap: 4px;
+}
 
-  body.tienda #productList .product-title{
-    font-size: 15px;
-    line-height: 1.2;
-    min-height: 38px;
-  }
+body.tienda #productList .product-title{
+  min-height: 28px;
+  font-size: 14px;
+  line-height: 1.12;
+}
 
   body.tienda #productList .product-family{
-    font-size: 13px;
+    font-size: 12px;    /* antes 13px */
+    margin: 0;
+  }
+
+  body.tienda #productList .price-row{
+    margin-top: 2px;    /* antes auto heredado */
   }
 
   body.tienda #productList .product-price{
-    font-size: 20px;
-  }
-
-  body.tienda #productList .btn-add{
-    width: 100%;
-    padding: 10px 8px;
-    font-size: 13px;
-  }
+  font-size: 17px;
 }
 
+body.tienda #productList .btn-add{
+  padding: 7px 8px;
+}
+}
 /* =========================
    MODAL KG
    ========================= */

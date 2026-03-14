@@ -279,30 +279,7 @@
           No se encontraron productos con esos filtros/búsqueda.
         </div>
 
-        <div id="pagination" class="pagination">
-  {% if total_pages > 1 %}
-    {% if page > 1 %}
-      <button type="button" class="page-btn" data-page="{{ page - 1 }}">←</button>
-    {% else %}
-      <button type="button" class="page-btn disabled" disabled>←</button>
-    {% endif %}
-
-    {% for pnum in range(1, total_pages + 1) %}
-      {% if pnum == page %}
-        <button type="button" class="page-btn active" disabled>{{ pnum }}</button>
-      {% else %}
-        <button type="button" class="page-btn" data-page="{{ pnum }}">{{ pnum }}</button>
-      {% endif %}
-    {% endfor %}
-
-    {% if page < total_pages %}
-      <button type="button" class="page-btn" data-page="{{ page + 1 }}">→</button>
-    {% else %}
-      <button type="button" class="page-btn disabled" disabled>→</button>
-    {% endif %}
-  {% endif %}
-</div>
-
+        <div id="pagination" class="pagination"></div>
       </section>
     </div>
   </main>
@@ -342,13 +319,11 @@
 
   <script>
     // ============================
-    // FILTROS + BÚSQUEDA + DRAWER MÓVIL
+    // SOLO UI DE FILTROS / DRAWER / BUSQUEDA DE CATEGORIAS
     // ============================
     (function(){
-      const PAGE_SIZE = Number(document.body.dataset.pageSize || 25);
-
       const famChecks = Array.from(document.querySelectorAll(".fam-check"));
-      const clearFamiliesBtn = document.getElementById("clearFamilies");
+      const famChecksMobile = Array.from(document.querySelectorAll(".fam-check-mobile"));
 
       const catSearch = document.getElementById("catSearch");
       const catLabels = Array.from(document.querySelectorAll("#catsList .cat-item"));
@@ -358,15 +333,8 @@
       const filtersOpenBtn = document.getElementById("filtersOpenBtn");
       const filtersCloseBtn = document.getElementById("filtersCloseBtn");
 
-      const famChecksMobile = Array.from(document.querySelectorAll(".fam-check-mobile"));
-      const clearFamiliesMobileBtn = document.getElementById("clearFamiliesMobile");
-
       const catSearchMobile = document.getElementById("catSearchMobile");
       const catLabelsMobile = Array.from(document.querySelectorAll("#catsListMobile .cat-item"));
-
-      const qInput = document.getElementById("productSearchBar");
-      const productList = document.getElementById("productList");
-      const noResultsEl = document.getElementById("noResults");
 
       function norm(s){
         return String(s || "")
@@ -377,9 +345,9 @@
       }
 
       function clearAllFamiliesUI(){
-  famChecks.forEach(function(c){ c.checked = false; });
-  famChecksMobile.forEach(function(c){ c.checked = false; });
-}
+        famChecks.forEach(function(c){ c.checked = false; });
+        famChecksMobile.forEach(function(c){ c.checked = false; });
+      }
 
       if (catSearch) {
         catSearch.addEventListener("input", function(){
@@ -402,12 +370,12 @@
       }
 
       function openFiltersDrawer(){
-  clearAllFamiliesUI();
+        clearAllFamiliesUI();
 
-  if (filtersDrawer) filtersDrawer.classList.add("is-open");
-  if (filtersBackdrop) filtersBackdrop.classList.add("is-open");
-  document.body.classList.add("filters-open");
-}
+        if (filtersDrawer) filtersDrawer.classList.add("is-open");
+        if (filtersBackdrop) filtersBackdrop.classList.add("is-open");
+        document.body.classList.add("filters-open");
+      }
 
       function closeFiltersDrawer(){
         if (filtersDrawer) filtersDrawer.classList.remove("is-open");
@@ -418,106 +386,6 @@
       if (filtersOpenBtn) filtersOpenBtn.addEventListener("click", openFiltersDrawer);
       if (filtersCloseBtn) filtersCloseBtn.addEventListener("click", closeFiltersDrawer);
       if (filtersBackdrop) filtersBackdrop.addEventListener("click", closeFiltersDrawer);
-
-      function liveFilter(){
-        if (!productList) return;
-
-        const q = norm(qInput ? qInput.value : "");
-        const cards = Array.from(productList.querySelectorAll(".product-item"));
-
-        let shown = 0;
-
-        cards.forEach(function(card){
-          const name = norm(card.dataset.name || "");
-          const sku  = norm(card.dataset.sku || "");
-          const fam  = norm(card.dataset.familia || "");
-
-          const match = !q || name.includes(q) || sku.includes(q) || fam.includes(q);
-
-          card.style.display = match ? "" : "none";
-          if (match) shown++;
-        });
-
-        if (noResultsEl){
-          noResultsEl.style.display = shown === 0 ? "block" : "none";
-        }
-      }
-
-      let t = null;
-      if (qInput){
-        qInput.addEventListener("input", function(){
-          clearTimeout(t);
-          t = setTimeout(liveFilter, 120);
-        });
-
-        qInput.addEventListener("keydown", function(e){
-          if (e.key === "Enter"){
-            e.preventDefault();
-            goFilters();
-          }
-        });
-      }
-
-      window.addEventListener("load", liveFilter);
-
-      function buildUrl(page){
-  const params = new URLSearchParams();
-  const q = qInput ? qInput.value.trim() : "";
-
-  if (q) params.set("q", q);
-  params.set("page_size", String(PAGE_SIZE));
-  params.set("page", String(page || 1));
-
-  return "/tienda?" + params.toString();
-}
-
-      function goFilters(){
-  clearAllFamiliesUI();
-  window.location.href = buildUrl(1);
-}
-
-      famChecks.forEach(function(c){
-        c.addEventListener("change", goFilters);
-      });
-
-      if (clearFamiliesBtn){
-        clearFamiliesBtn.addEventListener("click", function(){
-          famChecks.forEach(function(c){ c.checked = false; });
-          goFilters();
-        });
-      }
-
-      function goFiltersFromMobile(){
-  const params = new URLSearchParams();
-
-  params.set("page_size", String(PAGE_SIZE));
-  params.set("page", "1");
-
-  const selected = famChecksMobile.find(function(c){ return c.checked; });
-  if (selected) params.set("fam", selected.value);
-
-  window.location.href = "/tienda?" + params.toString();
-}
-
-      const applyFamiliesMobileBtn = document.getElementById("applyFamiliesMobile");
-
-      famChecksMobile.forEach(function(c){
-        c.addEventListener("change", function(){
-          // no redirigir automáticamente en móvil
-        });
-      });
-
-      if (applyFamiliesMobileBtn){
-        applyFamiliesMobileBtn.addEventListener("click", function(){
-          goFiltersFromMobile();
-        });
-      }
-
-      if (clearFamiliesMobileBtn){
-        clearFamiliesMobileBtn.addEventListener("click", function(){
-          famChecksMobile.forEach(function(c){ c.checked = false; });
-        });
-      }
     })();
   </script>
 
@@ -850,24 +718,18 @@
     const filtersBackdrop = document.getElementById("filtersBackdrop");
 
     let currentPage = Number(new URLSearchParams(window.location.search).get("page") || "1");
-const paginationEl = document.getElementById("pagination");
+    const paginationEl = document.getElementById("pagination");
 
     let currentFam = new URLSearchParams(window.location.search).get("fam") || "";
     let currentQ = new URLSearchParams(window.location.search).get("q") || "";
     let currentPageSize = new URLSearchParams(window.location.search).get("page_size") || "25";
+    let initialTotalPages = Number("{{ total_pages|default(1) }}");
+
     function clearAllFamilyFilters() {
-  currentFam = "";
-  famChecks.forEach((c) => { c.checked = false; });
-  famChecksMobile.forEach((c) => { c.checked = false; });
-}
-
-const filtersOpenBtn = document.getElementById("filtersOpenBtn");
-
-if (filtersOpenBtn) {
-  filtersOpenBtn.addEventListener("click", function () {
-    clearAllFamilyFilters();
-  });
-}
+      currentFam = "";
+      famChecks.forEach((c) => { c.checked = false; });
+      famChecksMobile.forEach((c) => { c.checked = false; });
+    }
 
     function escapeHtml(text) {
       return String(text || "")
@@ -970,81 +832,80 @@ if (filtersOpenBtn) {
     }
 
     function renderPagination(page, totalPages) {
-  if (!paginationEl) return;
+      if (!paginationEl) return;
 
-  if (!totalPages || totalPages <= 1) {
-    paginationEl.innerHTML = "";
-    return;
-  }
+      page = Number(page || 1);
+      totalPages = Number(totalPages || 1);
 
-  const isMobile = window.innerWidth <= 768;
-  let pages = [];
+      if (totalPages <= 1) {
+        paginationEl.innerHTML = "";
+        return;
+      }
 
-  if (isMobile) {
-    const start = Math.max(1, page - 1);
-    const end = Math.min(totalPages, page + 1);
+      let pages = [];
+      let start = Math.max(1, page - 1);
+      let end = Math.min(totalPages, page + 1);
 
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
+      if (page === 1) {
+        end = Math.min(totalPages, 3);
+      }
+
+      if (page === totalPages) {
+        start = Math.max(1, totalPages - 2);
+      }
+
+      while ((end - start + 1) < 3 && totalPages >= 3) {
+        if (start > 1) start--;
+        else if (end < totalPages) end++;
+        else break;
+      }
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      let html = "";
+
+      html += page > 1
+        ? `<button type="button" class="page-btn" data-page="${page - 1}">←</button>`
+        : `<button type="button" class="page-btn disabled" disabled>←</button>`;
+
+      if (pages[0] > 1) {
+        html += `<button type="button" class="page-btn" data-page="1">1</button>`;
+        if (pages[0] > 2) {
+          html += `<span class="page-dots">…</span>`;
+        }
+      }
+
+      pages.forEach((p) => {
+        if (p === page) {
+          html += `<button type="button" class="page-btn active" disabled>${p}</button>`;
+        } else {
+          html += `<button type="button" class="page-btn" data-page="${p}">${p}</button>`;
+        }
+      });
+
+      if (pages[pages.length - 1] < totalPages) {
+        if (pages[pages.length - 1] < totalPages - 1) {
+          html += `<span class="page-dots">…</span>`;
+        }
+        html += `<button type="button" class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
+      }
+
+      html += page < totalPages
+        ? `<button type="button" class="page-btn" data-page="${page + 1}">→</button>`
+        : `<button type="button" class="page-btn disabled" disabled>→</button>`;
+
+      paginationEl.innerHTML = html;
+
+      paginationEl.querySelectorAll(".page-btn[data-page]").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          currentPage = Number(this.dataset.page || "1");
+          loadProducts(true);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
     }
-  } else {
-    let start = Math.max(1, page - 2);
-    let end = Math.min(totalPages, page + 2);
-
-    if (page <= 3) end = Math.min(totalPages, 5);
-    if (page >= totalPages - 2) start = Math.max(1, totalPages - 4);
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-  }
-
-  let html = "";
-
-  if (page > 1) {
-    html += `<button type="button" class="page-btn" data-page="${page - 1}">←</button>`;
-  } else {
-    html += `<button type="button" class="page-btn disabled" disabled>←</button>`;
-  }
-
-  if (!isMobile && pages[0] > 1) {
-    html += `<button type="button" class="page-btn" data-page="1">1</button>`;
-    if (pages[0] > 2) {
-      html += `<span class="page-dots">…</span>`;
-    }
-  }
-
-  pages.forEach((p) => {
-    if (p === page) {
-      html += `<button type="button" class="page-btn active" disabled>${p}</button>`;
-    } else {
-      html += `<button type="button" class="page-btn" data-page="${p}">${p}</button>`;
-    }
-  });
-
-  if (!isMobile && pages[pages.length - 1] < totalPages) {
-    if (pages[pages.length - 1] < totalPages - 1) {
-      html += `<span class="page-dots">…</span>`;
-    }
-    html += `<button type="button" class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
-  }
-
-  if (page < totalPages) {
-    html += `<button type="button" class="page-btn" data-page="${page + 1}">→</button>`;
-  } else {
-    html += `<button type="button" class="page-btn disabled" disabled>→</button>`;
-  }
-
-  paginationEl.innerHTML = html;
-
-  paginationEl.querySelectorAll(".page-btn[data-page]").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      currentPage = Number(this.dataset.page || "1");
-      loadProducts(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  });
-}
 
     function clearAllCategoryFilters() {
       currentFam = "";
@@ -1095,17 +956,19 @@ if (filtersOpenBtn) {
         const data = await res.json();
         if (!data.ok) return;
 
-        renderProducts(data.productos);
-renderPagination(Number(data.page || 1), Number(data.total_pages || 1));
-syncChecksWithCurrentFam();
-updateActiveChip();
+        currentPage = Number(data.page || 1);
+
+        renderProducts(data.productos || []);
+        renderPagination(Number(data.page || 1), Number(data.total_pages || 1));
+        syncChecksWithCurrentFam();
+        updateActiveChip();
 
         if (pushUrl) {
           const url = new URL(window.location.href);
           url.searchParams.set("page", String(currentPage));
+          url.searchParams.set("page_size", currentPageSize);
           url.searchParams.delete("q");
           url.searchParams.delete("fam");
-          url.searchParams.set("page_size", currentPageSize);
 
           if (currentQ) url.searchParams.set("q", currentQ);
           if (currentFam) url.searchParams.set("fam", currentFam);
@@ -1117,42 +980,33 @@ updateActiveChip();
       }
     }
 
-    // =========================
-    // CHIPS: limpia búsqueda + filtros, y luego filtra por esa categoría
-    // =========================
     chips.forEach((chip) => {
-  chip.addEventListener("click", function (e) {
-    e.preventDefault();
+      chip.addEventListener("click", function (e) {
+        e.preventDefault();
 
-    clearAllFamilyFilters();
-    currentQ = "";
-    currentPage = 1;
+        clearAllFamilyFilters();
+        currentQ = "";
+        currentPage = 1;
 
-    if (searchInput) searchInput.value = "";
+        if (searchInput) searchInput.value = "";
 
-    currentFam = this.dataset.cat || "";
-    loadProducts(true);
-  });
-});
+        currentFam = this.dataset.cat || "";
+        loadProducts(true);
+      });
+    });
 
-    // =========================
-    // BÚSQUEDA SUPERIOR: limpia categorías y luego busca
-    // =========================
     if (searchForm) {
-  searchForm.addEventListener("submit", function (e) {
-    e.preventDefault();
+      searchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-    clearAllFamilyFilters();
-    currentQ = (searchInput?.value || "").trim();
-    currentPage = 1;
+        clearAllFamilyFilters();
+        currentQ = (searchInput?.value || "").trim();
+        currentPage = 1;
 
-    loadProducts(true);
-  });
-}
+        loadProducts(true);
+      });
+    }
 
-    // =========================
-    // LIMPIAR BÚSQUEDA: limpia todo
-    // =========================
     if (clearBtn) {
       clearBtn.addEventListener("click", function (e) {
         e.preventDefault();
@@ -1160,6 +1014,7 @@ updateActiveChip();
         currentQ = "";
         currentFam = "";
         currentPage = 1;
+
         if (searchInput) searchInput.value = "";
         clearAllCategoryFilters();
 
@@ -1167,18 +1022,17 @@ updateActiveChip();
       });
     }
 
-    // =========================
-    // CHECKBOX PC: limpia búsqueda y filtra por esa categoría
-    // =========================
     famChecks.forEach((check) => {
       check.addEventListener("change", function () {
         currentQ = "";
         currentPage = 1;
+
         if (searchInput) searchInput.value = "";
 
         famChecks.forEach((c) => {
           if (c !== check) c.checked = false;
         });
+
         famChecksMobile.forEach((c) => {
           c.checked = c.value === check.value && check.checked;
         });
@@ -1188,15 +1042,13 @@ updateActiveChip();
       });
     });
 
-    // =========================
-    // CHECKBOX MÓVIL: no aplica hasta tocar botón
-    // =========================
     if (applyFamiliesMobileBtn) {
       applyFamiliesMobileBtn.addEventListener("click", function () {
         const checked = famChecksMobile.find((c) => c.checked);
 
         currentQ = "";
         currentPage = 1;
+
         if (searchInput) searchInput.value = "";
 
         currentFam = checked ? checked.value : "";
@@ -1206,9 +1058,6 @@ updateActiveChip();
       });
     }
 
-    // =========================
-    // LIMPIAR CATEGORÍAS PC
-    // =========================
     if (clearFamiliesBtn) {
       clearFamiliesBtn.addEventListener("click", function () {
         currentFam = "";
@@ -1218,9 +1067,6 @@ updateActiveChip();
       });
     }
 
-    // =========================
-    // LIMPIAR CATEGORÍAS MÓVIL
-    // =========================
     if (clearFamiliesMobileBtn) {
       clearFamiliesMobileBtn.addEventListener("click", function () {
         currentFam = "";
@@ -1228,22 +1074,20 @@ updateActiveChip();
       });
     }
 
-    // =========================
-    // BACK/FORWARD DEL NAVEGADOR
-    // =========================
     window.addEventListener("popstate", function () {
-  const params = new URLSearchParams(window.location.search);
-  currentFam = params.get("fam") || "";
-  currentQ = params.get("q") || "";
-  currentPage = Number(params.get("page") || "1");
-  if (searchInput) searchInput.value = currentQ;
-  syncChecksWithCurrentFam();
-  loadProducts(false);
-});
+      const params = new URLSearchParams(window.location.search);
+      currentFam = params.get("fam") || "";
+      currentQ = params.get("q") || "";
+      currentPage = Number(params.get("page") || "1");
+      currentPageSize = params.get("page_size") || "25";
 
-    // =========================
-    // SCROLL DE CATEGORÍAS
-    // =========================
+      if (searchInput) searchInput.value = currentQ;
+
+      syncChecksWithCurrentFam();
+      updateActiveChip();
+      loadProducts(false);
+    });
+
     if (strip && leftBtn) {
       leftBtn.addEventListener("click", function () {
         strip.scrollBy({ left: -320, behavior: "smooth" });
@@ -1258,8 +1102,9 @@ updateActiveChip();
 
     syncChecksWithCurrentFam();
     updateActiveChip();
+    renderPagination(currentPage, initialTotalPages);
   });
-</script>
+  </script>
 
 </body>
 </html>
