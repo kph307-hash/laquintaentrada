@@ -135,6 +135,7 @@ body::after{
   display: flex;
   justify-content: center;
   align-items: center;
+  min-width: 0;
 }
 
 .main-brand{
@@ -292,7 +293,7 @@ body::after{
 
 #productList{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   align-items: stretch;
 }
@@ -300,7 +301,7 @@ body::after{
 .product-card{
   background: #fff;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 18px;
   box-shadow: var(--shadow);
   overflow: hidden;
   display: flex;
@@ -315,43 +316,55 @@ body::after{
 }
 
 .img-box{
-  flex: 0 0 180px;
-  height: 180px;
-  background: #f3f4f6;
+  flex: 0 0 210px;
+  height: 210px;
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 12px;
+  overflow: hidden;
 }
 
 .img-box img{
   max-width: 100%;
   max-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
-  background: #fff;
+  background: transparent;
 }
 
 .img-ph{
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 13px;
   color: var(--muted2);
+  background: #f3f4f6;
+  text-align: center;
+  padding: 10px;
 }
 
 .card-body{
   flex: 1;
   padding: 16px 18px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 8px;
   text-align: center;
 }
 
 .product-title{
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 900;
   line-height: 1.2;
   color: #1f2937;
-  min-height: 34px;
+  min-height: 38px;
 }
 
 .product-family{
@@ -363,20 +376,35 @@ body::after{
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  margin-top: auto;
 }
 
 .product-price{
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
   color: #880000;
 }
 
+.product-price--kg{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.price-note{
+  font-size: 11px;
+  font-weight: 800;
+  color: #6b7280;
+  line-height: 1.1;
+}
+
 .btn-add{
-  margin-top: auto;
+  margin-top: 6px;
   width: 100%;
   border: none;
   border-radius: 999px;
-  padding: 10px 12px;
+  padding: 11px 12px;
   background: var(--brand);
   color: #fff;
   font-weight: 900;
@@ -388,9 +416,11 @@ body::after{
 }
 
 .stock-warning{
-  margin-top: 6px;
+  margin-top: 4px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  align-self: center;
   padding: 4px 10px;
   border-radius: 999px;
   font-size: 12px;
@@ -399,8 +429,13 @@ body::after{
   color: #166534;
 }
 
+.stock-danger{
+  background: #fee2e2;
+  color: #991b1b;
+}
+
 /* =========================
-   META / BUSQUEDA / PAGINACION
+   META / BUSQUEDA
    ========================= */
 
 .meta-row{
@@ -488,40 +523,57 @@ body::after{
   color: var(--muted);
 }
 
+/* =========================
+   PAGINACION PC
+   ========================= */
+
 .pagination{
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+  margin-top: 18px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
   flex-wrap: wrap;
-}
-
-.pagination-info{
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.pagination-actions{
-  display: flex;
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
 }
 
 .page-btn{
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
+  min-width: 40px;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.10);
   background: #fff;
-  color: var(--text);
+  color: #111827;
   font-weight: 900;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,.05);
+  transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
 }
 
 .page-btn:hover{
   background: #f9fafb;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(0,0,0,.08);
+}
+
+.page-btn.active{
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1d4ed8;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.page-btn.disabled{
+  opacity: .45;
+  cursor: default;
+  pointer-events: none;
+  box-shadow: none;
 }
 
 /* =========================
@@ -1373,7 +1425,7 @@ body.loc-guide-open{
 }
 
 /* =========================
-   PC con estilo igual a mobile, pero limpio
+   TIENDA PC MEJORADA
    ========================= */
 
 @media (min-width: 769px){
@@ -1396,14 +1448,10 @@ body.loc-guide-open{
   }
 
   body.tienda #productList .img-box{
-    aspect-ratio: 1 / 1;
-    height: auto;
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    padding: 0;
+    height: 210px;
+    flex: 0 0 210px;
+    padding: 12px;
+    background: #f8fafc;
   }
 
   body.tienda #productList .img-box img{
@@ -1412,6 +1460,12 @@ body.loc-guide-open{
     object-fit: contain;
     object-position: center;
     display: block;
+  }
+
+  body.tienda #productList .img-ph{
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
   }
 
   body.tienda #productList .card-body{
@@ -1440,19 +1494,9 @@ body.loc-guide-open{
   }
 }
 
-.product-price--kg{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-}
-
-.price-note{
-  font-size: 11px;
-  font-weight: 800;
-  color: #6b7280;
-  line-height: 1.1;
-}
+/* =========================
+   MODAL KG
+   ========================= */
 
 body.kg-modal-open{
   overflow: hidden;
@@ -1573,8 +1617,11 @@ body.kg-modal-open{
   cursor: pointer;
 }
 
-@media (min-width: 769px){
+/* =========================
+   CATEGORIAS HORIZONTALES PC
+   ========================= */
 
+@media (min-width: 769px){
   .category-strip-wrap{
     display: flex !important;
     align-items: center;
@@ -1683,4 +1730,14 @@ body.kg-modal-open{
     border: 2px solid #1d2d74;
     box-shadow: 0 6px 16px rgba(0,0,0,.10);
   }
+}
+
+.page-dots{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 40px;
+  color: #6b7280;
+  font-weight: 900;
 }

@@ -9,102 +9,6 @@
   <link rel="stylesheet" href="/static/mobile.css">
 </head>
 
-<style>
-@media (max-width: 768px){
-  body.tienda .products-section{
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2{
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    width: 100% !important;
-    align-items: stretch !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 > .product-card{
-    flex: 0 0 calc(50% - 4px) !important;
-    width: calc(50% - 4px) !important;
-    max-width: calc(50% - 4px) !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .img-box{
-    height: 150px !important;
-    flex: 0 0 150px !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .card-body{
-    padding: 7px !important;
-    gap: 3px !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .product-title{
-    font-size: 10px !important;
-    line-height: 1.15 !important;
-    min-height: 24px !important;
-    word-break: break-word !important;
-    overflow-wrap: anywhere !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .product-family{
-    font-size: 9px !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .product-price{
-    font-size: 13px !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .btn-add{
-    width: 100% !important;
-    padding: 7px 6px !important;
-    font-size: 10px !important;
-    white-space: nowrap !important;
-  }
-
-  body.tienda #productList.product-grid-mobile-2 .stock-warning{
-    font-size: 9px !important;
-    padding: 3px 6px !important;
-    line-height: 1.15 !important;
-  }
-
-  .category-strip-wrap{
-    display: block !important;
-    margin: 8px 0 12px;
-  }
-
-  .category-strip-btn{
-    display: none !important;
-  }
-
-  .category-strip{
-    display: flex !important;
-    gap: 10px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    width: 100%;
-    padding: 4px 2px 8px;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .category-strip::-webkit-scrollbar{
-    display: none;
-  }
-
-  .cat-chip{
-    flex: 0 0 auto;
-    min-width: 76px;
-  }
-}
-</style>
-
 <body class="tienda" data-page-size="{{ page_size|default(25) }}">
   {% include "_header.html" with context %}
   
@@ -1073,6 +977,28 @@ if (filtersOpenBtn) {
     return;
   }
 
+  const isMobile = window.innerWidth <= 768;
+  let pages = [];
+
+  if (isMobile) {
+    const start = Math.max(1, page - 1);
+    const end = Math.min(totalPages, page + 1);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+  } else {
+    let start = Math.max(1, page - 2);
+    let end = Math.min(totalPages, page + 2);
+
+    if (page <= 3) end = Math.min(totalPages, 5);
+    if (page >= totalPages - 2) start = Math.max(1, totalPages - 4);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+  }
+
   let html = "";
 
   if (page > 1) {
@@ -1081,12 +1007,26 @@ if (filtersOpenBtn) {
     html += `<button type="button" class="page-btn disabled" disabled>←</button>`;
   }
 
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === page) {
-      html += `<button type="button" class="page-btn active" disabled>${i}</button>`;
-    } else {
-      html += `<button type="button" class="page-btn" data-page="${i}">${i}</button>`;
+  if (!isMobile && pages[0] > 1) {
+    html += `<button type="button" class="page-btn" data-page="1">1</button>`;
+    if (pages[0] > 2) {
+      html += `<span class="page-dots">…</span>`;
     }
+  }
+
+  pages.forEach((p) => {
+    if (p === page) {
+      html += `<button type="button" class="page-btn active" disabled>${p}</button>`;
+    } else {
+      html += `<button type="button" class="page-btn" data-page="${p}">${p}</button>`;
+    }
+  });
+
+  if (!isMobile && pages[pages.length - 1] < totalPages) {
+    if (pages[pages.length - 1] < totalPages - 1) {
+      html += `<span class="page-dots">…</span>`;
+    }
+    html += `<button type="button" class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
   }
 
   if (page < totalPages) {
@@ -1186,7 +1126,8 @@ updateActiveChip();
 
     clearAllFamilyFilters();
     currentQ = "";
-    
+    currentPage = 1;
+
     if (searchInput) searchInput.value = "";
 
     currentFam = this.dataset.cat || "";
@@ -1203,6 +1144,7 @@ updateActiveChip();
 
     clearAllFamilyFilters();
     currentQ = (searchInput?.value || "").trim();
+    currentPage = 1;
 
     loadProducts(true);
   });
