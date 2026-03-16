@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nosotros | La quinta entrada</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/mobile.css">
+</head>
+<body>
+
+  {% include "_header.html" %}
+
+  <main class="page-wrap">
+    <section class="hero-simple">
+      <div class="container">
+        <h1>Nosotros</h1>
+        <p>Conocé más sobre La quinta entrada, nuestros horarios y cómo hacer tus pedidos.</p>
+      </div>
+    </section>
+
+    <section class="container" style="padding: 24px 16px 40px;">
+      <h2 style="margin-bottom:16px;">Comprar es más fácil</h2>
+
+      <div class="info-grid" style="display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); margin-bottom:28px;">
+        <div class="info-card">
+          <h3>🚚 Envíos rápidos</h3>
+          <p>Pedidos por WhatsApp y entrega en minutos.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>💳 Pago sencillo</h3>
+          <p>Pagás al recibir o como decidan después.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>🛒 Catálogo completo</h3>
+          <p>Buscá productos y agregá al carrito fácilmente.</p>
+        </div>
+      </div>
+
+      <a href="/tienda" class="btn-primary" style="display:inline-block; margin-bottom:36px;">
+        Ver productos
+      </a>
+
+      <h2 style="margin-bottom:16px;">Horario y contacto</h2>
+
+      <div class="info-grid" style="display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));">
+        <div class="info-card">
+          <h3>⏰ Horarios</h3>
+          <p>Lun–Vie 7:00am – 9:30pm<br>Sab–Dom 7:00am – 8:30pm</p>
+        </div>
+
+        <div class="info-card">
+          <h3>📱 WhatsApp</h3>
+          <p>Pedidos y consultas al {{ whatsapp_phone }}</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>

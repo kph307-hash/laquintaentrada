@@ -30,6 +30,7 @@
     <nav class="main-nav main-nav--left" aria-label="Navegación principal">
       <a class="main-link main-link--promo" href="/">Promos</a>
       <a class="main-link" href="/tienda">Productos</a>
+      <a class="main-link" href="/nosotros">Nosotros</a>
     </nav>
 
     <div class="main-center">
@@ -83,6 +84,14 @@
   {% endif %}
 
   <nav class="side-drawer__nav">
+
+    <a class="side-drawer__link" href="/nosotros">
+  <span class="side-drawer__link-main">
+    <span class="side-drawer__icon">ℹ️</span>
+    <span class="side-drawer__text">Nosotros</span>
+  </span>
+  <span class="side-drawer__arrow">›</span>
+</a>
 
     {% if cliente %}
       <a class="side-drawer__link" href="/perfil">

@@ -360,6 +360,21 @@ def home(request: Request):
         },
     )
 
+@app.get("/nosotros", response_class=HTMLResponse)
+@app.get("/nosotros/", response_class=HTMLResponse)
+def nosotros(request: Request):
+    return templates.TemplateResponse(
+        "nosotros.html",
+        {
+            "request": request,
+            "whatsapp_phone": WHATSAPP_PHONE,
+            "show_search": False,
+            "q": "",
+            "selected_familias": [],
+            "page_size": 25,
+            "cliente": get_cliente_session(request),
+        },
+    )
 
 # ======================
 # CARRITO
