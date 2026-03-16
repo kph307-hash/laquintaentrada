@@ -1825,3 +1825,20 @@ body.kg-modal-open{
   color: #4b5563;
   line-height: 1.5;
 }
+
+.nosotros-page{
+  padding: 24px 0 40px;
+}
+
+.nosotros-intro{
+  margin-bottom: 24px;
+}
+
+.nosotros-intro h1{
+  margin: 0 0 10px;
+}
+
+.nosotros-intro p{
+  margin: 0;
+  max-width: 680px;
+}
