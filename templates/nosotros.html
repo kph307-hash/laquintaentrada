@@ -11,46 +11,69 @@
 
   {% include "_header.html" %}
 
-  <main class="page-wrap nosotros-page">
-  <section class="container nosotros-intro">
-    <h1>Nosotros</h1>
-    <p>Conocé más sobre La quinta entrada, nuestros horarios y cómo hacer tus pedidos.</p>
-  </section>
-
-  <section class="container nosotros-section">
-    <section class="container nosotros-section">
-      <h2 class="nosotros-subtitle">Comprar es más fácil</h2>
-
-      <div class="nosotros-grid nosotros-grid--3">
-        <div class="info-card">
-          <h3>🚚 Envíos rápidos</h3>
-          <p>Pedidos por WhatsApp y entrega en minutos.</p>
-        </div>
-
-        <div class="info-card">
-          <h3>💳 Pago sencillo</h3>
-          <p>Pagás al recibir o como decidan después.</p>
-        </div>
-
-        <div class="info-card">
-          <h3>🛒 Catálogo completo</h3>
-          <p>Buscá productos y agregá al carrito fácilmente.</p>
+  <main class="nosotros-page">
+    <section class="nosotros-hero">
+      <div class="container">
+        <div class="nosotros-hero__content">
+          <span class="nosotros-badge">La quinta entrada</span>
+          <h1>Nosotros</h1>
+          <p>
+            Conocé más sobre La quinta entrada, nuestros horarios y la forma más fácil
+            de hacer tus pedidos.
+          </p>
         </div>
       </div>
+    </section>
 
-      <a href="/tienda" class="btn-primary nosotros-btn">Ver productos</a>
+    <section class="nosotros-block">
+      <div class="container">
+        <h2 class="nosotros-title">Comprar es más fácil</h2>
 
-      <h2 class="nosotros-subtitle">Horario y contacto</h2>
+        <div class="nosotros-grid nosotros-grid--3">
+          <article class="nosotros-card">
+            <div class="nosotros-card__icon">🚚</div>
+            <h3>Envíos rápidos</h3>
+            <p>Pedidos por WhatsApp y entrega en minutos.</p>
+          </article>
 
-      <div class="nosotros-grid nosotros-grid--2">
-        <div class="info-card">
-          <h3>⏰ Horarios</h3>
-          <p>Lun–Vie 7:00am – 9:30pm<br>Sab–Dom 7:00am – 8:30pm</p>
+          <article class="nosotros-card">
+            <div class="nosotros-card__icon">💳</div>
+            <h3>Pago sencillo</h3>
+            <p>Pagás al recibir o como decidan después.</p>
+          </article>
+
+          <article class="nosotros-card">
+            <div class="nosotros-card__icon">🛒</div>
+            <h3>Catálogo completo</h3>
+            <p>Buscá productos y agregá al carrito fácilmente.</p>
+          </article>
         </div>
 
-        <div class="info-card">
-          <h3>📱 WhatsApp</h3>
-          <p>Pedidos y consultas al {{ whatsapp_phone }}</p>
+        <div class="nosotros-actions">
+          <a href="/tienda" class="nosotros-btn">Ver productos</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="nosotros-block nosotros-block--soft">
+      <div class="container">
+        <h2 class="nosotros-title">Horario y contacto</h2>
+
+        <div class="nosotros-grid nosotros-grid--2">
+          <article class="nosotros-card">
+            <div class="nosotros-card__icon">⏰</div>
+            <h3>Horarios</h3>
+            <p>
+              Lun–Vie 7:00am – 9:30pm<br>
+              Sab–Dom 7:00am – 8:30pm
+            </p>
+          </article>
+
+          <article class="nosotros-card">
+            <div class="nosotros-card__icon">📱</div>
+            <h3>WhatsApp</h3>
+            <p>Pedidos y consultas al {{ whatsapp_phone }}</p>
+          </article>
         </div>
       </div>
     </section>

@@ -1842,3 +1842,121 @@ body.kg-modal-open{
   margin: 0;
   max-width: 680px;
 }
+
+/* =========================
+   NOSOTROS
+   ========================= */
+
+.nosotros-page{
+  padding-bottom: 60px;
+}
+
+.nosotros-hero{
+  padding: 42px 0 24px;
+}
+
+.nosotros-hero__content{
+  max-width: 760px;
+}
+
+.nosotros-badge{
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.06);
+  color: #374151;
+  font-weight: 800;
+  font-size: 13px;
+  margin-bottom: 14px;
+}
+
+.nosotros-hero h1{
+  margin: 0 0 12px;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.05;
+}
+
+.nosotros-hero p{
+  margin: 0;
+  max-width: 680px;
+  color: #4b5563;
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.nosotros-block{
+  padding: 18px 0 26px;
+}
+
+.nosotros-block--soft{
+  padding-top: 10px;
+}
+
+.nosotros-title{
+  margin: 0 0 18px;
+  font-size: clamp(1.45rem, 2.2vw, 2rem);
+  line-height: 1.15;
+}
+
+.nosotros-grid{
+  display: grid;
+  gap: 18px;
+}
+
+.nosotros-grid--3{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.nosotros-grid--2{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nosotros-card{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.10);
+  border-radius: 20px;
+  padding: 22px 20px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.06);
+}
+
+.nosotros-card__icon{
+  font-size: 1.35rem;
+  margin-bottom: 12px;
+}
+
+.nosotros-card h3{
+  margin: 0 0 10px;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.nosotros-card p{
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.nosotros-actions{
+  margin-top: 22px;
+}
+
+.nosotros-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: #111827;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+  transition: transform .15s ease, opacity .15s ease;
+}
+
+.nosotros-btn:hover{
+  opacity: .95;
+  transform: translateY(-1px);
+}

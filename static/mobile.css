@@ -1157,3 +1157,70 @@ body.filters-open{
     margin: 0 0 14px !important;
   }
 }
+
+/* =========================
+   NOSOTROS MOBILE
+   ========================= */
+
+@media (max-width: 768px){
+  .nosotros-page{
+    padding-bottom: 110px;
+  }
+
+  .nosotros-hero{
+    padding: 22px 0 18px;
+  }
+
+  .nosotros-hero__content{
+    max-width: 100%;
+  }
+
+  .nosotros-hero h1{
+    font-size: 2.1rem;
+    margin-bottom: 10px;
+  }
+
+  .nosotros-hero p{
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .nosotros-block{
+    padding: 12px 0 20px;
+  }
+
+  .nosotros-title{
+    margin-bottom: 14px;
+    font-size: 1.9rem;
+  }
+
+  .nosotros-grid--3,
+  .nosotros-grid--2{
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .nosotros-card{
+    padding: 18px 16px;
+    border-radius: 18px;
+  }
+
+  .nosotros-card h3{
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+
+  .nosotros-card p{
+    font-size: .98rem;
+    line-height: 1.5;
+  }
+
+  .nosotros-actions{
+    margin-top: 16px;
+  }
+
+  .nosotros-btn{
+    width: 100%;
+    min-height: 50px;
+  }
+}
