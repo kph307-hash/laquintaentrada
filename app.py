@@ -956,14 +956,14 @@ def admin_panel(request: Request, db: Session = Depends(get_db)):
             {"request": request, "error": None},
         )
 
-    productos = db.query(Producto).order_by(Producto.nombre.asc()).all()
+    total_productos = db.query(Producto).count()
     estado_sync = leer_estado_sync()
 
     return templates.TemplateResponse(
         "admin.html",
         {
             "request": request,
-            "productos": productos,
+            "total_productos": total_productos,
             "estado_sync": estado_sync,
         },
     )

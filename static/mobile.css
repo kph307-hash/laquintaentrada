@@ -993,7 +993,7 @@ body.filters-open{
     border-radius: 16px !important;
     overflow: hidden !important;
   }
-  
+
   body.tienda #productList.product-grid-mobile-2 .img-box{
     height: 180px !important;
     min-height: 180px !important;
@@ -1109,4 +1109,34 @@ body.filters-open{
   height: 34px;
   color: #6b7280;
   font-weight: 900;
+}
+
+@media (max-width: 768px){
+  .nosotros-section{
+    padding: 18px 14px 110px;
+  }
+
+  .nosotros-grid--3,
+  .nosotros-grid--2{
+    grid-template-columns: 1fr;
+  }
+
+  .nosotros-btn{
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .info-card{
+    padding: 16px 14px;
+  }
+
+  .info-card h3{
+    font-size: 1.05rem;
+  }
+
+  .info-card p{
+    font-size: .98rem;
+    line-height: 1.45;
+  }
 }

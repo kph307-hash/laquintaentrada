@@ -47,48 +47,11 @@
 
     <hr />
 
-    <h3>Productos ({{ productos|length }})</h3>
-
-    <div style="display:grid; gap:14px;">
-      {% for p in productos %}
-        <div style="border:1px solid #ddd; border-radius:14px; padding:14px; background:#fff;">
-          <div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
-
-            <div style="width:90px;">
-              {% if p.imagen_url %}
-                <img
-                  src="{{ p.imagen_url }}"
-                  alt="{{ p.nombre }}"
-                  style="width:90px; height:90px; object-fit:cover; border-radius:12px; border:1px solid #ddd;"
-                >
-              {% else %}
-                <div style="width:90px; height:90px; border-radius:12px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; color:#777; font-size:12px;">
-                  Sin imagen
-                </div>
-              {% endif %}
-            </div>
-
-            <div style="flex:1; min-width:260px;">
-              <div><strong>{{ p.sku }}</strong></div>
-              <div style="margin-top:4px;">{{ p.nombre }}</div>
-              <div style="margin-top:4px;">₡{{ p.precio }}</div>
-              <div style="margin-top:4px;">Stock: {{ p.cantidad }}</div>
-
-              <form
-                method="post"
-                action="/admin/productos/{{ p.sku }}/upload-image"
-                enctype="multipart/form-data"
-                style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;"
-              >
-                <label for="img-{{ p.sku }}">Imagen</label>
-                <input id="img-{{ p.sku }}" type="file" name="imagen" accept="image/*" required>
-                <button type="submit">Subir imagen</button>
-              </form>
-            </div>
-
-          </div>
-        </div>
-      {% endfor %}
+    <div class="card">
+      <h3>Productos ({{ total_productos }})</h3>
+      <p style="margin:0; color:#666;">
+        La lista de productos está oculta en este panel.
+      </p>
     </div>
 
   </div>

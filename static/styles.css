@@ -1781,3 +1781,47 @@ body.kg-modal-open{
     font-weight: 900;
   }
 }
+
+.nosotros-section{
+  padding: 24px 16px 40px;
+}
+
+.nosotros-subtitle{
+  margin: 0 0 16px;
+}
+
+.nosotros-grid{
+  display: grid;
+  gap: 16px;
+}
+
+.nosotros-grid--3{
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 28px;
+}
+
+.nosotros-grid--2{
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.nosotros-btn{
+  display: inline-flex;
+  margin-bottom: 36px;
+}
+
+.info-card{
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.12);
+  border-radius: 16px;
+  padding: 18px 16px;
+}
+
+.info-card h3{
+  margin: 0 0 8px;
+}
+
+.info-card p{
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
