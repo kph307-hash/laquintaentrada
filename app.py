@@ -7,7 +7,8 @@ import shutil
 import logging
 import tempfile
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Optional, List
 
@@ -275,12 +276,14 @@ def get_producto_image_url(sku: str) -> str:
 
 
 def guardar_estado_sync(ok: bool, mensaje: str, total_productos: int = 0, archivo: str = ""):
+    now_cr = datetime.now(ZoneInfo("America/Costa_Rica"))
+
     data = {
         "ok": ok,
         "mensaje": mensaje,
         "total_productos": total_productos,
         "archivo": archivo,
-        "ultima_actualizacion": datetime.now().isoformat(),
+        "ultima_actualizacion": now_cr.isoformat(),
     }
     SYNC_STATUS_FILE.write_text(
         json.dumps(data, ensure_ascii=False, indent=2),
@@ -294,9 +297,16 @@ def leer_estado_sync():
 
     data = json.loads(SYNC_STATUS_FILE.read_text(encoding="utf-8"))
     iso = data.get("ultima_actualizacion")
+
     if iso:
         dt = datetime.fromisoformat(iso)
-        data["ultima_actualizacion_legible"] = dt.strftime("%d/%m/%Y %I:%M %p")
+
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        dt_cr = dt.astimezone(ZoneInfo("America/Costa_Rica"))
+        data["ultima_actualizacion_legible"] = dt_cr.strftime("%d/%m/%Y %I:%M %p")
+
     return data
 
 
